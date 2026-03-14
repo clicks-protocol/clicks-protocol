@@ -13,6 +13,7 @@ export { ClicksClient } from './client';
 export type {
   ClicksClientOptions,
   AgentInfo,
+  QuickStartResult,
   SplitPreview,
   WithdrawResult,
   YieldInfo,
