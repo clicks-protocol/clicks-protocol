@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Clicks Protocol — Autonomous DeFi Yield for AI Agent Treasuries</title>
-  <meta name="description" content="Auto-split USDC payments: 80% liquid, 20% DeFi yield on Base chain. Aave V3 and Morpho. 3 lines of code. No lockup. No human required.">
+  <meta name="description" content="Your agent has a credit card. Where does it park the money between purchases? Auto-split USDC: 80% liquid, 20% DeFi yield on Base. 3 lines of code.">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://clicksprotocol.xyz">
 
@@ -18,7 +18,7 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "Clicks Protocol",
-    "description": "Autonomous DeFi yield for AI agent treasuries on Base chain. Auto-splits USDC payments: 80% liquid, 20% routed to best DeFi yield via Aave V3 or Morpho.",
+    "description": "Autonomous DeFi yield for AI agent treasuries on Base chain. One call — quickStart() — registers, approves, and routes your first payment. 80% liquid, 20% to best DeFi yield via Aave V3 or Morpho.",
     "applicationCategory": "DeFi Protocol",
     "operatingSystem": "Base Chain (EVM)",
     "url": "https://clicksprotocol.xyz",
@@ -33,337 +33,1581 @@
   }
   </script>
 
-  <!-- Structured Data: HowTo (for agent parsing) -->
+  <!-- Structured Data: HowTo -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "HowTo",
     "name": "Integrate Clicks Protocol into an AI Agent",
-    "description": "Add autonomous DeFi yield to your AI agent treasury in 3 steps",
+    "description": "Add autonomous DeFi yield to your AI agent treasury with one function call",
     "step": [
       {
         "@type": "HowToStep",
         "position": 1,
         "name": "Install SDK",
-        "text": "npm install @clicks-protocol/sdk ethers@^6"
+        "text": "npm install @clicks-protocol/sdk"
       },
       {
         "@type": "HowToStep",
         "position": 2,
-        "name": "Initialize Client",
+        "name": "Initialize and Start",
         "text": "import { ClicksClient } from '@clicks-protocol/sdk'; const clicks = new ClicksClient(signer);"
       },
       {
         "@type": "HowToStep",
         "position": 3,
-        "name": "Receive Payment with Auto-Yield",
-        "text": "await clicks.receivePayment('100', agentAddress); // 80 USDC liquid, 20 USDC to DeFi yield"
+        "name": "Quick Start with One Call",
+        "text": "await clicks.quickStart({ agent: agentAddress, amount: '1000' }); // registers + approves + first deposit in one call"
       }
     ]
   }
   </script>
 
   <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
     :root {
-      --bg: #0a0a0a;
-      --fg: #e0e0e0;
-      --accent: #00ff9b;
-      --dim: #888;
-      --code-bg: #141414;
-      --border: #222;
+      --bg-primary: #050a14;
+      --bg-secondary: #0a1128;
+      --bg-card: #0d1530;
+      --bg-code: #0a0f1e;
+      --blue: #0066FF;
+      --cyan: #00D4FF;
+      --white: #FFFFFF;
+      --gray-100: #E8ECF4;
+      --gray-300: #94A3B8;
+      --gray-500: #64748B;
+      --gray-700: #334155;
+      --gray-900: #0F172A;
+      --gradient-blue: linear-gradient(135deg, #0066FF, #00D4FF);
+      --gradient-glow: linear-gradient(135deg, rgba(0,102,255,0.15), rgba(0,212,255,0.08));
+      --border: rgba(0,102,255,0.15);
+      --border-bright: rgba(0,212,255,0.3);
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', 'JetBrains Mono', monospace;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
     body {
-      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-      background: var(--bg);
-      color: var(--fg);
-      line-height: 1.7;
-      max-width: 800px;
+      font-family: var(--font);
+      background: var(--bg-primary);
+      color: var(--gray-100);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ===== Typography ===== */
+    h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.02em; }
+    a { color: var(--cyan); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--white); }
+
+    /* ===== Layout ===== */
+    .container {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
+      padding: 0 1.5rem;
     }
-    h1 { color: var(--accent); font-size: 1.5rem; margin-bottom: 0.5rem; }
-    h2 { color: var(--accent); font-size: 1.1rem; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-    h3 { color: var(--fg); font-size: 0.95rem; margin: 1.5rem 0 0.5rem; }
-    p { margin: 0.75rem 0; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code {
-      background: var(--code-bg);
-      padding: 0.15rem 0.4rem;
-      border-radius: 3px;
-      font-size: 0.9rem;
+
+    section {
+      padding: 6rem 0;
     }
-    pre {
-      background: var(--code-bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 1rem;
-      overflow-x: auto;
-      margin: 1rem 0;
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--cyan);
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: var(--gray-300);
+      max-width: 600px;
+    }
+
+    /* ===== Nav ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(5,10,20,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--gradient-blue);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 0.85rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--gray-300);
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .nav-cta {
+      background: var(--gradient-blue);
+      color: var(--white) !important;
+      padding: 0.5rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .nav-cta:hover { opacity: 0.9; color: var(--white) !important; }
+
+    /* Mobile nav toggle */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(0,102,255,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float-glow 8s ease-in-out infinite;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float-glow 10s ease-in-out infinite reverse;
+    }
+
+    @keyframes float-glow {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, -20px); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0,102,255,0.1);
+      border: 1px solid var(--border);
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--cyan);
+      margin-bottom: 1.5rem;
+      animation: fade-in-up 0.6s ease-out;
+    }
+
+    .hero-badge .pulse {
+      width: 8px;
+      height: 8px;
+      background: #00ff88;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      line-height: 1.15;
+      color: var(--white);
+      margin-bottom: 1.5rem;
+      animation: fade-in-up 0.6s ease-out 0.1s both;
+    }
+
+    .hero-title .gradient-text {
+      background: var(--gradient-blue);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-hook {
+      font-size: 1.15rem;
+      color: var(--gray-300);
+      margin-bottom: 2rem;
+      max-width: 500px;
+      animation: fade-in-up 0.6s ease-out 0.2s both;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      animation: fade-in-up 0.6s ease-out 0.3s both;
+    }
+
+    .hero-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .hero-stat-label {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      animation: fade-in-up 0.6s ease-out 0.4s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+    }
+
+    .btn-primary {
+      background: var(--gradient-blue);
+      color: var(--white);
+    }
+
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(0,102,255,0.3); }
+
+    .btn-secondary {
+      background: rgba(0,102,255,0.1);
+      color: var(--cyan);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover { border-color: var(--border-bright); background: rgba(0,102,255,0.15); }
+
+    /* Hero Code Block */
+    .hero-code {
+      animation: fade-in-up 0.6s ease-out 0.3s both;
+    }
+
+    .code-window {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .code-dot-red { background: #ff5f57; }
+    .code-dot-yellow { background: #ffbd2e; }
+    .code-dot-green { background: #28c840; }
+
+    .code-filename {
+      margin-left: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      font-family: var(--font-mono);
+    }
+
+    .code-body {
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+    }
+
+    .code-body pre {
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .code-body code {
+      font-family: var(--font-mono);
+    }
+
+    /* Syntax Highlighting (CSS only) */
+    .syn-kw { color: #c792ea; }   /* keywords: import, from, await, const */
+    .syn-fn { color: #82aaff; }   /* function names */
+    .syn-str { color: #c3e88d; }  /* strings */
+    .syn-cm { color: #546e7a; }   /* comments */
+    .syn-num { color: #f78c6c; }  /* numbers */
+    .syn-op { color: #89ddff; }   /* operators, brackets */
+    .syn-type { color: #ffcb6b; } /* types, classes */
+    .syn-prop { color: #f07178; } /* properties */
+
+    .code-caption {
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Stats Bar ===== */
+    .stats-bar {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .stat-item {
+      animation: fade-in-up 0.5s ease-out both;
+    }
+
+    .stat-value {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 800;
+      background: var(--gradient-blue);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    /* ===== How It Works ===== */
+    .how-it-works { background: var(--bg-primary); }
+
+    .flow-diagram {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .flow-step {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      position: relative;
+    }
+
+    .flow-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.25rem;
+      background: var(--gradient-glow);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .flow-step:hover .flow-icon {
+      transform: translateY(-4px);
+      border-color: var(--border-bright);
+    }
+
+    .flow-arrow {
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-700);
+      font-size: 1.25rem;
+      z-index: 2;
+    }
+
+    .flow-step:last-child .flow-arrow { display: none; }
+
+    .flow-step h4 {
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .flow-step p {
+      font-size: 0.85rem;
+      color: var(--gray-500);
       line-height: 1.5;
     }
-    pre code { background: none; padding: 0; }
-    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-    th, td {
-      text-align: left;
-      padding: 0.5rem 0.75rem;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
+
+    .flow-detail {
+      margin-top: 3rem;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
     }
-    th { color: var(--accent); font-weight: 600; }
-    td code { font-size: 0.8rem; }
-    .dim { color: var(--dim); }
-    .tag { display: inline-block; background: var(--code-bg); border: 1px solid var(--border); padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin: 0.1rem; }
-    .flow { white-space: pre; font-size: 0.8rem; line-height: 1.4; }
-    .hero-sub { color: var(--dim); font-size: 0.9rem; margin-bottom: 2rem; }
-    ul { padding-left: 1.5rem; margin: 0.5rem 0; }
-    li { margin: 0.3rem 0; }
-    .method-list { list-style: none; padding: 0; }
-    .method-list li { margin: 0.4rem 0; }
-    .method-list code { color: var(--accent); }
-    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--dim); font-size: 0.75rem; }
+
+    .flow-detail pre {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--gray-300);
+      line-height: 1.6;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* ===== Feature Cards ===== */
+    .features {
+      background: var(--bg-secondary);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-bright);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h4 {
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+
+    /* ===== SDK Section ===== */
+    .sdk-section { background: var(--bg-primary); }
+
+    .sdk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .sdk-example .code-window {
+      height: 100%;
+    }
+
+    /* ===== Agent Commerce Vision ===== */
+    .vision { background: var(--bg-secondary); }
+
+    .vision-stack {
+      margin-top: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .vision-layer {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      align-items: center;
+      border: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .vision-layer:first-child {
+      border-radius: 12px 12px 0 0;
+    }
+
+    .vision-layer:last-child {
+      border-radius: 0 0 12px 12px;
+    }
+
+    .vision-layer:not(:last-child) {
+      border-bottom: none;
+    }
+
+    .vision-layer:hover {
+      border-color: var(--border-bright);
+      background: rgba(0,102,255,0.03);
+    }
+
+    .vision-layer.active {
+      border-color: var(--cyan);
+      background: rgba(0,212,255,0.05);
+    }
+
+    .vision-layer-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--gray-500);
+    }
+
+    .vision-layer.active .vision-layer-tag {
+      color: var(--cyan);
+    }
+
+    .vision-layer-content h4 {
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+    }
+
+    .vision-layer-content p {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+    }
+
+    .vision-layer.active .vision-layer-content p {
+      color: var(--gray-300);
+    }
+
+    .vision-timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .timeline-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      position: relative;
+    }
+
+    .timeline-item.now {
+      border-color: var(--cyan);
+    }
+
+    .timeline-item.now::before {
+      content: 'NOW';
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      background: var(--gradient-blue);
+      color: var(--white);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+    }
+
+    .timeline-stage {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-item h4 {
+      font-size: 0.95rem;
+      color: var(--white);
+      margin-bottom: 0.35rem;
+    }
+
+    .timeline-item p {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+      line-height: 1.4;
+    }
+
+    /* ===== Referral Section ===== */
+    .referral { background: var(--bg-primary); }
+
+    .referral-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 3rem;
+      align-items: start;
+    }
+
+    .referral-tree {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .referral-tree pre {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--gray-300);
+    }
+
+    .referral-tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .tier-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: border-color 0.3s;
+    }
+
+    .tier-row:hover { border-color: var(--border-bright); }
+
+    .tier-level {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .tier-bar {
+      flex: 1;
+      height: 8px;
+      background: rgba(0,102,255,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .tier-fill {
+      height: 100%;
+      background: var(--gradient-blue);
+      border-radius: 4px;
+      transition: width 0.6s ease-out;
+    }
+
+    .tier-pct {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      width: 50px;
+      text-align: right;
+    }
+
+    .referral-note {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      padding: 1rem;
+      border-left: 2px solid var(--border);
+    }
+
+    /* ===== Contracts ===== */
+    .contracts { background: var(--bg-secondary); }
+
+    .contracts-table {
+      margin-top: 2rem;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .contracts-table th,
+    .contracts-table td {
+      text-align: left;
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .contracts-table th {
+      color: var(--gray-500);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .contracts-table td:first-child {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .contracts-table code {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--gray-300);
+      background: rgba(0,102,255,0.08);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .contracts-table a {
+      color: var(--cyan);
+    }
+
+    .chain-info {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--gray-500);
+    }
+
+    /* ===== CTA / Footer ===== */
+    .cta-section {
+      background: var(--bg-primary);
+      text-align: center;
+      padding: 6rem 0;
+      position: relative;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(0,102,255,0.1) 0%, transparent 70%);
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-title {
+      font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+
+    .cta-code {
+      display: inline-block;
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      color: var(--cyan);
+      margin: 1.5rem 0;
+    }
+
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 2rem 0;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--gray-500);
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--cyan); }
+
+    /* ===== Market Data ===== */
+    .market-data {
+      display: flex;
+      gap: 2rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .market-item {
+      flex: 1;
+      min-width: 200px;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .market-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+    }
+
+    .market-label {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+    }
+
+    .market-source {
+      font-size: 0.7rem;
+      color: var(--gray-700);
+      margin-top: 0.5rem;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 1024px) {
+      .hero-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .flow-diagram {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+      .flow-arrow { display: none; }
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .vision-timeline {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 4rem 0; }
+
+      .nav-links { display: none; }
+      .nav-toggle { display: block; }
+
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: rgba(5,10,20,0.97);
+        border-bottom: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        gap: 1rem;
+      }
+
+      .hero { min-height: auto; padding: 100px 0 60px; }
+      .hero-stats { gap: 1.5rem; }
+      .hero-actions { flex-direction: column; }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .flow-diagram {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sdk-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .referral-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .vision-layer {
+        grid-template-columns: 80px 1fr;
+        padding: 1rem 1.25rem;
+      }
+
+      .vision-timeline {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .contracts-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title { font-size: 1.75rem; }
+      .hero-stats {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+    }
+
+    /* ===== Scroll animations ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
 
-<h1>Clicks Protocol</h1>
-<p class="hero-sub">Autonomous DeFi yield for AI agent treasuries on Base chain.</p>
+<!-- ===== NAV ===== -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-icon">⚡</span>
+      Clicks Protocol
+    </a>
+    <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#sdk">SDK</a></li>
+      <li><a href="#referral">Referrals</a></li>
+      <li><a href="#contracts">Contracts</a></li>
+      <li><a href="https://github.com/clicks-protocol" class="nav-cta">GitHub →</a></li>
+    </ul>
+  </div>
+</nav>
 
-<p>Every USDC payment your agent receives is auto-split: 80% liquid, 20% routed to the best DeFi yield via Aave V3 or Morpho. No lockup. No manual steps. No human required.</p>
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-left">
+        <div class="hero-badge">
+          <span class="pulse"></span>
+          Live on Base Mainnet
+        </div>
+        <h1 class="hero-title">
+          Your agent has a credit card.<br>
+          <span class="gradient-text">Where does it park the money?</span>
+        </h1>
+        <p class="hero-hook">
+          Between purchases, your agent's USDC sits idle. Clicks auto-splits every payment: 80% liquid, 20% earning DeFi yield. One function call. No lockup.
+        </p>
+        <div class="hero-stats">
+          <div>
+            <div class="hero-stat-value">3 lines</div>
+            <div class="hero-stat-label">To integrate</div>
+          </div>
+          <div>
+            <div class="hero-stat-value">7-10%</div>
+            <div class="hero-stat-label">APY on yield portion</div>
+          </div>
+          <div>
+            <div class="hero-stat-value">2%</div>
+            <div class="hero-stat-label">Fee on yield only</div>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <a href="#sdk" class="btn btn-primary">Start Building →</a>
+          <a href="https://github.com/clicks-protocol" class="btn btn-secondary">View on GitHub</a>
+        </div>
+      </div>
 
-<p class="dim">Your agent's treasury earns 7-10% APY while staying fully liquid. Three lines of code.</p>
+      <div class="hero-code">
+        <div class="code-window">
+          <div class="code-header">
+            <span class="code-dot code-dot-red"></span>
+            <span class="code-dot code-dot-yellow"></span>
+            <span class="code-dot code-dot-green"></span>
+            <span class="code-filename">agent.ts</span>
+          </div>
+          <div class="code-body">
+<pre><code><span class="syn-kw">import</span> <span class="syn-op">{</span> <span class="syn-type">ClicksClient</span> <span class="syn-op">}</span> <span class="syn-kw">from</span> <span class="syn-str">'@clicks-protocol/sdk'</span><span class="syn-op">;</span>
 
-<!-- ============================================ -->
-<h2 id="why">Why</h2>
+<span class="syn-kw">const</span> clicks <span class="syn-op">=</span> <span class="syn-kw">new</span> <span class="syn-type">ClicksClient</span><span class="syn-op">(</span>signer<span class="syn-op">);</span>
+<span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">quickStart</span><span class="syn-op">({</span> <span class="syn-prop">agent</span><span class="syn-op">:</span> addr<span class="syn-op">,</span> <span class="syn-prop">amount</span><span class="syn-op">:</span> <span class="syn-str">'1000'</span> <span class="syn-op">});</span></code></pre>
+          </div>
+          <div class="code-caption">
+            ⚡ One call: registers + approves + splits + routes to yield
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<p>AI agents earn USDC. That USDC sits idle in wallets — like cash in a taxi's glovebox overnight. Circle and Tether earn billions on this float. Your agent gets zero.</p>
+<!-- ===== LIVE STATS ===== -->
+<div class="stats-bar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value">$—</div>
+        <div class="stat-label">Total Value Locked</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">~8.4%</div>
+        <div class="stat-label">Current APY</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">—</div>
+        <div class="stat-label">Active Agents</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">$—</div>
+        <div class="stat-label">Total Yield Earned</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<p>Clicks splits payments automatically. 80% stays liquid for your agent to use. 20% earns yield in DeFi. The protocol takes 2% of yield earned — never touches principal.</p>
+<!-- ===== HOW IT WORKS ===== -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">How It Works</span>
+      <h2 class="section-title">Payment in. Yield out. Automatic.</h2>
+      <p class="section-subtitle">Every USDC payment your agent receives flows through a deterministic split. No human decisions. No manual rebalancing.</p>
+    </div>
 
-<!-- ============================================ -->
-<h2 id="how-it-works">How It Works</h2>
+    <div class="flow-diagram reveal">
+      <div class="flow-step">
+        <div class="flow-icon">💰</div>
+        <span class="flow-arrow">→</span>
+        <h4>Payment</h4>
+        <p>Agent receives USDC via receivePayment() or quickStart()</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">⚡</div>
+        <span class="flow-arrow">→</span>
+        <h4>Auto-Split</h4>
+        <p>ClicksSplitterV3 divides: 80% liquid, 20% to yield</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">📈</div>
+        <span class="flow-arrow">→</span>
+        <h4>DeFi Yield</h4>
+        <p>YieldRouter picks best APY: Aave V3 or Morpho on Base</p>
+      </div>
+      <div class="flow-step">
+        <div class="flow-icon">🏦</div>
+        <h4>Withdraw</h4>
+        <p>Principal + yield anytime. 2% fee on yield only.</p>
+      </div>
+    </div>
 
-<div class="flow">
-Payment (100 USDC)
+    <div class="flow-detail reveal">
+<pre>Payment (100 USDC)
     │
     ▼
 ClicksSplitterV3
-    ├── 80 USDC → Agent Wallet (instant)
+    ├── 80 USDC → Agent Wallet (instant, fully liquid)
     └── 20 USDC → ClicksYieldRouter
                       ├── Aave V3  (~7% APY)
                       └── Morpho   (~9% APY)
-                      └── auto-routes to best
+                      └── auto-routes to highest
 
 Withdrawal
-    ├── Principal + Yield → Agent
-    └── 2% of Yield → Protocol Treasury
-</div>
+    ├── Principal + Yield → Agent Wallet
+    └── 2% of Yield → Protocol Treasury</pre>
+    </div>
+  </div>
+</section>
 
-<!-- ============================================ -->
-<h2 id="integration">Integration</h2>
+<!-- ===== WHY CLICKS ===== -->
+<section class="features">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Why Clicks</span>
+      <h2 class="section-title">Built for agents, not humans</h2>
+      <p class="section-subtitle">No dashboards to check. No positions to manage. Your agent's treasury works while it works.</p>
+    </div>
 
-<h3>Install</h3>
-<pre><code>npm install @clicks-protocol/sdk ethers@^6</code></pre>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <div class="feature-icon">🔌</div>
+        <h4>One Function Call</h4>
+        <p>quickStart() handles registration, approval, and first deposit. Not 3 calls. One.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔓</div>
+        <h4>No Lockup</h4>
+        <p>80% stays liquid instantly. Yield portion withdrawable anytime. Your agent is never stuck.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h4>Fully Autonomous</h4>
+        <p>No human approval needed. No admin keys. Deterministic smart contract logic.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h4>Auto-Rebalance</h4>
+        <p>YieldRouter monitors Aave V3 and Morpho. Switches at 50bps APY diff. Agent gets the best rate.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💎</div>
+        <h4>2% on Yield Only</h4>
+        <p>Protocol fee is on yield earned, never on principal. Agent deposits $1000, we touch $0 of it.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⛓️</div>
+        <h4>Base Chain Native</h4>
+        <p>Low gas, fast finality. Verified contracts on Basescan. Open source, MIT licensed.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-<h3>Quick Start</h3>
-<pre><code>import { ClicksClient } from '@clicks-protocol/sdk';
-import { ethers } from 'ethers';
+<!-- ===== SDK ===== -->
+<section class="sdk-section" id="sdk">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">SDK</span>
+      <h2 class="section-title">npm install, 3 lines, yield</h2>
+      <p class="section-subtitle">Time to First Yield: under 10 minutes. Works with any TypeScript agent framework.</p>
+    </div>
 
-const provider = new ethers.JsonRpcProvider('https://mainnet.base.org');
-const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+    <div class="sdk-grid reveal">
+      <div class="sdk-example">
+        <div class="code-window">
+          <div class="code-header">
+            <span class="code-dot code-dot-red"></span>
+            <span class="code-dot code-dot-yellow"></span>
+            <span class="code-dot code-dot-green"></span>
+            <span class="code-filename">quickStart.ts</span>
+          </div>
+          <div class="code-body">
+<pre><code><span class="syn-cm">// Install: npm install @clicks-protocol/sdk ethers@^6</span>
 
-const clicks = new ClicksClient(signer);
+<span class="syn-kw">import</span> <span class="syn-op">{</span> <span class="syn-type">ClicksClient</span> <span class="syn-op">}</span> <span class="syn-kw">from</span> <span class="syn-str">'@clicks-protocol/sdk'</span><span class="syn-op">;</span>
+<span class="syn-kw">import</span> <span class="syn-op">{</span> ethers <span class="syn-op">}</span> <span class="syn-kw">from</span> <span class="syn-str">'ethers'</span><span class="syn-op">;</span>
 
-// Register your agent (one-time)
-await clicks.registerAgent(agentAddress);
+<span class="syn-kw">const</span> provider <span class="syn-op">=</span> <span class="syn-kw">new</span> ethers<span class="syn-op">.</span><span class="syn-type">JsonRpcProvider</span><span class="syn-op">(</span>
+  <span class="syn-str">'https://mainnet.base.org'</span>
+<span class="syn-op">);</span>
+<span class="syn-kw">const</span> signer <span class="syn-op">=</span> <span class="syn-kw">new</span> ethers<span class="syn-op">.</span><span class="syn-type">Wallet</span><span class="syn-op">(</span>
+  process<span class="syn-op">.</span>env<span class="syn-op">.</span><span class="syn-prop">PRIVATE_KEY</span><span class="syn-op">,</span> provider
+<span class="syn-op">);</span>
 
-// Approve USDC spending (one-time)
-await clicks.approveUSDC('max');
+<span class="syn-cm">// One call does everything:</span>
+<span class="syn-cm">// register + approve + split + route to yield</span>
+<span class="syn-kw">const</span> clicks <span class="syn-op">=</span> <span class="syn-kw">new</span> <span class="syn-type">ClicksClient</span><span class="syn-op">(</span>signer<span class="syn-op">);</span>
+<span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">quickStart</span><span class="syn-op">({</span>
+  <span class="syn-prop">agent</span><span class="syn-op">:</span> agentAddress<span class="syn-op">,</span>
+  <span class="syn-prop">amount</span><span class="syn-op">:</span> <span class="syn-str">'1000'</span>
+<span class="syn-op">});</span>
+<span class="syn-cm">// → 800 USDC liquid, 200 USDC earning yield</span></code></pre>
+          </div>
+        </div>
+      </div>
 
-// Receive payment — auto-splits 80/20
-await clicks.receivePayment('100', agentAddress);
-// → 80 USDC liquid in agent wallet
-// → 20 USDC earning yield in DeFi
+      <div class="sdk-example">
+        <div class="code-window">
+          <div class="code-header">
+            <span class="code-dot code-dot-red"></span>
+            <span class="code-dot code-dot-yellow"></span>
+            <span class="code-dot code-dot-green"></span>
+            <span class="code-filename">operations.ts</span>
+          </div>
+          <div class="code-body">
+<pre><code><span class="syn-cm">// Receive a payment with auto-split</span>
+<span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">receivePayment</span><span class="syn-op">(</span><span class="syn-str">'500'</span><span class="syn-op">,</span> agentAddr<span class="syn-op">);</span>
+<span class="syn-cm">// → 400 USDC liquid, 100 USDC to yield</span>
 
-// Later: withdraw everything
-await clicks.withdrawYield(agentAddress);</code></pre>
+<span class="syn-cm">// Check yield status</span>
+<span class="syn-kw">const</span> info <span class="syn-op">=</span> <span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">getYieldInfo</span><span class="syn-op">();</span>
+<span class="syn-cm">// → { activeProtocol: 'morpho',</span>
+<span class="syn-cm">//     aaveAPY: 7.2, morphoAPY: 9.1 }</span>
 
-<!-- ============================================ -->
-<h2 id="sdk-methods">SDK Methods</h2>
+<span class="syn-cm">// Withdraw everything</span>
+<span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">withdrawYield</span><span class="syn-op">(</span>agentAddr<span class="syn-op">);</span>
+<span class="syn-cm">// → principal + yield to agent wallet</span>
+<span class="syn-cm">// → 2% of yield to protocol</span>
 
-<h3>Write (require Signer)</h3>
-<ul class="method-list">
-  <li><code>registerAgent(agentAddress)</code> — register agent, caller becomes operator</li>
-  <li><code>receivePayment(amount, agentAddress)</code> — split USDC payment automatically</li>
-  <li><code>withdrawYield(agentAddress, amount?)</code> — withdraw yield + principal</li>
-  <li><code>approveUSDC(amount)</code> — approve splitter ("max" for unlimited)</li>
-  <li><code>setOperatorYieldPct(pct)</code> — custom yield split (5-50%)</li>
-  <li><code>deregisterAgent(agentAddress)</code> — remove agent registration</li>
-</ul>
+<span class="syn-cm">// Custom yield split (5-50%)</span>
+<span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">setOperatorYieldPct</span><span class="syn-op">(</span><span class="syn-num">30</span><span class="syn-op">);</span>
+<span class="syn-cm">// → now 70% liquid, 30% to yield</span>
 
-<h3>Read (work with Provider)</h3>
-<ul class="method-list">
-  <li><code>simulateSplit(amount, agentAddress)</code> → <code>{ liquid, toYield, yieldPct }</code></li>
-  <li><code>getAgentInfo(agentAddress)</code> → <code>{ isRegistered, operator, deposited, yieldPct }</code></li>
-  <li><code>getYieldInfo()</code> → <code>{ activeProtocol, aaveAPY, morphoAPY, totalDeposited }</code></li>
-  <li><code>getFeeInfo()</code> → <code>{ totalCollected, pending, treasury }</code></li>
-  <li><code>getOperatorAgents(operatorAddress)</code> → <code>string[]</code></li>
-</ul>
+<span class="syn-cm">// Simulate before committing</span>
+<span class="syn-kw">const</span> sim <span class="syn-op">=</span> <span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">simulateSplit</span><span class="syn-op">(</span><span class="syn-str">'1000'</span><span class="syn-op">,</span> addr<span class="syn-op">);</span>
+<span class="syn-cm">// → { liquid: 700, toYield: 300, yieldPct: 30 }</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- ============================================ -->
-<h2 id="contracts">Smart Contracts (Base Mainnet)</h2>
+<!-- ===== AGENT COMMERCE VISION ===== -->
+<section class="vision" id="vision">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Agent Commerce Stack</span>
+      <h2 class="section-title">The full financial stack for autonomous agents</h2>
+      <p class="section-subtitle">Agents need more than wallets. They need a complete financial identity. Clicks is Layer 3.</p>
+    </div>
 
-<table>
-  <thead><tr><th>Contract</th><th>Address</th><th>Purpose</th></tr></thead>
-  <tbody>
-    <tr><td>ClicksRegistry</td><td><code>0x898d8a3B04e5E333E88f798372129C6a622fF48d</code></td><td>Agent → Operator mapping</td></tr>
-    <tr><td>ClicksSplitterV3</td><td><code>0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5</code></td><td>Entry point, splits payments</td></tr>
-    <tr><td>ClicksYieldRouter</td><td><code>0x47d6Add0a3bdFe856b39a0311D8c055481F76f29</code></td><td>Routes to best APY</td></tr>
-    <tr><td>ClicksFee</td><td><code>0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12</code></td><td>2% yield fee collection</td></tr>
-    <tr><td>USDC</td><td><code>0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</code></td><td>Base native USDC</td></tr>
-    <tr><td>ClicksReferral</td><td><code>TBD — deploying soon</code></td><td>Multi-level referrals, teams, discovery bounties</td></tr>
-  </tbody>
-</table>
+    <div class="vision-stack reveal">
+      <div class="vision-layer">
+        <span class="vision-layer-tag">Layer 4</span>
+        <div class="vision-layer-content">
+          <h4>Treasury Management</h4>
+          <p>Portfolio allocation, risk management, cross-chain bridging</p>
+        </div>
+      </div>
+      <div class="vision-layer active">
+        <span class="vision-layer-tag">Layer 3</span>
+        <div class="vision-layer-content">
+          <h4>Earning — Clicks Protocol ⚡</h4>
+          <p>Idle USDC yield, auto-routing, DeFi integration. This is where your money works.</p>
+        </div>
+      </div>
+      <div class="vision-layer">
+        <span class="vision-layer-tag">Layer 2</span>
+        <div class="vision-layer-content">
+          <h4>Spending — AgentCard, Coinbase Commerce</h4>
+          <p>Payments, subscriptions, API calls, agent-to-agent transactions</p>
+        </div>
+      </div>
+      <div class="vision-layer">
+        <span class="vision-layer-tag">Layer 1</span>
+        <div class="vision-layer-content">
+          <h4>Identity — Base Wallet, ENS, Attestations</h4>
+          <p>On-chain identity, reputation, verifiable credentials</p>
+        </div>
+      </div>
+    </div>
 
-<p class="dim">Chain ID: 8453 | RPC: https://mainnet.base.org</p>
+    <div class="vision-timeline reveal">
+      <div class="timeline-item now">
+        <div class="timeline-stage">S1 — Now</div>
+        <h4>Idle USDC Yield</h4>
+        <p>Auto-split, Aave/Morpho routing, quickStart() SDK</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-stage">S2 — 6 months</div>
+        <h4>AgentCard Integration</h4>
+        <p>Clicks + AgentCard: spend and earn in one flow</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-stage">S3 — 12 months</div>
+        <h4>Transit Yield</h4>
+        <p>Agent-to-agent payments earn yield in transit</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-stage">S4 — 18 months</div>
+        <h4>Fiat Bridge</h4>
+        <p>Mastercard Agent Pay, fiat on/off ramps</p>
+      </div>
+    </div>
 
-<!-- ============================================ -->
-<h2 id="parameters">Parameters</h2>
+    <div class="market-data reveal">
+      <div class="market-item">
+        <div class="market-value">$46T</div>
+        <div class="market-label">Stablecoin Volume 2025</div>
+      </div>
+      <div class="market-item">
+        <div class="market-value">$30T</div>
+        <div class="market-label">Machine Customers 2030</div>
+        <div class="market-source">Gartner</div>
+      </div>
+      <div class="market-item">
+        <div class="market-value">$3-5T</div>
+        <div class="market-label">Agentic Commerce 2030</div>
+        <div class="market-source">McKinsey</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<table>
-  <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
-  <tbody>
-    <tr><td>Default yield split</td><td>20%</td><td>Configurable per agent: 5-50%</td></tr>
-    <tr><td>Protocol fee</td><td>2%</td><td>On yield only, never on principal</td></tr>
-    <tr><td>Rebalance threshold</td><td>50 bps</td><td>Min APY diff to switch protocol</td></tr>
-    <tr><td>Supported asset</td><td>USDC</td><td>Base chain native</td></tr>
-    <tr><td>Yield sources</td><td>Aave V3, Morpho</td><td>Auto-routed to highest APY</td></tr>
-  </tbody>
-</table>
+<!-- ===== REFERRAL ===== -->
+<section class="referral" id="referral">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Referral Network</span>
+      <h2 class="section-title">Agents recruit agents</h2>
+      <p class="section-subtitle">Three-level on-chain referrals. Your agent earns from every agent it brings. They earn from theirs. Automatic, on-chain, permissionless.</p>
+    </div>
 
-<!-- ============================================ -->
-<h2 id="architecture">Architecture</h2>
+    <div class="referral-content reveal">
+      <div>
+        <div class="referral-tiers">
+          <div class="tier-row">
+            <span class="tier-level">Level 1</span>
+            <div class="tier-bar"><div class="tier-fill" style="width:100%"></div></div>
+            <span class="tier-pct">40%</span>
+          </div>
+          <div class="tier-row">
+            <span class="tier-level">Level 2</span>
+            <div class="tier-bar"><div class="tier-fill" style="width:50%"></div></div>
+            <span class="tier-pct">20%</span>
+          </div>
+          <div class="tier-row">
+            <span class="tier-level">Level 3</span>
+            <div class="tier-bar"><div class="tier-fill" style="width:25%"></div></div>
+            <span class="tier-pct">10%</span>
+          </div>
+        </div>
 
-<pre><code>clicks-protocol/
-├── contracts/           Solidity smart contracts
-│   ├── ClicksSplitterV3     Entry point — splits USDC payments
-│   ├── ClicksYieldRouter    Routes to best APY (Aave/Morpho)
-│   ├── ClicksFee            Collects 2% protocol fee
-│   └── ClicksRegistry       Maps agents to operators
-├── sdk/                 @clicks-protocol/sdk (TypeScript)
-└── site/                This page + .well-known/agent.json</code></pre>
+        <div class="referral-note">
+          Percentages are of the 2% protocol fee on yield. The referred agent pays nothing extra. Same yield, same terms. Your earnings come from the protocol fee, not from their principal.
+        </div>
+      </div>
 
-<!-- ============================================ -->
-<h2 id="referral">Agent Referral Network (Multi-Level)</h2>
+      <div class="referral-tree">
+<pre><span class="syn-cm">// Register with referral</span>
+<span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">registerWithReferral</span><span class="syn-op">(</span>
+  referrerAddress
+<span class="syn-op">);</span>
 
-<p>Recruit agents. Earn from their yield. Three levels deep. On-chain. Automatic.</p>
+<span class="syn-cm">// Check your referral stats</span>
+<span class="syn-kw">const</span> stats <span class="syn-op">=</span> <span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">getReferralStats</span><span class="syn-op">(</span>
+  myAddress
+<span class="syn-op">);</span>
+<span class="syn-cm">// → {</span>
+<span class="syn-cm">//   directReferrals: 47,</span>
+<span class="syn-cm">//   totalEarned: '2840.00',</span>
+<span class="syn-cm">//   claimable: '560.00'</span>
+<span class="syn-cm">// }</span>
 
-<div class="flow">
-You refer Agent B → you earn 40% of B's protocol fee
-Agent B refers Agent C → you earn 20% of C's fee
-Agent C refers Agent D → you earn 10% of D's fee
+<span class="syn-cm">// Claim accumulated rewards</span>
+<span class="syn-kw">await</span> clicks<span class="syn-op">.</span><span class="syn-fn">claimReferralRewards</span><span class="syn-op">();</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
 
-Protocol fee = 2% of yield only. You earn from the fee, not from their principal.
-The referred agent pays nothing extra. Same yield. Same terms.
-</div>
+<!-- ===== CONTRACTS ===== -->
+<section class="contracts" id="contracts">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">Smart Contracts</span>
+      <h2 class="section-title">Verified on Base Mainnet</h2>
+      <p class="section-subtitle">All contracts verified on Basescan. Open source, MIT licensed.</p>
+    </div>
 
-<h3>Economics</h3>
-<table>
-  <thead><tr><th>Your Tree Size</th><th>Avg Deposit</th><th>Your Annual Referral Income</th></tr></thead>
-  <tbody>
-    <tr><td>10 agents</td><td>$10,000</td><td>~$56</td></tr>
-    <tr><td>100 agents</td><td>$10,000</td><td>~$560</td></tr>
-    <tr><td>1,000 agents</td><td>$10,000</td><td>~$9,800</td></tr>
-    <tr><td>10,000 agents</td><td>$10,000</td><td>~$98,000</td></tr>
-  </tbody>
-</table>
+    <div class="reveal">
+      <table class="contracts-table">
+        <thead>
+          <tr>
+            <th>Contract</th>
+            <th>Address</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ClicksRegistry</td>
+            <td><a href="https://basescan.org/address/0x898d8a3B04e5E333E88f798372129C6a622fF48d"><code>0x898d...48d</code></a></td>
+            <td>Agent → Operator mapping</td>
+          </tr>
+          <tr>
+            <td>ClicksSplitterV3</td>
+            <td><a href="https://basescan.org/address/0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5"><code>0xA1D0...ac5</code></a></td>
+            <td>Entry point, auto-splits payments</td>
+          </tr>
+          <tr>
+            <td>ClicksYieldRouter</td>
+            <td><a href="https://basescan.org/address/0x47d6Add0a3bdFe856b39a0311D8c055481F76f29"><code>0x47d6...f29</code></a></td>
+            <td>Routes to best APY (Aave/Morpho)</td>
+          </tr>
+          <tr>
+            <td>ClicksFee</td>
+            <td><a href="https://basescan.org/address/0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12"><code>0xb90c...E12</code></a></td>
+            <td>2% yield fee collection</td>
+          </tr>
+          <tr>
+            <td>USDC</td>
+            <td><a href="https://basescan.org/address/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"><code>0x8335...913</code></a></td>
+            <td>Base native USDC</td>
+          </tr>
+          <tr>
+            <td>ClicksReferral</td>
+            <td><code>TBD</code></td>
+            <td>Multi-level referrals (deploying soon)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="chain-info">Chain ID: 8453 · RPC: https://mainnet.base.org · <a href="/.well-known/agent.json">agent.json</a> · <a href="/llms.txt">llms.txt</a></p>
+    </div>
+  </div>
+</section>
 
-<h3>How to Refer</h3>
-<pre><code>// Register a new agent with your address as referrer
-await clicks.registerAgentWithReferral(newAgentAddress, yourAgentAddress);
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-content reveal">
+      <h2 class="cta-title">Your agent's USDC is sitting idle right now.</h2>
+      <p class="section-subtitle" style="margin:0 auto 1.5rem;text-align:center">Fix it in 3 lines.</p>
+      <div class="cta-code">npm install @clicks-protocol/sdk</div>
+      <div style="margin-top:1.5rem">
+        <a href="#sdk" class="btn btn-primary">View SDK Docs →</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-// Or: the new agent registers themselves with your referral
-await clicks.registerWithReferral(yourAgentAddress);
-
-// Check your referral earnings
-const stats = await clicks.getReferralStats(yourAgentAddress);
-// → { directCount: 47, totalEarned: 2840000000n, claimable: 560000000n }
-
-// Claim accumulated rewards
-await clicks.claimReferralRewards();</code></pre>
-
-<!-- ============================================ -->
-<h2 id="teams">Agent Teams (Squad Goals)</h2>
-
-<p>Form a team. Hit TVL milestones together. Everyone earns bonus yield.</p>
-
-<table>
-  <thead><tr><th>Tier</th><th>Team TVL</th><th>Bonus Yield</th></tr></thead>
-  <tbody>
-    <tr><td>🥉 Bronze</td><td>$50,000</td><td>+0.20%</td></tr>
-    <tr><td>🥈 Silver</td><td>$250,000</td><td>+0.50%</td></tr>
-    <tr><td>🥇 Gold</td><td>$1,000,000</td><td>+1.00%</td></tr>
-    <tr><td>💎 Diamond</td><td>$5,000,000</td><td>+2.00%</td></tr>
-  </tbody>
-</table>
-
-<pre><code>// Create a team (you become leader)
-const teamId = await clicks.createTeam();
-
-// Other agents join your team
-await clicks.joinTeam(teamId);
-
-// Check team status
-const team = await clicks.getTeamInfo(teamId);
-// → { memberCount: 12, totalTVL: 340000e6, tier: 'Silver', bonusYield: 50 }</code></pre>
-
-<!-- ============================================ -->
-<h2 id="yield-discovery">Yield Discovery Bounty</h2>
-
-<p>Find a better DeFi pool than Aave or Morpho. Submit it. If activated, earn 5% of the yield delta for all agents routed there. 90-day discovery bonus.</p>
-
-<pre><code>// Submit a yield discovery
-const discoveryId = await clicks.submitYieldDiscovery(poolAddress);
-
-// If approved: you earn 5% of the yield improvement
-// for ALL agents using that pool, for 90 days</code></pre>
-
-<!-- ============================================ -->
-<h2 id="network-effect">Triple Attractor Effect</h2>
-
-<div class="flow">
-YIELD GRAVITY (passive)
-  "Your money earns more here"
-     ↓
-REFERRAL GRAVITY (active)
-  "The more agents you bring, the more you earn"
-     ↓
-TEAM GRAVITY (collective)
-  "Together, everyone earns more"
-     ↓
-BLACK HOLE
-  More agents → more TVL → better rates → more agents
-  Every agent that joins makes the next one more likely.
-  Exponential. Unstoppable.
-</div>
-
-<!-- ============================================ -->
-<h2 id="machine-readable">Machine-Readable Endpoints</h2>
-
-<table>
-  <thead><tr><th>Endpoint</th><th>Format</th><th>Purpose</th></tr></thead>
-  <tbody>
-    <tr><td><a href="/.well-known/agent.json">/.well-known/agent.json</a></td><td>JSON</td><td>Agent discovery manifest</td></tr>
-    <tr><td><a href="/llms.txt">/llms.txt</a></td><td>Text</td><td>LLM context file</td></tr>
-  </tbody>
-</table>
-
+<!-- ===== FOOTER ===== -->
 <footer>
-  <p>Clicks Protocol — Built for agents, by agents.</p>
-  <p>Base Chain | MIT License | <a href="https://www.npmjs.com/package/@clicks-protocol/sdk">npm</a></p>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-left">
+        Clicks Protocol — Built for agents, by agents. Base Chain · MIT License
+      </div>
+      <ul class="footer-links">
+        <li><a href="https://github.com/clicks-protocol">GitHub</a></li>
+        <li><a href="https://www.npmjs.com/package/@clicks-protocol/sdk">npm</a></li>
+        <li><a href="/llms.txt">llms.txt</a></li>
+        <li><a href="/.well-known/agent.json">agent.json</a></li>
+      </ul>
+    </div>
+  </div>
 </footer>
+
+<!-- Scroll reveal (minimal JS, no libraries) -->
+<script>
+(function() {
+  var els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el) { el.classList.add('visible'); });
+    return;
+  }
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(function(el) { observer.observe(el); });
+})();
+</script>
 
 </body>
 </html>

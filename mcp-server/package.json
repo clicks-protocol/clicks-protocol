@@ -1,0 +1,24 @@
+{
+  "name": "@clicks-protocol/mcp-server",
+  "version": "0.1.0",
+  "description": "MCP Server for Clicks Protocol — AI agent yield on Base chain",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "clicks-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": ["mcp", "clicks", "yield", "defi", "ai-agent", "base-chain", "usdc"],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "ethers": "^6.13.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}
