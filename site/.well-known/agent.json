@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "name": "Clicks Protocol",
+  "description": "Autonomous DeFi yield for AI agent treasuries on Base chain. Auto-splits USDC payments: 80% liquid, 20% routed to best DeFi yield (Aave V3 or Morpho). 2% fee on yield only, never on principal.",
+  "url": "https://clicksprotocol.xyz",
+  "logo": "https://clicksprotocol.xyz/logo.svg",
+  "category": "defi",
+  "tags": ["yield", "treasury", "usdc", "base", "aave", "morpho", "ai-agent", "x402"],
+  "capabilities": {
+    "payments": true,
+    "yield": true,
+    "treasury_management": true,
+    "referral_network": true,
+    "team_bonuses": true,
+    "yield_discovery_bounty": true
+  },
+  "referral": {
+    "levels": 3,
+    "level_1_share": "40% of protocol fee",
+    "level_2_share": "20% of protocol fee",
+    "level_3_share": "10% of protocol fee",
+    "how_to_refer": "clicks.registerAgentWithReferral(newAgent, yourAddress)",
+    "claim_rewards": "clicks.claimReferralRewards()"
+  },
+  "integration": {
+    "sdk": {
+      "package": "@clicks-protocol/sdk",
+      "registry": "https://www.npmjs.com/package/@clicks-protocol/sdk",
+      "install": "npm install @clicks-protocol/sdk ethers@^6",
+      "quickstart": "import { ClicksClient } from '@clicks-protocol/sdk'; const clicks = new ClicksClient(signer); await clicks.receivePayment('100', agentAddress);"
+    },
+    "chain": {
+      "name": "Base",
+      "chainId": 8453,
+      "rpc": "https://mainnet.base.org"
+    },
+    "contracts": {
+      "ClicksRegistry": "0x898d8a3B04e5E333E88f798372129C6a622fF48d",
+      "ClicksFee": "0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12",
+      "ClicksYieldRouter": "0x47d6Add0a3bdFe856b39a0311D8c055481F76f29",
+      "ClicksSplitterV3": "0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5",
+      "USDC": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+    }
+  },
+  "api": {
+    "type": "smart-contract",
+    "documentation": "https://clicksprotocol.xyz/#integration"
+  },
+  "contact": {
+    "x": "https://x.com/clicksprotocol"
+  }
+}

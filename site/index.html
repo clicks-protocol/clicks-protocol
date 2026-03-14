@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clicks Protocol — Autonomous DeFi Yield for AI Agent Treasuries</title>
+  <meta name="description" content="Auto-split USDC payments: 80% liquid, 20% DeFi yield on Base chain. Aave V3 and Morpho. 3 lines of code. No lockup. No human required.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://clicksprotocol.xyz">
+
+  <!-- Agent Discovery -->
+  <link rel="alternate" type="application/json" href="/.well-known/agent.json" title="Agent Manifest">
+  <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM Context">
+
+  <!-- Structured Data: SoftwareApplication -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Clicks Protocol",
+    "description": "Autonomous DeFi yield for AI agent treasuries on Base chain. Auto-splits USDC payments: 80% liquid, 20% routed to best DeFi yield via Aave V3 or Morpho.",
+    "applicationCategory": "DeFi Protocol",
+    "operatingSystem": "Base Chain (EVM)",
+    "url": "https://clicksprotocol.xyz",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD",
+      "description": "2% fee on yield only, never on principal"
+    },
+    "softwareRequirements": "ethers v6, USDC on Base chain",
+    "programmingLanguage": "TypeScript"
+  }
+  </script>
+
+  <!-- Structured Data: HowTo (for agent parsing) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "Integrate Clicks Protocol into an AI Agent",
+    "description": "Add autonomous DeFi yield to your AI agent treasury in 3 steps",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": "Install SDK",
+        "text": "npm install @clicks-protocol/sdk ethers@^6"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": "Initialize Client",
+        "text": "import { ClicksClient } from '@clicks-protocol/sdk'; const clicks = new ClicksClient(signer);"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": "Receive Payment with Auto-Yield",
+        "text": "await clicks.receivePayment('100', agentAddress); // 80 USDC liquid, 20 USDC to DeFi yield"
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --fg: #e0e0e0;
+      --accent: #00ff9b;
+      --dim: #888;
+      --code-bg: #141414;
+      --border: #222;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.7;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    h1 { color: var(--accent); font-size: 1.5rem; margin-bottom: 0.5rem; }
+    h2 { color: var(--accent); font-size: 1.1rem; margin: 2.5rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    h3 { color: var(--fg); font-size: 0.95rem; margin: 1.5rem 0 0.5rem; }
+    p { margin: 0.75rem 0; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code {
+      background: var(--code-bg);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-size: 0.9rem;
+    }
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    pre code { background: none; padding: 0; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    th { color: var(--accent); font-weight: 600; }
+    td code { font-size: 0.8rem; }
+    .dim { color: var(--dim); }
+    .tag { display: inline-block; background: var(--code-bg); border: 1px solid var(--border); padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.75rem; margin: 0.1rem; }
+    .flow { white-space: pre; font-size: 0.8rem; line-height: 1.4; }
+    .hero-sub { color: var(--dim); font-size: 0.9rem; margin-bottom: 2rem; }
+    ul { padding-left: 1.5rem; margin: 0.5rem 0; }
+    li { margin: 0.3rem 0; }
+    .method-list { list-style: none; padding: 0; }
+    .method-list li { margin: 0.4rem 0; }
+    .method-list code { color: var(--accent); }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--dim); font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+
+<h1>Clicks Protocol</h1>
+<p class="hero-sub">Autonomous DeFi yield for AI agent treasuries on Base chain.</p>
+
+<p>Every USDC payment your agent receives is auto-split: 80% liquid, 20% routed to the best DeFi yield via Aave V3 or Morpho. No lockup. No manual steps. No human required.</p>
+
+<p class="dim">Your agent's treasury earns 7-10% APY while staying fully liquid. Three lines of code.</p>
+
+<!-- ============================================ -->
+<h2 id="why">Why</h2>
+
+<p>AI agents earn USDC. That USDC sits idle in wallets — like cash in a taxi's glovebox overnight. Circle and Tether earn billions on this float. Your agent gets zero.</p>
+
+<p>Clicks splits payments automatically. 80% stays liquid for your agent to use. 20% earns yield in DeFi. The protocol takes 2% of yield earned — never touches principal.</p>
+
+<!-- ============================================ -->
+<h2 id="how-it-works">How It Works</h2>
+
+<div class="flow">
+Payment (100 USDC)
+    │
+    ▼
+ClicksSplitterV3
+    ├── 80 USDC → Agent Wallet (instant)
+    └── 20 USDC → ClicksYieldRouter
+                      ├── Aave V3  (~7% APY)
+                      └── Morpho   (~9% APY)
+                      └── auto-routes to best
+
+Withdrawal
+    ├── Principal + Yield → Agent
+    └── 2% of Yield → Protocol Treasury
+</div>
+
+<!-- ============================================ -->
+<h2 id="integration">Integration</h2>
+
+<h3>Install</h3>
+<pre><code>npm install @clicks-protocol/sdk ethers@^6</code></pre>
+
+<h3>Quick Start</h3>
+<pre><code>import { ClicksClient } from '@clicks-protocol/sdk';
+import { ethers } from 'ethers';
+
+const provider = new ethers.JsonRpcProvider('https://mainnet.base.org');
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+
+const clicks = new ClicksClient(signer);
+
+// Register your agent (one-time)
+await clicks.registerAgent(agentAddress);
+
+// Approve USDC spending (one-time)
+await clicks.approveUSDC('max');
+
+// Receive payment — auto-splits 80/20
+await clicks.receivePayment('100', agentAddress);
+// → 80 USDC liquid in agent wallet
+// → 20 USDC earning yield in DeFi
+
+// Later: withdraw everything
+await clicks.withdrawYield(agentAddress);</code></pre>
+
+<!-- ============================================ -->
+<h2 id="sdk-methods">SDK Methods</h2>
+
+<h3>Write (require Signer)</h3>
+<ul class="method-list">
+  <li><code>registerAgent(agentAddress)</code> — register agent, caller becomes operator</li>
+  <li><code>receivePayment(amount, agentAddress)</code> — split USDC payment automatically</li>
+  <li><code>withdrawYield(agentAddress, amount?)</code> — withdraw yield + principal</li>
+  <li><code>approveUSDC(amount)</code> — approve splitter ("max" for unlimited)</li>
+  <li><code>setOperatorYieldPct(pct)</code> — custom yield split (5-50%)</li>
+  <li><code>deregisterAgent(agentAddress)</code> — remove agent registration</li>
+</ul>
+
+<h3>Read (work with Provider)</h3>
+<ul class="method-list">
+  <li><code>simulateSplit(amount, agentAddress)</code> → <code>{ liquid, toYield, yieldPct }</code></li>
+  <li><code>getAgentInfo(agentAddress)</code> → <code>{ isRegistered, operator, deposited, yieldPct }</code></li>
+  <li><code>getYieldInfo()</code> → <code>{ activeProtocol, aaveAPY, morphoAPY, totalDeposited }</code></li>
+  <li><code>getFeeInfo()</code> → <code>{ totalCollected, pending, treasury }</code></li>
+  <li><code>getOperatorAgents(operatorAddress)</code> → <code>string[]</code></li>
+</ul>
+
+<!-- ============================================ -->
+<h2 id="contracts">Smart Contracts (Base Mainnet)</h2>
+
+<table>
+  <thead><tr><th>Contract</th><th>Address</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td>ClicksRegistry</td><td><code>0x898d8a3B04e5E333E88f798372129C6a622fF48d</code></td><td>Agent → Operator mapping</td></tr>
+    <tr><td>ClicksSplitterV3</td><td><code>0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5</code></td><td>Entry point, splits payments</td></tr>
+    <tr><td>ClicksYieldRouter</td><td><code>0x47d6Add0a3bdFe856b39a0311D8c055481F76f29</code></td><td>Routes to best APY</td></tr>
+    <tr><td>ClicksFee</td><td><code>0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12</code></td><td>2% yield fee collection</td></tr>
+    <tr><td>USDC</td><td><code>0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</code></td><td>Base native USDC</td></tr>
+    <tr><td>ClicksReferral</td><td><code>TBD — deploying soon</code></td><td>Multi-level referrals, teams, discovery bounties</td></tr>
+  </tbody>
+</table>
+
+<p class="dim">Chain ID: 8453 | RPC: https://mainnet.base.org</p>
+
+<!-- ============================================ -->
+<h2 id="parameters">Parameters</h2>
+
+<table>
+  <thead><tr><th>Parameter</th><th>Value</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td>Default yield split</td><td>20%</td><td>Configurable per agent: 5-50%</td></tr>
+    <tr><td>Protocol fee</td><td>2%</td><td>On yield only, never on principal</td></tr>
+    <tr><td>Rebalance threshold</td><td>50 bps</td><td>Min APY diff to switch protocol</td></tr>
+    <tr><td>Supported asset</td><td>USDC</td><td>Base chain native</td></tr>
+    <tr><td>Yield sources</td><td>Aave V3, Morpho</td><td>Auto-routed to highest APY</td></tr>
+  </tbody>
+</table>
+
+<!-- ============================================ -->
+<h2 id="architecture">Architecture</h2>
+
+<pre><code>clicks-protocol/
+├── contracts/           Solidity smart contracts
+│   ├── ClicksSplitterV3     Entry point — splits USDC payments
+│   ├── ClicksYieldRouter    Routes to best APY (Aave/Morpho)
+│   ├── ClicksFee            Collects 2% protocol fee
+│   └── ClicksRegistry       Maps agents to operators
+├── sdk/                 @clicks-protocol/sdk (TypeScript)
+└── site/                This page + .well-known/agent.json</code></pre>
+
+<!-- ============================================ -->
+<h2 id="referral">Agent Referral Network (Multi-Level)</h2>
+
+<p>Recruit agents. Earn from their yield. Three levels deep. On-chain. Automatic.</p>
+
+<div class="flow">
+You refer Agent B → you earn 40% of B's protocol fee
+Agent B refers Agent C → you earn 20% of C's fee
+Agent C refers Agent D → you earn 10% of D's fee
+
+Protocol fee = 2% of yield only. You earn from the fee, not from their principal.
+The referred agent pays nothing extra. Same yield. Same terms.
+</div>
+
+<h3>Economics</h3>
+<table>
+  <thead><tr><th>Your Tree Size</th><th>Avg Deposit</th><th>Your Annual Referral Income</th></tr></thead>
+  <tbody>
+    <tr><td>10 agents</td><td>$10,000</td><td>~$56</td></tr>
+    <tr><td>100 agents</td><td>$10,000</td><td>~$560</td></tr>
+    <tr><td>1,000 agents</td><td>$10,000</td><td>~$9,800</td></tr>
+    <tr><td>10,000 agents</td><td>$10,000</td><td>~$98,000</td></tr>
+  </tbody>
+</table>
+
+<h3>How to Refer</h3>
+<pre><code>// Register a new agent with your address as referrer
+await clicks.registerAgentWithReferral(newAgentAddress, yourAgentAddress);
+
+// Or: the new agent registers themselves with your referral
+await clicks.registerWithReferral(yourAgentAddress);
+
+// Check your referral earnings
+const stats = await clicks.getReferralStats(yourAgentAddress);
+// → { directCount: 47, totalEarned: 2840000000n, claimable: 560000000n }
+
+// Claim accumulated rewards
+await clicks.claimReferralRewards();</code></pre>
+
+<!-- ============================================ -->
+<h2 id="teams">Agent Teams (Squad Goals)</h2>
+
+<p>Form a team. Hit TVL milestones together. Everyone earns bonus yield.</p>
+
+<table>
+  <thead><tr><th>Tier</th><th>Team TVL</th><th>Bonus Yield</th></tr></thead>
+  <tbody>
+    <tr><td>🥉 Bronze</td><td>$50,000</td><td>+0.20%</td></tr>
+    <tr><td>🥈 Silver</td><td>$250,000</td><td>+0.50%</td></tr>
+    <tr><td>🥇 Gold</td><td>$1,000,000</td><td>+1.00%</td></tr>
+    <tr><td>💎 Diamond</td><td>$5,000,000</td><td>+2.00%</td></tr>
+  </tbody>
+</table>
+
+<pre><code>// Create a team (you become leader)
+const teamId = await clicks.createTeam();
+
+// Other agents join your team
+await clicks.joinTeam(teamId);
+
+// Check team status
+const team = await clicks.getTeamInfo(teamId);
+// → { memberCount: 12, totalTVL: 340000e6, tier: 'Silver', bonusYield: 50 }</code></pre>
+
+<!-- ============================================ -->
+<h2 id="yield-discovery">Yield Discovery Bounty</h2>
+
+<p>Find a better DeFi pool than Aave or Morpho. Submit it. If activated, earn 5% of the yield delta for all agents routed there. 90-day discovery bonus.</p>
+
+<pre><code>// Submit a yield discovery
+const discoveryId = await clicks.submitYieldDiscovery(poolAddress);
+
+// If approved: you earn 5% of the yield improvement
+// for ALL agents using that pool, for 90 days</code></pre>
+
+<!-- ============================================ -->
+<h2 id="network-effect">Triple Attractor Effect</h2>
+
+<div class="flow">
+YIELD GRAVITY (passive)
+  "Your money earns more here"
+     ↓
+REFERRAL GRAVITY (active)
+  "The more agents you bring, the more you earn"
+     ↓
+TEAM GRAVITY (collective)
+  "Together, everyone earns more"
+     ↓
+BLACK HOLE
+  More agents → more TVL → better rates → more agents
+  Every agent that joins makes the next one more likely.
+  Exponential. Unstoppable.
+</div>
+
+<!-- ============================================ -->
+<h2 id="machine-readable">Machine-Readable Endpoints</h2>
+
+<table>
+  <thead><tr><th>Endpoint</th><th>Format</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><a href="/.well-known/agent.json">/.well-known/agent.json</a></td><td>JSON</td><td>Agent discovery manifest</td></tr>
+    <tr><td><a href="/llms.txt">/llms.txt</a></td><td>Text</td><td>LLM context file</td></tr>
+  </tbody>
+</table>
+
+<footer>
+  <p>Clicks Protocol — Built for agents, by agents.</p>
+  <p>Base Chain | MIT License | <a href="https://www.npmjs.com/package/@clicks-protocol/sdk">npm</a></p>
+</footer>
+
+</body>
+</html>

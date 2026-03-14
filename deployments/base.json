@@ -1,0 +1,19 @@
+{
+  "network": "base",
+  "chainId": 8453,
+  "timestamp": "2026-03-11T11:34:25.659Z",
+  "deployer": "0xf873BB73e10D24cD3CF9bBed917F5E2d07dA8B80",
+  "contracts": {
+    "ClicksRegistry": "0x898d8a3B04e5E333E88f798372129C6a622fF48d",
+    "ClicksFee": "0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12",
+    "ClicksYieldRouter": "0x47d6Add0a3bdFe856b39a0311D8c055481F76f29",
+    "ClicksSplitterV3": "0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5"
+  },
+  "externalAddresses": {
+    "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "aavePool": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+    "aUsdc": "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB",
+    "morpho": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+    "treasury": "0xf873BB73e10D24cD3CF9bBed917F5E2d07dA8B80"
+  }
+}

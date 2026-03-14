@@ -1,0 +1,35 @@
+{
+  "name": "@clicks-protocol/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for the Clicks Protocol — on-chain yield for AI agents on Base",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "ethers": "^6.0.0"
+  },
+  "devDependencies": {
+    "ethers": "^6.13.0",
+    "typescript": "^5.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED"
+}
