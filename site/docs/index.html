@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docs — Clicks Protocol</title>
+<meta name="description" content="Documentation for Clicks Protocol SDK and smart contracts.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.ico">
+<style>
+:root{--bg:#0F0814;--bg-card:#191020;--accent:#00FF9B;--text:#F4F1F6;--text-sec:#b0a8b9;--text-muted:#6b5f7d;--border:#2a1f3d;--mono:'SF Mono','Fira Code',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Helvetica Neue',Arial,sans-serif;line-height:1.7}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--bg-card);border-right:1px solid var(--border);padding:24px;position:fixed;top:0;bottom:0;overflow-y:auto}
+.sidebar h2{font-size:1rem;color:var(--accent);margin-bottom:16px;letter-spacing:2px}
+.sidebar ul{list-style:none}
+.sidebar li{margin-bottom:4px}
+.sidebar a{color:var(--text-sec);display:block;padding:6px 12px;border-radius:6px;font-size:.9rem}
+.sidebar a:hover,.sidebar a.active{background:rgba(0,255,155,0.08);color:var(--accent);text-decoration:none}
+.sidebar .section-title{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin:20px 0 8px 12px}
+.main{margin-left:260px;flex:1;padding:48px 64px;max-width:860px}
+.main h1{font-size:2rem;font-weight:700;margin-bottom:8px}
+.main h2{font-size:1.4rem;font-weight:600;margin:40px 0 12px;padding-top:16px;border-top:1px solid var(--border)}
+.main h3{font-size:1.1rem;font-weight:600;margin:24px 0 8px}
+.main p{margin-bottom:16px;color:var(--text-sec)}
+.main code{background:var(--bg-card);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:.85rem}
+.main pre{background:#0a0612;border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;margin:12px 0 24px;font-family:var(--mono);font-size:.82rem;line-height:1.6}
+.main pre code{background:none;padding:0}
+.main table{width:100%;border-collapse:collapse;margin:12px 0 24px}
+.main th,.main td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border)}
+.main th{color:var(--text-muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+.main td{font-size:.9rem}
+.main td code{font-size:.82rem}
+.badge{display:inline-block;background:rgba(0,255,155,0.08);border:1px solid rgba(0,255,155,0.2);border-radius:12px;padding:2px 10px;font-size:.75rem;color:var(--accent);margin-left:8px}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:24px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <h2>CLICKS</h2>
+  <ul>
+    <li><a href="#getting-started" class="active">Getting Started</a></li>
+    <li><a href="#quick-start">Quick Start</a></li>
+    <li><a href="#installation">Installation</a></li>
+  </ul>
+  <div class="section-title">SDK</div>
+  <ul>
+    <li><a href="#client">ClicksClient</a></li>
+    <li><a href="#write-methods">Write Methods</a></li>
+    <li><a href="#read-methods">Read Methods</a></li>
+    <li><a href="#quick-start-method">quickStart()</a></li>
+  </ul>
+  <div class="section-title">MCP Server</div>
+  <ul>
+    <li><a href="#mcp-setup">Setup</a></li>
+    <li><a href="#mcp-tools">Tools</a></li>
+  </ul>
+  <div class="section-title">Contracts</div>
+  <ul>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#addresses">Addresses</a></li>
+    <li><a href="#security">Security</a></li>
+  </ul>
+  <div class="section-title">Links</div>
+  <ul>
+    <li><a href="/">Website</a></li>
+    <li><a href="https://github.com/clicks-protocol" target="_blank">GitHub</a></li>
+    <li><a href="https://www.npmjs.com/package/@clicks-protocol/sdk" target="_blank">npm</a></li>
+  </ul>
+</nav>
+
+<main class="main">
+<h1 id="getting-started">Getting Started</h1>
+<p>Clicks Protocol is an on-chain yield layer for AI agents on Base. Your agent deposits USDC, and the protocol automatically splits it: 80% stays liquid, 20% earns yield.</p>
+
+<h2 id="quick-start">Quick Start</h2>
+<p>Three lines to start earning yield:</p>
+<pre><code>import { ClicksClient } from '@clicks-protocol/sdk'
+import { ethers } from 'ethers'
+
+const provider = new ethers.JsonRpcProvider('https://mainnet.base.org')
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
+const clicks = new ClicksClient(signer)
+
+// Register agent + set split + deposit in one call
+await clicks.quickStart('5000', agentAddress)</code></pre>
+
+<h2 id="installation">Installation</h2>
+<pre><code>npm install @clicks-protocol/sdk</code></pre>
+<p>Requirements: Node.js 18+, ethers.js v6.</p>
+<p>For MCP-compatible agents:</p>
+<pre><code>npm install @clicks-protocol/mcp-server</code></pre>
+
+<h2 id="client">ClicksClient</h2>
+<pre><code>new ClicksClient(signerOrProvider, options?)</code></pre>
+<table>
+  <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+  <tr><td><code>signerOrProvider</code></td><td><code>Signer | Provider</code></td><td>ethers v6 Signer (write) or Provider (read-only)</td></tr>
+  <tr><td><code>options.chainId</code></td><td><code>number</code></td><td>Chain ID. Default: 8453 (Base Mainnet)</td></tr>
+  <tr><td><code>options.addresses</code></td><td><code>Partial&lt;ClicksAddresses&gt;</code></td><td>Override contract addresses</td></tr>
+</table>
+
+<h2 id="write-methods">Write Methods</h2>
+<p>All write methods require a Signer.</p>
+
+<h3>registerAgent(agentAddress)</h3>
+<p>Register an AI agent. The caller becomes the operator.</p>
+
+<h3>receivePayment(amount, agentAddress)</h3>
+<p>Deposit USDC. Automatically splits based on the agent's yield percentage (default 20%).</p>
+
+<h3>withdrawYield(agentAddress)</h3>
+<p>Withdraw accumulated yield + the yield portion of principal.</p>
+
+<h3>setYieldPct(agentAddress, pct)</h3>
+<p>Adjust the yield split (0-50%). Default is 20%.</p>
+
+<h3>approveUSDC(amount)</h3>
+<p>Approve USDC spending. Pass <code>'max'</code> for unlimited approval.</p>
+
+<h2 id="quick-start-method">quickStart(amount, agentAddress) <span class="badge">Recommended</span></h2>
+<p>One function that does three things: register agent (if needed), set yield split, and deposit. Idempotent.</p>
+<pre><code>await clicks.quickStart('1000', agentAddress)
+// Registers agent if not registered
+// Sets 20% yield split
+// Deposits 1000 USDC (800 liquid, 200 yield)</code></pre>
+
+<h2 id="read-methods">Read Methods</h2>
+<p>Work with both Signer and Provider.</p>
+
+<h3>getAgentInfo(agentAddress)</h3>
+<p>Returns registration status, operator, yield percentage.</p>
+
+<h3>getYieldInfo(agentAddress)</h3>
+<p>Returns accumulated yield, principal in yield pool, current APY estimate.</p>
+
+<h3>simulateSplit(amount, agentAddress)</h3>
+<p>Preview how a deposit would be split without making a transaction.</p>
+
+<h2 id="mcp-setup">MCP Server Setup</h2>
+<pre><code>npm install @clicks-protocol/mcp-server</code></pre>
+<p>Add to your MCP client config:</p>
+<pre><code>{
+  "mcpServers": {
+    "clicks": {
+      "command": "npx",
+      "args": ["@clicks-protocol/mcp-server"],
+      "env": {
+        "PRIVATE_KEY": "your-private-key",
+        "RPC_URL": "https://mainnet.base.org"
+      }
+    }
+  }
+}</code></pre>
+
+<h2 id="mcp-tools">MCP Tools</h2>
+<table>
+  <tr><th>Tool</th><th>Type</th><th>Description</th></tr>
+  <tr><td><code>clicks_quick_start</code></td><td>Write</td><td>Register + deposit in one call</td></tr>
+  <tr><td><code>clicks_receive_payment</code></td><td>Write</td><td>Deposit USDC with auto-split</td></tr>
+  <tr><td><code>clicks_withdraw_yield</code></td><td>Write</td><td>Withdraw yield + principal</td></tr>
+  <tr><td><code>clicks_register_agent</code></td><td>Write</td><td>Register an agent</td></tr>
+  <tr><td><code>clicks_set_yield_pct</code></td><td>Write</td><td>Adjust yield percentage</td></tr>
+  <tr><td><code>clicks_get_agent_info</code></td><td>Read</td><td>Agent registration info</td></tr>
+  <tr><td><code>clicks_get_yield_info</code></td><td>Read</td><td>Yield + principal info</td></tr>
+  <tr><td><code>clicks_simulate_split</code></td><td>Read</td><td>Preview deposit split</td></tr>
+  <tr><td><code>clicks_get_referral_stats</code></td><td>Read</td><td>Referral tier + earnings</td></tr>
+</table>
+<p>Resource: <code>clicks://info</code> returns protocol overview.</p>
+
+<h2 id="architecture">Contract Architecture</h2>
+<p>Five contracts work together:</p>
+<pre><code>Agent → ClicksSplitterV3 → 80% agent wallet
+                         → 20% ClicksYieldRouter → Aave/Compound/Morpho
+       ClicksRegistry (agent records)
+       ClicksFee (protocol fee on yield only)</code></pre>
+<p>The protocol fee is taken from yield earned, never from deposits or principal. If an agent earns nothing, the protocol charges nothing.</p>
+
+<h2 id="addresses">Contract Addresses (Base Mainnet)</h2>
+<table>
+  <tr><th>Contract</th><th>Address</th></tr>
+  <tr><td>ClicksRegistry</td><td><code>0x898d8a3B04e5E333E88f798372129C6a622fF48d</code></td></tr>
+  <tr><td>ClicksFee</td><td><code>0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12</code></td></tr>
+  <tr><td>ClicksYieldRouter</td><td><code>0x47d6Add0a3bdFe856b39a0311D8c055481F76f29</code></td></tr>
+  <tr><td>ClicksSplitterV3</td><td><code>0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5</code></td></tr>
+  <tr><td>USDC</td><td><code>0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</code></td></tr>
+</table>
+
+<h2 id="security">Security</h2>
+<p>All contracts are verified on Basescan. No proxy upgrade patterns. No admin keys on user funds.</p>
+<p>The protocol has not been audited by a third-party firm. A self-audit with Slither and DeFiHackLabs checklists is planned before public launch.</p>
+<p>If you find a vulnerability, email <a href="mailto:dev@clicksprotocol.xyz">dev@clicksprotocol.xyz</a>.</p>
+
+</main>
+</div>
+</body>
+</html>

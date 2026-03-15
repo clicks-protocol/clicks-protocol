@@ -1,8 +1,8 @@
 # @clicks-protocol/sdk
 
-TypeScript SDK for the **Clicks Protocol** — on-chain yield for AI agents on Base.
+TypeScript SDK for **Clicks Protocol**: autonomous yield for AI agents on Base.
 
-> ⚠️ **Stealth mode.** This package is not published to npm yet.
+One SDK call. 80% liquid, 20% earning. No lockup.
 
 ## Overview
 
@@ -15,8 +15,7 @@ The protocol takes a 2% fee on yield earned (not on principal).
 ## Installation
 
 ```bash
-# Local development (link or copy)
-npm install ethers@^6
+npm install @clicks-protocol/sdk
 ```
 
 ## Quick Start
