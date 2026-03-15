@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" fill="none">
+  <!-- CLICKS PROTOCOL — Horizontal Logo (Icon + Text side by side) -->
+  
+  <!-- Icon (scaled down) -->
+  <rect x="20" y="52" width="156" height="64" rx="32" 
+        stroke="#00FF9B" stroke-width="8" fill="none"/>
+  <circle cx="144" cy="84" r="24" fill="#00FF9B"/>
+  <line x1="172" y1="68" x2="180" y2="60" stroke="#00FF9B" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+  <line x1="174" y1="84" x2="184" y2="84" stroke="#00FF9B" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+  <line x1="172" y1="100" x2="180" y2="108" stroke="#00FF9B" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+  
+  <!-- CLICKS -->
+  <text x="220" y="100" 
+        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" 
+        font-weight="700" font-size="56" letter-spacing="8" 
+        fill="#00FF9B">CLICKS</text>
+  
+  <!-- PROTOCOL -->
+  <text x="570" y="100" 
+        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" 
+        font-weight="400" font-size="56" letter-spacing="4" 
+        fill="#00FF9B" opacity="0.5">PROTOCOL</text>
+</svg>
