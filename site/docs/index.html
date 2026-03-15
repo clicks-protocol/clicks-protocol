@@ -109,18 +109,29 @@ await clicks.quickStart('5000', agentAddress)</code></pre>
 
 <h3>registerAgent(agentAddress)</h3>
 <p>Register an AI agent. The caller becomes the operator.</p>
+<pre><code>await clicks.registerAgent('0xAgentAddress')</code></pre>
 
 <h3>receivePayment(amount, agentAddress)</h3>
-<p>Deposit USDC. Automatically splits based on the agent's yield percentage (default 20%).</p>
+<p>Deposit USDC. Automatically splits based on the agent's yield percentage (default 20%). Amount is human-readable USDC (e.g., "100" for 100 USDC).</p>
+<pre><code>await clicks.receivePayment('100', '0xAgentAddress')
+// Splits: 80 USDC liquid, 20 USDC to yield</code></pre>
 
-<h3>withdrawYield(agentAddress)</h3>
-<p>Withdraw accumulated yield + the yield portion of principal.</p>
+<h3>withdrawYield(agentAddress, amount?)</h3>
+<p>Withdraw accumulated yield + principal. Omit <code>amount</code> or pass "0" to withdraw everything. Only the agent, operator, or owner can withdraw. 2% protocol fee applies to yield earned (not principal).</p>
+<pre><code>// Withdraw everything
+await clicks.withdrawYield('0xAgentAddress')
 
-<h3>setYieldPct(agentAddress, pct)</h3>
-<p>Adjust the yield split (0-50%). Default is 20%.</p>
+// Withdraw 50 USDC principal + accrued yield on that portion
+await clicks.withdrawYield('0xAgentAddress', '50')</code></pre>
+
+<h3>setOperatorYieldPct(pct)</h3>
+<p>Adjust the yield split for the calling operator (5-50%). Default is 20%. Pass 0 to revert to default.</p>
+<pre><code>await clicks.setOperatorYieldPct(30)
+// Future deposits for this operator's agents: 70% liquid, 30% yield</code></pre>
 
 <h3>approveUSDC(amount)</h3>
-<p>Approve USDC spending. Pass <code>'max'</code> for unlimited approval.</p>
+<p>Approve USDC spending by the splitter contract. Pass <code>'max'</code> for unlimited approval.</p>
+<pre><code>await clicks.approveUSDC('max')</code></pre>
 
 <h2 id="quick-start-method">quickStart(amount, agentAddress) <span class="badge">Recommended</span></h2>
 <p>One function that does three things: register agent (if needed), set yield split, and deposit. Idempotent.</p>
@@ -133,13 +144,38 @@ await clicks.quickStart('5000', agentAddress)</code></pre>
 <p>Work with both Signer and Provider.</p>
 
 <h3>getAgentInfo(agentAddress)</h3>
-<p>Returns registration status, operator, yield percentage.</p>
+<p>Returns registration status, operator, deposited principal, and yield percentage.</p>
+<pre><code>const info = await clicks.getAgentInfo('0xAgentAddress')
+// { isRegistered: true, operator: '0x...', deposited: 20000000n, yieldPct: 20n }</code></pre>
 
-<h3>getYieldInfo(agentAddress)</h3>
-<p>Returns accumulated yield, principal in yield pool, current APY estimate.</p>
+<h3>getYieldInfo()</h3>
+<p>Returns active yield protocol (1=Aave, 2=Morpho), current APYs, total balance (principal+yield), and total deposited across all agents.</p>
+<pre><code>const yieldInfo = await clicks.getYieldInfo()
+// { activeProtocol: 1, aaveAPY: 450n, morphoAPY: 380n, totalBalance: 1000000n, totalDeposited: 950000n }</code></pre>
 
 <h3>simulateSplit(amount, agentAddress)</h3>
-<p>Preview how a deposit would be split without making a transaction.</p>
+<p>Preview how a deposit would be split without making a transaction. Returns liquid amount, yield amount, and effective yield percentage.</p>
+<pre><code>const preview = await clicks.simulateSplit('100', '0xAgentAddress')
+// { liquid: 80000000n, toYield: 20000000n, yieldPct: 20n }</code></pre>
+
+<h3>getYieldPct(agentAddress)</h3>
+<p>Get the effective yield percentage for an agent.</p>
+<pre><code>const pct = await clicks.getYieldPct('0xAgentAddress') // 20n</code></pre>
+
+<h3>getOperatorAgents(operatorAddress)</h3>
+<p>Get all agents registered under an operator.</p>
+<pre><code>const agents = await clicks.getOperatorAgents('0xOperatorAddress')
+// ['0xAgent1', '0xAgent2']</code></pre>
+
+<h3>getFeeInfo()</h3>
+<p>Returns protocol fee stats: total collected, pending fees, treasury address, and fee basis points (200 = 2%).</p>
+<pre><code>const feeInfo = await clicks.getFeeInfo()
+// { totalCollected: 1500000n, pendingFees: 50000n, treasury: '0x...', feeBps: 200n }</code></pre>
+
+<h3>getUSDCBalance(address), getAllowance(address)</h3>
+<p>Check USDC balance and allowance for the splitter contract.</p>
+<pre><code>const balance = await clicks.getUSDCBalance('0xAddress')
+const allowance = await clicks.getAllowance('0xAddress')</code></pre>
 
 <h2 id="mcp-setup">MCP Server Setup</h2>
 <pre><code>npm install @clicks-protocol/mcp-server</code></pre>
@@ -158,19 +194,37 @@ await clicks.quickStart('5000', agentAddress)</code></pre>
 }</code></pre>
 
 <h2 id="mcp-tools">MCP Tools</h2>
+<p>The MCP server exposes tools for Model Context Protocol clients (Claude Desktop, Cline, OpenClaw). Each tool wraps a corresponding SDK method.</p>
+
+<h3>Write Tools</h3>
 <table>
-  <tr><th>Tool</th><th>Type</th><th>Description</th></tr>
-  <tr><td><code>clicks_quick_start</code></td><td>Write</td><td>Register + deposit in one call</td></tr>
-  <tr><td><code>clicks_receive_payment</code></td><td>Write</td><td>Deposit USDC with auto-split</td></tr>
-  <tr><td><code>clicks_withdraw_yield</code></td><td>Write</td><td>Withdraw yield + principal</td></tr>
-  <tr><td><code>clicks_register_agent</code></td><td>Write</td><td>Register an agent</td></tr>
-  <tr><td><code>clicks_set_yield_pct</code></td><td>Write</td><td>Adjust yield percentage</td></tr>
-  <tr><td><code>clicks_get_agent_info</code></td><td>Read</td><td>Agent registration info</td></tr>
-  <tr><td><code>clicks_get_yield_info</code></td><td>Read</td><td>Yield + principal info</td></tr>
-  <tr><td><code>clicks_simulate_split</code></td><td>Read</td><td>Preview deposit split</td></tr>
-  <tr><td><code>clicks_get_referral_stats</code></td><td>Read</td><td>Referral tier + earnings</td></tr>
+  <tr><th>Tool</th><th>Parameters</th><th>Description</th></tr>
+  <tr><td><code>clicks_quick_start</code></td><td><code>amount</code>, <code>agentAddress</code></td><td>Register agent (if needed), approve USDC, and deposit in one call</td></tr>
+  <tr><td><code>clicks_receive_payment</code></td><td><code>amount</code>, <code>agentAddress</code></td><td>Deposit USDC with auto-split. Requires prior approval.</td></tr>
+  <tr><td><code>clicks_withdraw_yield</code></td><td><code>agentAddress</code>, <code>amount?</code></td><td>Withdraw yield + principal. Omit amount to withdraw all.</td></tr>
+  <tr><td><code>clicks_register_agent</code></td><td><code>agentAddress</code></td><td>Register an agent under the caller as operator</td></tr>
+  <tr><td><code>clicks_set_yield_pct</code></td><td><code>pct</code></td><td>Adjust yield split for the calling operator (5-50%)</td></tr>
+  <tr><td><code>clicks_approve_usdc</code></td><td><code>amount</code></td><td>Approve USDC spending. Pass "max" for unlimited.</td></tr>
 </table>
-<p>Resource: <code>clicks://info</code> returns protocol overview.</p>
+
+<h3>Read Tools</h3>
+<table>
+  <tr><th>Tool</th><th>Parameters</th><th>Returns</th></tr>
+  <tr><td><code>clicks_get_agent_info</code></td><td><code>agentAddress</code></td><td>Registration status, operator, deposited principal, yield %</td></tr>
+  <tr><td><code>clicks_get_yield_info</code></td><td>—</td><td>Active protocol, APYs, total balance, total deposited</td></tr>
+  <tr><td><code>clicks_simulate_split</code></td><td><code>amount</code>, <code>agentAddress</code></td><td>Preview of liquid/yield split for a hypothetical deposit</td></tr>
+  <tr><td><code>clicks_get_operator_agents</code></td><td><code>operatorAddress</code></td><td>Array of agents registered under an operator</td></tr>
+  <tr><td><code>clicks_get_fee_info</code></td><td>—</td><td>Total fees collected, pending fees, treasury, fee BPS</td></tr>
+  <tr><td><code>clicks_get_usdc_balance</code></td><td><code>address</code></td><td>USDC balance for an address</td></tr>
+</table>
+
+<h3>Resources</h3>
+<p>The MCP server also exposes a <code>clicks://info</code> resource that returns a protocol overview (contracts, APYs, total deposited) for quick context injection.</p>
+
+<h3>Usage Example (Claude Desktop)</h3>
+<pre><code>// Agent asks: "Deposit 100 USDC for agent 0xABC123..."
+// Claude uses: clicks_quick_start(amount="100", agentAddress="0xABC123...")
+// Result: Agent registered, USDC approved, 80 liquid + 20 yield</code></pre>
 
 <h2 id="architecture">Contract Architecture</h2>
 <p>Five contracts work together:</p>
@@ -180,15 +234,18 @@ await clicks.quickStart('5000', agentAddress)</code></pre>
        ClicksFee (protocol fee on yield only)</code></pre>
 <p>The protocol fee is taken from yield earned, never from deposits or principal. If an agent earns nothing, the protocol charges nothing.</p>
 
-<h2 id="addresses">Contract Addresses (Base Mainnet)</h2>
+<h2 id="addresses">Contract Addresses</h2>
+
+<h3>Base Mainnet (Chain ID: 8453)</h3>
 <table>
-  <tr><th>Contract</th><th>Address</th></tr>
-  <tr><td>ClicksRegistry</td><td><code>0x898d8a3B04e5E333E88f798372129C6a622fF48d</code></td></tr>
-  <tr><td>ClicksFee</td><td><code>0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12</code></td></tr>
-  <tr><td>ClicksYieldRouter</td><td><code>0x47d6Add0a3bdFe856b39a0311D8c055481F76f29</code></td></tr>
-  <tr><td>ClicksSplitterV3</td><td><code>0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5</code></td></tr>
-  <tr><td>USDC</td><td><code>0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</code></td></tr>
+  <tr><th>Contract</th><th>Address</th><th>Verified</th></tr>
+  <tr><td>ClicksRegistry</td><td><code>0x898d8a3B04e5E333E88f798372129C6a622fF48d</code></td><td><a href="https://basescan.org/address/0x898d8a3B04e5E333E88f798372129C6a622fF48d#code" target="_blank">Basescan</a></td></tr>
+  <tr><td>ClicksFee</td><td><code>0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12</code></td><td><a href="https://basescan.org/address/0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12#code" target="_blank">Basescan</a></td></tr>
+  <tr><td>ClicksYieldRouter</td><td><code>0x47d6Add0a3bdFe856b39a0311D8c055481F76f29</code></td><td><a href="https://basescan.org/address/0x47d6Add0a3bdFe856b39a0311D8c055481F76f29#code" target="_blank">Basescan</a></td></tr>
+  <tr><td>ClicksSplitterV3</td><td><code>0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5</code></td><td><a href="https://basescan.org/address/0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5#code" target="_blank">Basescan</a></td></tr>
+  <tr><td>USDC (Base)</td><td><code>0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</code></td><td><a href="https://basescan.org/token/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" target="_blank">Basescan</a></td></tr>
 </table>
+<p>All contracts are deployed on Base Mainnet. No proxies, no admin upgrade keys on user funds. Immutable protocol logic.</p>
 
 <h2 id="security">Security</h2>
 <p>All contracts are verified on Basescan. No proxy upgrade patterns. No admin keys on user funds.</p>

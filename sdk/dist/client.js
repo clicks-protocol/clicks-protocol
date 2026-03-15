@@ -56,6 +56,58 @@ class ClicksClient {
         this.feeCollector = new ethers_1.Contract(this.addresses.feeCollector, abis_1.FEE_ABI, signerOrProvider);
         this.usdc = new ethers_1.Contract(this.addresses.usdc, abis_1.ERC20_ABI, signerOrProvider);
     }
+    // ─── Quick Start ───────────────────────────────────────────────────────────
+    /**
+     * One-call setup: register agent, approve USDC, and receive first payment.
+     *
+     * Combines registerAgent + approveUSDC("max") + receivePayment into a single call.
+     * Skips steps that are already done (idempotent).
+     *
+     * @param amount - First payment amount in USDC (human-readable, e.g. "100")
+     * @param agentAddress - The agent's wallet address
+     * @param referrer - Optional referrer address for the referral program
+     * @returns Summary of what was executed
+     *
+     * @example
+     * ```ts
+     * const clicks = new ClicksClient(signer);
+     * await clicks.quickStart('100', agentAddress);
+     * // Agent registered, USDC approved, 80 USDC liquid + 20 USDC earning yield
+     * ```
+     */
+    async quickStart(amount, agentAddress, referrer) {
+        const result = {
+            registered: false,
+            approved: false,
+            paymentSplit: false,
+            txHashes: [],
+        };
+        // Step 1: Register if not already registered
+        const isRegistered = await this.registry.isRegistered(agentAddress);
+        if (!isRegistered) {
+            const tx = await this.registerAgent(agentAddress);
+            await tx.wait();
+            result.registered = true;
+            result.txHashes.push(tx.hash);
+        }
+        // Step 2: Approve USDC if allowance is insufficient
+        const signer = this.signerOrProvider;
+        const signerAddress = await signer.getAddress();
+        const amountWei = typeof amount === 'string' ? (0, ethers_1.parseUnits)(amount, 6) : amount;
+        const currentAllowance = await this.getAllowance(signerAddress);
+        if (currentAllowance < amountWei) {
+            const tx = await this.approveUSDC('max');
+            await tx.wait();
+            result.approved = true;
+            result.txHashes.push(tx.hash);
+        }
+        // Step 3: Receive payment
+        const tx = await this.receivePayment(amount, agentAddress);
+        await tx.wait();
+        result.paymentSplit = true;
+        result.txHashes.push(tx.hash);
+        return result;
+    }
     // ─── Agent Registration ───────────────────────────────────────────────────
     /**
      * Register an AI agent under the caller as operator.

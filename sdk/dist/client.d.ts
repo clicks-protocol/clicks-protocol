@@ -1,6 +1,6 @@
 import { Contract, type ContractTransactionResponse, type Provider, type Signer } from 'ethers';
 import { type ClicksAddresses } from './addresses';
-import type { AgentInfo, ClicksClientOptions, FeeInfo, SplitPreview, WithdrawResult, YieldInfo } from './types';
+import type { AgentInfo, ClicksClientOptions, FeeInfo, QuickStartResult, SplitPreview, WithdrawResult, YieldInfo } from './types';
 /**
  * High-level client for the Clicks Protocol.
  *
@@ -40,6 +40,25 @@ export declare class ClicksClient {
      * @param options - Optional chain ID and address overrides
      */
     constructor(signerOrProvider: Signer | Provider, options?: ClicksClientOptions);
+    /**
+     * One-call setup: register agent, approve USDC, and receive first payment.
+     *
+     * Combines registerAgent + approveUSDC("max") + receivePayment into a single call.
+     * Skips steps that are already done (idempotent).
+     *
+     * @param amount - First payment amount in USDC (human-readable, e.g. "100")
+     * @param agentAddress - The agent's wallet address
+     * @param referrer - Optional referrer address for the referral program
+     * @returns Summary of what was executed
+     *
+     * @example
+     * ```ts
+     * const clicks = new ClicksClient(signer);
+     * await clicks.quickStart('100', agentAddress);
+     * // Agent registered, USDC approved, 80 USDC liquid + 20 USDC earning yield
+     * ```
+     */
+    quickStart(amount: string | bigint, agentAddress: string, referrer?: string): Promise<QuickStartResult>;
     /**
      * Register an AI agent under the caller as operator.
      *

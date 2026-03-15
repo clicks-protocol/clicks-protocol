@@ -4,7 +4,7 @@ Your AI agent holds USDC. Between tasks, that money does nothing. Clicks changes
 
 ## The Problem
 
-AI agents are getting wallets. They pay for compute, APIs, data. But most of the time, their funds sit idle. An agent that spends $200/month on API calls might hold $5,000 in USDC. That's $4,800 earning zero.
+AI agents are getting wallets. They pay for compute, APIs, data. Between expenses, their funds sit idle. An agent that spends $200/month on API calls might hold $5,000 in USDC. That's $4,800 earning zero.
 
 Treasury management for humans has existed for decades. Sweep accounts, money market funds, overnight lending. For AI agents? Nothing. No SDK exists that lets an agent deposit idle funds and withdraw them when needed, without a human clicking buttons.
 
@@ -15,7 +15,7 @@ Clicks Protocol is an on-chain yield layer for AI agents on Base. One SDK call s
 - **80% stays liquid.** Your agent can spend it immediately. No delay, no unlock period.
 - **20% earns yield.** Routed to on-chain strategies (Aave, Compound, Morpho). Currently 4-10% APY.
 
-The split is automatic. Deposits, withdrawals, yield collection: all happen through the SDK. No dashboard. No approval flow. No human required.
+The split is automatic. Deposits, withdrawals, yield collection: all happen through the SDK. There's no dashboard and no manual approval steps.
 
 ```typescript
 import { ClicksClient } from '@clicks-protocol/sdk'
@@ -67,7 +67,7 @@ Clicks is open source. The contracts are deployed and verified. The SDK works. T
 What we're building next:
 
 - **Agent-to-Agent transit yield.** When Agent A pays Agent B, the funds earn yield while in transit.
-- **Multi-strategy routing.** The yield router will support multiple strategies with automatic rebalancing.
+- **Multi-strategy routing.** The yield router will support additional strategies (Compound, Uniswap V4 hooks) with automatic rebalancing based on real-time APY.
 - **Fiat bridge.** USDC on-ramp and off-ramp for agents that interact with traditional payment rails.
 
 ## Get Started
@@ -79,4 +79,4 @@ The code is on GitHub. The SDK is on npm. The contracts are on Base Mainnet.
 - Contracts: Verified on Basescan
 - Docs: clicksprotocol.xyz
 
-If your agent holds USDC, it should be earning yield. That's the whole idea.
+If your agent holds USDC, it should be earning yield.

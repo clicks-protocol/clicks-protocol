@@ -6,6 +6,17 @@ export interface ClicksClientOptions {
     /** Override contract addresses (e.g. for local fork or custom deployment). */
     addresses?: Partial<ClicksAddresses>;
 }
+/** Result of quickStart() */
+export interface QuickStartResult {
+    /** Whether the agent was newly registered */
+    registered: boolean;
+    /** Whether USDC approval was set */
+    approved: boolean;
+    /** Whether the first payment was split */
+    paymentSplit: boolean;
+    /** Transaction hashes for each step executed */
+    txHashes: string[];
+}
 /** Result of simulateSplit() */
 export interface SplitPreview {
     /** Amount sent directly to the agent wallet (USDC, 6 decimals) */
