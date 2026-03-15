@@ -216,6 +216,13 @@ contract ClicksYieldRouter is Ownable {
             revert InvalidProtocol();
         }
 
+        // Update accounting BEFORE any external calls (CEI pattern)
+        // unchecked: toWithdraw <= agentDeposited, toWithdraw <= totalDeposited
+        unchecked {
+            agentDeposited[agent] -= toWithdraw;
+            totalDeposited -= toWithdraw;
+        }
+
         {
             address _usdc = address(usdc);
             uint256 afterBal;
@@ -228,12 +235,6 @@ contract ClicksYieldRouter is Ownable {
             unchecked { received = afterBal - before; }
         }
         uint256 yieldEarned = received > toWithdraw ? received - toWithdraw : 0;
-
-        // Update accounting (unchecked: toWithdraw <= agentDeposited, toWithdraw <= totalDeposited)
-        unchecked {
-            agentDeposited[agent] -= toWithdraw;
-            totalDeposited -= toWithdraw;
-        }
 
         // Send USDC back to splitter (which routes to agent and fee contract)
         _rawTransfer(address(usdc), splitter, received);
