@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- "The Toggle" clean version: minimal switch clicking into ON -->
+  <!-- A pill-shape track with a circle that has snapped to the right (ON) -->
+  <!-- Represents: yield activated, autonomous, "clicked on" -->
+  
+  <!-- Track (pill shape) -->
+  <rect x="116" y="196" width="280" height="120" rx="60" 
+        stroke="#00FF9B" stroke-width="16" fill="none"/>
+  
+  <!-- Toggle knob: snapped to RIGHT = ON position -->
+  <circle cx="336" cy="256" r="44" fill="#00FF9B"/>
+  
+  <!-- Small "click" spark lines radiating from the knob -->
+  <line x1="396" y1="216" x2="420" y2="192" stroke="#00FF9B" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="400" y1="256" x2="428" y2="256" stroke="#00FF9B" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="396" y1="296" x2="420" y2="320" stroke="#00FF9B" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+</svg>

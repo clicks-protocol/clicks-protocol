@@ -256,3 +256,71 @@ const allowance = await clicks.getAllowance('0xAddress')</code></pre>
 </div>
 </body>
 </html>
+
+<!-- x402 Network Compatibility Section -->
+<section style="margin-top: 60px; padding: 40px 0; border-top: 1px solid #2F0C48;">
+<h2 id="x402-compatibility" style="color: #00FF9B; font-size: 28px; margin-bottom: 20px;">x402 Network Compatibility</h2>
+<p style="color: #F4F1F6; margin-bottom: 30px;">Clicks Protocol runs on Base, the primary chain in the x402 ecosystem. Here's how it fits.</p>
+
+<h3 style="color: #FFFFFF; font-size: 20px; margin-bottom: 15px;">Clicks x402 Position</h3>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">Chain</td>
+<td style="padding: 12px; color: #00FF9B; font-weight: bold;">Base (eip155:8453)</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">Token</td>
+<td style="padding: 12px; color: #FFFFFF;">USDC via EIP-3009 (gasless authorization)</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">Payment Scheme</td>
+<td style="padding: 12px; color: #FFFFFF;">exact (fixed USDC amounts)</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">Facilitator</td>
+<td style="padding: 12px; color: #FFFFFF;">CDP/Coinbase (official, no custom facilitator needed)</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">SDK Compatibility</td>
+<td style="padding: 12px; color: #FFFFFF;">quickStart() + receivePayment() work with EIP-3009</td>
+</tr>
+</table>
+
+<h3 style="color: #FFFFFF; font-size: 20px; margin-bottom: 15px;">CDP Facilitator: Live Mainnet Chains</h3>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+<thead>
+<tr style="border-bottom: 2px solid #2F0C48;">
+<th style="padding: 12px; color: #71717A; text-align: left;">Chain</th>
+<th style="padding: 12px; color: #71717A; text-align: left;">CAIP-2</th>
+<th style="padding: 12px; color: #71717A; text-align: left;">Token Standard</th>
+<th style="padding: 12px; color: #71717A; text-align: left;">Scheme</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #2F0C48; background: rgba(0,255,155,0.05);">
+<td style="padding: 12px; color: #00FF9B; font-weight: bold;">Base</td>
+<td style="padding: 12px; color: #FFFFFF;">eip155:8453</td>
+<td style="padding: 12px; color: #FFFFFF;">EIP-3009 (USDC, EURC)</td>
+<td style="padding: 12px; color: #FFFFFF;">exact</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #FFFFFF;">Polygon</td>
+<td style="padding: 12px; color: #FFFFFF;">eip155:137</td>
+<td style="padding: 12px; color: #FFFFFF;">EIP-3009 (USDC, EURC)</td>
+<td style="padding: 12px; color: #FFFFFF;">exact</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #FFFFFF;">Solana</td>
+<td style="padding: 12px; color: #FFFFFF;">solana:5eykt...</td>
+<td style="padding: 12px; color: #FFFFFF;">SPL / Token-2022</td>
+<td style="padding: 12px; color: #FFFFFF;">exact</td>
+</tr>
+</tbody>
+</table>
+
+<p style="color: #71717A; font-size: 14px;">
+Base is one of only 3 production mainnet chains on the official CDP Facilitator.
+Clicks Protocol leverages this position for maximum x402 compatibility.
+See <a href="https://docs.x402.org/core-concepts/network-and-token-support" style="color: #00FF9B;">x402 Network Support</a> for the full list.
+</p>
+</section>

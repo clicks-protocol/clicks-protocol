@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Best of 8 + 10B: C-Track + Spark Lines -->
+  <!-- Track forms a C, knob at ON, spark lines show the "click" moment -->
+  
+  <!-- C-shaped track -->
+  <path d="M 196 160
+           A 128 128 0 1 1 196 352"
+        stroke="#00FF9B" stroke-width="18" stroke-linecap="round" fill="none"/>
+  
+  <!-- Knob at ON position (top-right of C) -->
+  <circle cx="340" cy="192" r="48" fill="#00FF9B"/>
+  
+  <!-- Spark lines from knob -->
+  <line x1="396" y1="160" x2="416" y2="140" stroke="#00FF9B" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="404" y1="192" x2="428" y2="192" stroke="#00FF9B" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  <line x1="396" y1="224" x2="416" y2="244" stroke="#00FF9B" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+  
+  <!-- Ghost dot at OFF position -->
+  <circle cx="196" cy="352" r="10" fill="#00FF9B" opacity="0.15"/>
+</svg>

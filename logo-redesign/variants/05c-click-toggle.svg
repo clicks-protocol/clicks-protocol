@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 5C: The Toggle Click — a circle with an internal lever/switch -->
+  <!-- Represents the moment a switch clicks into position -->
+  <!-- Clean, minimal, one memorable feature -->
+  
+  <!-- Outer ring -->
+  <circle cx="256" cy="256" r="160" stroke="#00FF9B" stroke-width="16" fill="none"/>
+  
+  <!-- The lever/toggle arm — angled line from center toward upper-right -->
+  <!-- "Clicked into place" — pointing to the yield position -->
+  <line x1="256" y1="256" x2="360" y2="164" 
+        stroke="#00FF9B" stroke-width="20" stroke-linecap="round"/>
+  
+  <!-- Pivot point at center -->
+  <circle cx="256" cy="256" r="16" fill="#00FF9B"/>
+  
+  <!-- Two notch marks on the ring showing positions -->
+  <!-- "Off" position (lower-left) — small tick -->
+  <line x1="152" y1="348" x2="168" y2="332" 
+        stroke="#00FF9B" stroke-width="8" stroke-linecap="round" opacity="0.3"/>
+  
+  <!-- "On/Yield" position (upper-right) — emphasized tick -->
+  <line x1="360" y1="164" x2="384" y2="140" 
+        stroke="#00FF9B" stroke-width="10" stroke-linecap="round"/>
+</svg>

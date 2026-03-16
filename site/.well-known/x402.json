@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "name": "Clicks Protocol",
+  "description": "Autonomous yield for AI agents. 80% liquid, 20% earning. No lockup. Built on Base.",
+  "url": "https://clicksprotocol.xyz",
+  "chain": "base",
+  "chainId": 8453,
+  "contracts": {
+    "registry": "0x898d8a3B04e5E333E88f798372129C6a622fF48d",
+    "fee": "0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12",
+    "yieldRouter": "0x47d6Add0a3bdFe856b39a0311D8c055481F76f29",
+    "splitter": "0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5"
+  },
+  "token": "USDC",
+  "tokenAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "sdk": {
+    "npm": "@clicks-protocol/sdk",
+    "docs": "https://clicksprotocol.xyz/docs"
+  },
+  "mcp": {
+    "npm": "@clicks-protocol/mcp-server",
+    "transport": "stdio"
+  },
+  "social": {
+    "x": "https://x.com/ClicksProtocol",
+    "discord": "https://discord.gg/TBD",
+    "github": "https://github.com/clicks-protocol",
+    "medium": "https://clicksprotocol.medium.com"
+  }
+}

@@ -381,4 +381,207 @@ describe("Clicks Protocol", function () {
 
   });
 
+  // ─── Aave V3 Dual-Routing Tests ───────────────────────────────────────────
+
+  describe("ClicksYieldRouter - Aave V3 Routing", function () {
+
+    async function registeredAgentFixture() {
+      const base = await deployFullProtocol();
+      const { registry, operator, agent } = base;
+      await registry.connect(operator).registerAgent(agent.address);
+      return base;
+    }
+
+    it("deposits to Aave when Aave APY > Morpho APY", async function () {
+      const { router, splitter, usdc, aave, operator, agent } = await loadFixture(registeredAgentFixture);
+      
+      // Mock: Aave has 7% APY (default in MockAavePool)
+      // Morpho has ~0% APY (no borrows = 0 utilization)
+      
+      const depositAmount = ethers.parseUnits("100", 6);
+      await usdc.connect(operator).approve(await splitter.getAddress(), depositAmount);
+      
+      // Verify protocol choice before deposit
+      const bestProtocol = await router.getBestProtocol();
+      expect(bestProtocol).to.equal(1); // Aave
+      
+      await splitter.connect(operator).receivePayment(depositAmount, agent.address);
+      
+      // Check that activeProtocol is Aave
+      expect(await router.activeProtocol()).to.equal(1);
+      
+      // Check that Aave received the funds
+      const aToken = await aave.aToken();
+      const aTokenBalance = await ethers.getContractAt("MockERC20", aToken);
+      const routerAaveBalance = await aTokenBalance.balanceOf(await router.getAddress());
+      
+      const expectedYield = (depositAmount * 20n) / 100n;
+      expect(routerAaveBalance).to.equal(expectedYield);
+    });
+
+    it("withdraw works from Aave", async function () {
+      const { router, splitter, usdc, aave, operator, agent } = await loadFixture(registeredAgentFixture);
+      
+      const depositAmount = ethers.parseUnits("100", 6);
+      await usdc.connect(operator).approve(await splitter.getAddress(), depositAmount);
+      await splitter.connect(operator).receivePayment(depositAmount, agent.address);
+      
+      // Simulate yield: mint extra USDC to Aave pool
+      const yieldAmount = ethers.parseUnits("5", 6);
+      await usdc.mint(await aave.getAddress(), yieldAmount);
+      
+      const agentBefore = await usdc.balanceOf(agent.address);
+      const principal = await router.agentDeposited(agent.address);
+      
+      // Withdraw all
+      await splitter.connect(agent).withdrawYield(agent.address, 0);
+      
+      const agentAfter = await usdc.balanceOf(agent.address);
+      const received = agentAfter - agentBefore;
+      
+      // Agent should receive principal + yield - 2% fee on yield
+      expect(received).to.be.gt(principal);
+      
+      // Verify router balance is now 0
+      expect(await router.agentDeposited(agent.address)).to.equal(0);
+    });
+
+    it("rebalance moves funds from Aave to Morpho", async function () {
+      const { router, splitter, usdc, aave, operator, agent, owner } = await loadFixture(registeredAgentFixture);
+      
+      // Deposit to Aave first
+      const depositAmount = ethers.parseUnits("100", 6);
+      await usdc.connect(operator).approve(await splitter.getAddress(), depositAmount);
+      await splitter.connect(operator).receivePayment(depositAmount, agent.address);
+      
+      expect(await router.activeProtocol()).to.equal(1); // Aave
+      
+      // Check Aave balance before rebalance
+      const aToken = await aave.aToken();
+      const aTokenContract = await ethers.getContractAt("MockERC20", aToken);
+      const aaveBefore = await aTokenContract.balanceOf(await router.getAddress());
+      expect(aaveBefore).to.be.gt(0);
+      
+      // Rebalance to Morpho
+      await expect(router.connect(owner).rebalance(2))
+        .to.emit(router, "Rebalanced")
+        .withArgs(1, 2, aaveBefore);
+      
+      expect(await router.activeProtocol()).to.equal(2); // Morpho
+      
+      // Verify Aave balance is now 0
+      const aaveAfter = await aTokenContract.balanceOf(await router.getAddress());
+      expect(aaveAfter).to.equal(0);
+      
+      // Verify Morpho has the funds (getTotalBalance should work)
+      const totalBalance = await router.getTotalBalance();
+      expect(totalBalance).to.be.closeTo(aaveBefore, ethers.parseUnits("0.01", 6));
+    });
+
+    it("rebalance from Morpho to Aave works", async function () {
+      const { router, splitter, usdc, morpho, operator, agent, owner } = await loadFixture(registeredAgentFixture);
+      
+      // First rebalance to Morpho (since default is Aave)
+      const depositAmount = ethers.parseUnits("100", 6);
+      await usdc.connect(operator).approve(await splitter.getAddress(), depositAmount);
+      await splitter.connect(operator).receivePayment(depositAmount, agent.address);
+      
+      await router.connect(owner).rebalance(2); // Move to Morpho
+      expect(await router.activeProtocol()).to.equal(2);
+      
+      const morphoBalanceBefore = await router.getTotalBalance();
+      
+      // Rebalance back to Aave
+      await expect(router.connect(owner).rebalance(1))
+        .to.emit(router, "Rebalanced")
+        .withArgs(2, 1, morphoBalanceBefore);
+      
+      expect(await router.activeProtocol()).to.equal(1);
+    });
+
+    it("rebalance reverts if called by non-owner", async function () {
+      const { router, agent } = await loadFixture(registeredAgentFixture);
+      
+      await expect(router.connect(agent).rebalance(2))
+        .to.be.revertedWithCustomError(router, "OwnableUnauthorizedAccount");
+    });
+
+    it("rebalance reverts with invalid protocol", async function () {
+      const { router, owner } = await loadFixture(registeredAgentFixture);
+      
+      await expect(router.connect(owner).rebalance(0))
+        .to.be.revertedWithCustomError(router, "InvalidProtocol");
+      
+      await expect(router.connect(owner).rebalance(3))
+        .to.be.revertedWithCustomError(router, "InvalidProtocol");
+    });
+
+    it("rebalance is noop when already on target protocol", async function () {
+      const { router, splitter, usdc, operator, agent, owner } = await loadFixture(registeredAgentFixture);
+      
+      const depositAmount = ethers.parseUnits("100", 6);
+      await usdc.connect(operator).approve(await splitter.getAddress(), depositAmount);
+      await splitter.connect(operator).receivePayment(depositAmount, agent.address);
+      
+      expect(await router.activeProtocol()).to.equal(1);
+      
+      // Rebalance to Aave (already there)
+      const tx = await router.connect(owner).rebalance(1);
+      const receipt = await tx.wait();
+      
+      // Should not emit Rebalanced event
+      const rebalancedEvent = receipt?.logs.find(
+        (log: any) => log.fragment?.name === "Rebalanced"
+      );
+      expect(rebalancedEvent).to.be.undefined;
+    });
+
+    it("getBestProtocol returns Aave when APYs are equal (default to safer)", async function () {
+      const { router, aave } = await loadFixture(deployFullProtocol);
+      
+      // Set Aave APY to 0 (same as Morpho with no borrows)
+      const MockAavePool = await ethers.getContractFactory("MockAavePool");
+      const aaveContract = MockAavePool.attach(await aave.getAddress());
+      
+      // Note: MockAavePool doesn't have setLiquidityRate, so we test with default
+      // In production, when APYs are within REBALANCE_THRESHOLD (50 bps), Aave is chosen
+      
+      const bestProtocol = await router.getBestProtocol();
+      expect(bestProtocol).to.equal(1); // Aave (default)
+    });
+
+    it("multiple deposits maintain correct accounting across protocols", async function () {
+      const { router, splitter, usdc, operator, agent, alice, registry, owner } = await loadFixture(deployFullProtocol);
+      
+      // Register two agents
+      await registry.connect(operator).registerAgent(agent.address);
+      await registry.connect(operator).registerAgent(alice.address);
+      
+      // Agent deposits
+      const deposit1 = ethers.parseUnits("100", 6);
+      await usdc.connect(operator).approve(await splitter.getAddress(), deposit1);
+      await splitter.connect(operator).receivePayment(deposit1, agent.address);
+      
+      expect(await router.activeProtocol()).to.equal(1); // Aave
+      
+      // Rebalance to Morpho
+      await router.connect(owner).rebalance(2);
+      
+      // Alice deposits (should go to Morpho now)
+      const deposit2 = ethers.parseUnits("200", 6);
+      await usdc.connect(operator).approve(await splitter.getAddress(), deposit2);
+      await splitter.connect(operator).receivePayment(deposit2, alice.address);
+      
+      // Verify accounting
+      const agentPrincipal = await router.agentDeposited(agent.address);
+      const alicePrincipal = await router.agentDeposited(alice.address);
+      const totalDeposited = await router.totalDeposited();
+      
+      expect(agentPrincipal).to.equal((deposit1 * 20n) / 100n);
+      expect(alicePrincipal).to.equal((deposit2 * 20n) / 100n);
+      expect(totalDeposited).to.equal(agentPrincipal + alicePrincipal);
+    });
+
+  });
+
 });

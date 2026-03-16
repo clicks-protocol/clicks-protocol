@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Toggle with hidden "C": the track forms a C shape -->
+  <!-- Track is open on the left (OFF side), closed on right (ON side) -->
+  <!-- Reads as both a toggle AND the letter C for "Clicks" -->
+  
+  <!-- C-shaped track: open on left -->
+  <path d="M 200 172
+           A 120 120 0 1 1 200 340"
+        stroke="#00FF9B" stroke-width="16" stroke-linecap="round" fill="none"/>
+  
+  <!-- Knob: snapped to right/top of the C = ON -->
+  <circle cx="340" cy="196" r="44" fill="#00FF9B"/>
+  
+  <!-- Subtle motion trail from OFF position -->
+  <circle cx="200" cy="340" r="12" fill="#00FF9B" opacity="0.2"/>
+</svg>

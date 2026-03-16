@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Click v2 refined: filled version, cleaner geometry -->
+  <!-- Two interlocking C-shapes with a shared tooth -->
+  
+  <!-- Left C: solid, opens right -->
+  <path d="M 208 100
+           A 156 156 0 0 0 208 412
+           L 208 320
+           L 272 280
+           L 272 232
+           L 208 192
+           Z"
+        fill="#00FF9B"/>
+  
+  <!-- Right C: slightly transparent, opens left -->
+  <path d="M 304 412
+           A 156 156 0 0 0 304 100
+           L 304 192
+           L 240 232
+           L 240 280
+           L 304 320
+           Z"
+        fill="#00FF9B" opacity="0.5"/>
+</svg>

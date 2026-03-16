@@ -129,38 +129,29 @@ contract ClicksYieldRouter is Ownable {
         // amount > 0 and agent != 0 guaranteed by splitter
         // USDC already transferred by splitter (no need to pull)
 
-        // Use current protocol if already set (skip APY reads to save gas)
-        // Rebalancing is handled separately
-        uint8 _active = activeProtocol;
-        uint8 bestProtocol;
-        if (_active != 0) {
-            bestProtocol = _active;
-        } else {
-            bestProtocol = _getBestProtocol();
-            activeProtocol = bestProtocol;
-        }
-
-        // Deposit into chosen protocol (inlined for gas)
-        if (bestProtocol == 1) {
-            address _pool = address(aavePool);
-            address _usdc = address(usdc);
-            assembly {
-                mstore(0, 0x617ba03700000000000000000000000000000000000000000000000000000000)
-                mstore(4, _usdc)
-                mstore(0x24, amount)
-                // restore free memory pointer at 0x40 after overwriting it
-                let fmp := mload(0x40)
-                mstore(0x44, address())
-                mstore(0x64, 0)
-                if iszero(call(gas(), _pool, 0, 0, 132, 0, 0)) { revert(0, 0) }
-                mstore(0x40, fmp)
-            }
-        } else {
-            _depositMorpho(amount);
-        }
+        // Compare APYs and route to best protocol
+        uint8 bestProtocol = _getBestProtocol();
+        
+        // If best protocol differs from active and we have existing deposits,
+        // we need to rebalance first (done separately by owner to save gas)
+        // For new deposits, we route to best protocol directly
+        
+        // Update accounting BEFORE external calls (CEI pattern)
         unchecked {
             agentDeposited[agent] += amount;
             totalDeposited += amount;
+        }
+
+        // Deposit into chosen protocol
+        if (bestProtocol == 1) {
+            _depositAave(amount);
+        } else {
+            _depositMorpho(amount);
+        }
+        
+        // Update active protocol if this is first deposit or protocol changed
+        if (activeProtocol != bestProtocol) {
+            activeProtocol = bestProtocol;
         }
 
         assembly {
@@ -320,16 +311,18 @@ contract ClicksYieldRouter is Ownable {
     }
 
     function _depositAave(uint256 amount) internal {
+        // CEI pattern already maintained by caller (state updates before this call)
         address _pool = address(aavePool);
         address _usdc = address(usdc);
         assembly {
-            let ptr := mload(0x40)
-            mstore(ptr, 0x617ba03700000000000000000000000000000000000000000000000000000000) // supply(address,uint256,address,uint16)
-            mstore(add(ptr, 4), _usdc)
-            mstore(add(ptr, 36), amount)
-            mstore(add(ptr, 68), address())
-            mstore(add(ptr, 100), 0) // referralCode
-            if iszero(call(gas(), _pool, 0, ptr, 132, 0, 0)) { revert(0, 0) }
+            let fmp := mload(0x40)
+            mstore(0, 0x617ba03700000000000000000000000000000000000000000000000000000000) // supply(address,uint256,address,uint16)
+            mstore(4, _usdc)
+            mstore(0x24, amount)
+            mstore(0x44, address())
+            mstore(0x64, 0) // referralCode
+            if iszero(call(gas(), _pool, 0, 0, 132, 0, 0)) { revert(0, 0) }
+            mstore(0x40, fmp) // Restore free memory pointer
         }
     }
 
@@ -337,8 +330,14 @@ contract ClicksYieldRouter is Ownable {
         morpho.supply(morphoMarketParams, amount, 0, address(this), "");
     }
 
-    function _rebalance(uint8 toProtocol) internal {
+    /// @notice Rebalance funds from current protocol to another protocol
+    /// @dev Only callable by owner. Used when APY difference makes it worthwhile
+    /// @param toProtocol Target protocol (1 = Aave, 2 = Morpho)
+    function rebalance(uint8 toProtocol) external onlyOwner {
+        if (toProtocol != 1 && toProtocol != 2) revert InvalidProtocol();
         uint8 fromProtocol = activeProtocol;
+        if (fromProtocol == toProtocol) return; // Already on target protocol
+        
         uint256 balance;
 
         // Withdraw all from current protocol
@@ -354,6 +353,9 @@ contract ClicksYieldRouter is Ownable {
         }
 
         if (balance == 0) return;
+
+        // Update active protocol BEFORE depositing (CEI pattern)
+        activeProtocol = toProtocol;
 
         // Deposit into new protocol
         if (toProtocol == 1) {

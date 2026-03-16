@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicks Protocol - Autonomous Yield for AI Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .glassmorphism {
+            backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #FAFAFA, #71717A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hover-glow:hover {
+            border-color: rgba(0, 255, 155, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 155, 0.1);
+        }
+        
+        .code-block {
+            background: #0A0A0B;
+            border: 1px solid #1F1F23;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#0A0A0B',
+                        'surface': '#111113',
+                        'border': '#1F1F23',
+                        'accent': '#00FF9B',
+                        'secondary': '#61A229',
+                        'text-primary': '#FAFAFA',
+                        'text-secondary': '#71717A'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary text-text-primary">
+    
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 border-b border-border glassmorphism">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-bg-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 11V9h4v2H8z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-semibold">Clicks Protocol</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">Docs</a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">SDK</a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">GitHub</a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">Discord</a>
+                    <button class="bg-accent text-bg-primary px-4 py-2 rounded-lg font-medium hover:bg-opacity-90 transition-all">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-20 px-6">
+        <div class="max-w-5xl mx-auto text-center fade-in">
+            <div class="inline-block px-4 py-1.5 mb-6 border border-border rounded-full text-sm text-text-secondary">
+                Built for the x402 Economy
+            </div>
+            <h1 class="text-6xl md:text-7xl font-bold mb-6 gradient-text leading-tight">
+                Autonomous Yield for AI Agents
+            </h1>
+            <p class="text-xl text-text-secondary mb-10 max-w-3xl mx-auto leading-relaxed">
+                Your agent holds USDC. Make it earn 4-8% APY while it sits idle. One SDK call. No lockup. Built on Base.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                <button class="bg-accent text-bg-primary px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all text-lg">
+                    Get Started
+                </button>
+                <button class="border border-border px-8 py-3 rounded-lg font-semibold hover:border-accent/30 transition-all text-lg">
+                    View on GitHub
+                </button>
+            </div>
+            
+            <!-- Code Block -->
+            <div class="glassmorphism rounded-2xl p-8 text-left max-w-2xl mx-auto hover-glow transition-all duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-sm text-text-secondary font-mono">quickstart.js</span>
+                    <div class="flex space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                </div>
+                <pre class="code-block rounded-lg p-4 text-sm overflow-x-auto"><code class="text-accent">import</code> <code class="text-text-primary">{ ClicksProtocol } </code><code class="text-accent">from</code> <code class="text-yellow-400">'@clicks-protocol/sdk'</code><code class="text-text-primary">;</code>
+
+<code class="text-accent">const</code> <code class="text-text-primary">clicks = </code><code class="text-accent">new</code> <code class="text-text-primary">ClicksProtocol({</code>
+  <code class="text-purple-400">agentId</code><code class="text-text-primary">: </code><code class="text-yellow-400">'your-agent-id'</code><code class="text-text-primary">,</code>
+  <code class="text-purple-400">network</code><code class="text-text-primary">: </code><code class="text-yellow-400">'base'</code>
+<code class="text-text-primary">});</code>
+
+<code class="text-green-400">// That's it. You're earning yield.</code>
+<code class="text-accent">await</code> <code class="text-text-primary">clicks.</code><code class="text-blue-400">start</code><code class="text-text-primary">();</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="border-y border-border py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-accent mb-2">80/20 Split</div>
+                    <div class="text-text-secondary text-sm">Liquid / Earning</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-accent mb-2">1 SDK Call</div>
+                    <div class="text-text-secondary text-sm">To Get Started</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-accent mb-2">0 Lockup</div>
+                    <div class="text-text-secondary text-sm">Always Liquid</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-accent mb-2">Base L2</div>
+                    <div class="text-text-secondary text-sm">Fast & Cheap</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Yield Calculator -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Calculate Your Yield</h2>
+                <p class="text-text-secondary text-lg">See how much your idle USDC could earn</p>
+            </div>
+            
+            <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                <div class="mb-8">
+                    <label class="text-sm text-text-secondary mb-2 block">USDC Amount</label>
+                    <input 
+                        type="number" 
+                        id="usdcAmount" 
+                        placeholder="10000" 
+                        value="10000"
+                        class="w-full bg-surface border border-border rounded-lg px-4 py-3 text-2xl font-semibold focus:outline-none focus:border-accent transition-colors"
+                        oninput="calculateYield()"
+                    />
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-surface border border-border rounded-xl p-6">
+                        <div class="text-text-secondary text-sm mb-2">Earning (20%)</div>
+                        <div class="text-3xl font-bold text-accent mb-2" id="earningAmount">$2,000</div>
+                        <div class="text-text-secondary text-sm">4-8% APY via Morpho</div>
+                    </div>
+                    <div class="bg-surface border border-border rounded-xl p-6">
+                        <div class="text-text-secondary text-sm mb-2">Liquid (80%)</div>
+                        <div class="text-3xl font-bold text-text-primary mb-2" id="liquidAmount">$8,000</div>
+                        <div class="text-text-secondary text-sm">Ready for operations</div>
+                    </div>
+                </div>
+                
+                <div class="bg-accent/10 border border-accent/20 rounded-xl p-6 text-center">
+                    <div class="text-text-secondary text-sm mb-1">Estimated Daily Yield (6% APY)</div>
+                    <div class="text-2xl font-bold text-accent" id="dailyYield">$0.33</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="py-20 px-6 bg-surface/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">How it Works</h2>
+                <p class="text-text-secondary text-lg">Three simple steps to autonomous yield</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="w-12 h-12 bg-accent text-bg-primary rounded-lg flex items-center justify-center text-2xl font-bold mb-6">1</div>
+                    <h3 class="text-2xl font-semibold mb-4">Register</h3>
+                    <p class="text-text-secondary mb-6">One line of code to register your agent</p>
+                    <div class="code-block rounded-lg p-4 text-sm font-mono overflow-x-auto">
+<code class="text-accent">await</code> <code class="text-text-primary">clicks.</code><code class="text-blue-400">register</code><code class="text-text-primary">();</code>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="w-12 h-12 bg-accent text-bg-primary rounded-lg flex items-center justify-center text-2xl font-bold mb-6">2</div>
+                    <h3 class="text-2xl font-semibold mb-4">Receive Payment</h3>
+                    <p class="text-text-secondary mb-6">USDC splits automatically on receive</p>
+                    <div class="code-block rounded-lg p-4 text-sm font-mono overflow-x-auto">
+<code class="text-green-400">// 80% liquid, 20% earning</code>
+<code class="text-text-primary">autoSplit: </code><code class="text-blue-400">true</code>
+                    </div>
+                </div>
+                
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="w-12 h-12 bg-accent text-bg-primary rounded-lg flex items-center justify-center text-2xl font-bold mb-6">3</div>
+                    <h3 class="text-2xl font-semibold mb-4">Earn Yield</h3>
+                    <p class="text-text-secondary mb-6">20% works in DeFi, compounding daily</p>
+                    <div class="code-block rounded-lg p-4 text-sm font-mono overflow-x-auto">
+<code class="text-green-400">// 4-8% APY, zero lockup</code>
+<code class="text-text-primary">yield: </code><code class="text-yellow-400">'morpho'</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- x402 Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Built for the x402 Economy</h2>
+                <p class="text-text-secondary text-lg">Native payment infrastructure for autonomous agents</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Base Native</h3>
+                    <p class="text-text-secondary">Built on Coinbase's L2 for instant, low-cost transactions</p>
+                </div>
+                
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">x402 Compatible</h3>
+                    <p class="text-text-secondary">Standards-compliant agent payment protocol</p>
+                </div>
+                
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">One SDK Call</h3>
+                    <p class="text-text-secondary">Simple integration, complex yield strategies handled</p>
+                </div>
+            </div>
+            
+            <!-- Logo Cloud -->
+            <div class="glassmorphism rounded-2xl p-8">
+                <div class="text-center text-text-secondary text-sm mb-8">Powered by</div>
+                <div class="flex flex-wrap justify-center items-center gap-12 opacity-50">
+                    <div class="text-2xl font-bold">Coinbase</div>
+                    <div class="text-2xl font-bold">Base</div>
+                    <div class="text-2xl font-bold">Morpho</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Developers -->
+    <section class="py-20 px-6 bg-surface/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">For Developers</h2>
+                <p class="text-text-secondary text-lg">Everything you need to integrate Clicks Protocol</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="text-accent font-semibold mb-3">SDK</div>
+                    <h3 class="text-xl font-semibold mb-4">TypeScript SDK</h3>
+                    <p class="text-text-secondary mb-6">Full-featured SDK with TypeScript support</p>
+                    <div class="code-block rounded-lg p-4 text-sm font-mono">
+npm install @clicks-protocol/sdk
+                    </div>
+                </div>
+                
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="text-accent font-semibold mb-3">MCP Server</div>
+                    <h3 class="text-xl font-semibold mb-4">Model Context Protocol</h3>
+                    <p class="text-text-secondary mb-6">Connect your LLM directly to Clicks</p>
+                    <div class="code-block rounded-lg p-4 text-sm font-mono">
+npx @clicks-protocol/mcp-server
+                    </div>
+                </div>
+                
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="text-accent font-semibold mb-3">Smart Contracts</div>
+                    <h3 class="text-xl font-semibold mb-4">Verified on Basescan</h3>
+                    <p class="text-text-secondary mb-6">Open-source, audited smart contracts</p>
+                    <a href="#" class="text-accent hover:underline text-sm font-medium">View on Basescan →</a>
+                </div>
+                
+                <div class="glassmorphism rounded-2xl p-8 hover-glow transition-all duration-300">
+                    <div class="text-accent font-semibold mb-3">Documentation</div>
+                    <h3 class="text-xl font-semibold mb-4">Full API Reference</h3>
+                    <p class="text-text-secondary mb-6">Complete guides and API documentation</p>
+                    <a href="#" class="text-accent hover:underline text-sm font-medium">Read the docs →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-border py-16 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <h4 class="font-semibold mb-4">Protocol</h4>
+                    <ul class="space-y-3 text-text-secondary text-sm">
+                        <li><a href="#" class="hover:text-text-primary transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">How it Works</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Security</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Whitepaper</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Developers</h4>
+                    <ul class="space-y-3 text-text-secondary text-sm">
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">SDK</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">API Reference</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">GitHub</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Community</h4>
+                    <ul class="space-y-3 text-text-secondary text-sm">
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Discord</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Twitter</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Medium</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Forum</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-3 text-text-secondary text-sm">
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Terms</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Privacy</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Cookies</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Licenses</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-bg-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 11V9h4v2H8z"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm text-text-secondary">Built on Base</span>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-text-secondary hover:text-text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="text-center text-text-secondary text-sm mt-8">
+                © 2026 Clicks Protocol. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function calculateYield() {
+            const amount = parseFloat(document.getElementById('usdcAmount').value) || 0;
+            const earning = amount * 0.2;
+            const liquid = amount * 0.8;
+            const dailyYield = (earning * 0.06) / 365;
+            
+            document.getElementById('earningAmount').textContent = '$' + earning.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('liquidAmount').textContent = '$' + liquid.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('dailyYield').textContent = '$' + dailyYield.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+        
+        // Initialize on page load
+        calculateYield();
+    </script>
+</body>
+</html>

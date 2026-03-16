@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 3: The Autonomous Pulse -->
+  <!-- Segmented waveform with central yield spike -->
+  
+  <!-- Base wave (segmented) -->
+  <polyline points="56,256 96,200 136,312 176,188 216,324 256,120 296,324 336,188 376,312 416,200 456,256" 
+            stroke="#00FF9B" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Secondary wave (offset, lower amplitude, subtle) -->
+  <polyline points="76,256 116,216 156,296 196,208 236,304 276,168 316,304 356,208 396,296 436,216 476,256" 
+            stroke="#00FF9B" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.3"/>
+  
+  <!-- Central yield peak dot -->
+  <circle cx="256" cy="108" r="10" fill="#00FF9B"/>
+  
+  <!-- Baseline -->
+  <line x1="40" y1="256" x2="472" y2="256" stroke="#00FF9B" stroke-width="2" opacity="0.15"/>
+</svg>

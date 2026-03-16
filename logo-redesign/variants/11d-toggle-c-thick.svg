@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- C-Track thick version — bolder, more confident -->
+  <!-- Thicker stroke, bigger knob, no ghost dot -->
+  
+  <!-- C-shaped track (thicker) -->
+  <path d="M 188 148
+           A 140 140 0 1 1 188 364"
+        stroke="#00FF9B" stroke-width="24" stroke-linecap="round" fill="none"/>
+  
+  <!-- Knob at ON (bigger) -->
+  <circle cx="348" cy="188" r="56" fill="#00FF9B"/>
+</svg>

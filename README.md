@@ -4,6 +4,10 @@
 </p>
 
 <p align="center">
+  <a href="README-CN.md">中文文档</a>
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/@clicks-protocol/sdk"><img src="https://img.shields.io/npm/v/@clicks-protocol/sdk?color=00FF9B&label=sdk" alt="npm"></a>
   <a href="https://basescan.org/address/0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5"><img src="https://img.shields.io/badge/Base%20Mainnet-live-00FF9B" alt="Base Mainnet"></a>
   <a href="#"><img src="https://img.shields.io/badge/tests-58%20passing-00FF9B" alt="Tests"></a>
@@ -57,6 +61,34 @@ Payment in
 ```bash
 npm install @clicks-protocol/sdk ethers@^6
 ```
+
+---
+
+## x402 + Coinbase Agentic Wallets
+
+Clicks works natively with the x402 payment protocol and Coinbase Agentic Wallets on Base.
+
+Your agent holds USDC for x402 payments? Make it earn yield between transactions:
+
+```typescript
+import { ClicksClient } from '@clicks-protocol/sdk';
+import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
+
+const wallet = new CoinbaseWalletSDK({ appName: 'YourAgent' });
+const signer = wallet.makeWeb3Provider().getSigner();
+
+const clicks = new ClicksClient(signer);
+await clicks.quickStart('1000', agentAddress);
+
+// Your agent now earns yield on idle USDC
+// 80% liquid for instant x402 payments
+// 20% earning 4-8% APY via Morpho
+```
+
+- Same chain (Base), same USDC contract
+- 80% liquid for instant x402 payments
+- 20% earning 4-8% APY via Morpho
+- No lockup, withdraw anytime
 
 ---
 
