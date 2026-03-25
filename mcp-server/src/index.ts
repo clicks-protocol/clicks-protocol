@@ -70,7 +70,7 @@ const ADDRESSES = {
   yieldRouter: '0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F',
   splitter: '0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4',
   usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-  referral: '', // Will be set after deployment
+  referral: '0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC',
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────

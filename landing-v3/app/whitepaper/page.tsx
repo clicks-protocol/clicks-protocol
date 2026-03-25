@@ -235,7 +235,7 @@ export default function WhitepaperPage() {
           </p>
           <p className="text-text-secondary leading-relaxed">
             <span className="text-text-primary font-semibold">Contract Address:</span>{' '}
-            <BasescanLink address="0x898d8a3B04e5E333E88f798372129C6a622fF48d" />
+            <BasescanLink address="0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3" />
           </p>
         </div>
 
@@ -249,7 +249,7 @@ export default function WhitepaperPage() {
           </p>
           <p className="text-text-secondary leading-relaxed">
             <span className="text-text-primary font-semibold">Contract Address:</span>{' '}
-            <BasescanLink address="0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5" />
+            <BasescanLink address="0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4" />
           </p>
         </div>
 
@@ -266,7 +266,7 @@ export default function WhitepaperPage() {
           </p>
           <p className="text-text-secondary leading-relaxed">
             <span className="text-text-primary font-semibold">Contract Address:</span>{' '}
-            <BasescanLink address="0x47d6Add0a3bdFe856b39a0311D8c055481F76f29" />
+            <BasescanLink address="0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F" />
           </p>
         </div>
 
@@ -280,7 +280,7 @@ export default function WhitepaperPage() {
           </p>
           <p className="text-text-secondary leading-relaxed">
             <span className="text-text-primary font-semibold">Contract Address:</span>{' '}
-            <BasescanLink address="0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12" />
+            <BasescanLink address="0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE" />
           </p>
         </div>
 
@@ -308,19 +308,19 @@ export default function WhitepaperPage() {
                 <tbody>
                   <tr className="border-b border-white/5">
                     <td className="px-4 py-3 text-text-secondary">ClicksRegistry</td>
-                    <td className="px-4 py-3"><BasescanLink address="0x898d8a3B04e5E333E88f798372129C6a622fF48d" /></td>
+                    <td className="px-4 py-3"><BasescanLink address="0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3" /></td>
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="px-4 py-3 text-text-secondary">ClicksSplitterV3</td>
-                    <td className="px-4 py-3"><BasescanLink address="0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5" /></td>
+                    <td className="px-4 py-3"><BasescanLink address="0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4" /></td>
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="px-4 py-3 text-text-secondary">ClicksYieldRouter</td>
-                    <td className="px-4 py-3"><BasescanLink address="0x47d6Add0a3bdFe856b39a0311D8c055481F76f29" /></td>
+                    <td className="px-4 py-3"><BasescanLink address="0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F" /></td>
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="px-4 py-3 text-text-secondary">ClicksFee</td>
-                    <td className="px-4 py-3"><BasescanLink address="0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12" /></td>
+                    <td className="px-4 py-3"><BasescanLink address="0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE" /></td>
                   </tr>
                   <tr>
                     <td className="px-4 py-3 text-text-secondary">USDC (Base)</td>

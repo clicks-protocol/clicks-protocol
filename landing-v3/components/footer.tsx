@@ -234,7 +234,7 @@ export function Footer() {
               alt="Clicks"
               className="h-8 w-8"
             />
-            <span className="text-text-secondary">© 2025 Clicks Protocol</span>
+            <span className="text-text-secondary">© 2026 Clicks Protocol</span>
           </div>
 
           <div className="flex items-center space-x-6">

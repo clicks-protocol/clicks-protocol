@@ -76,7 +76,7 @@ export function Developers() {
                 Open source, audited smart contracts. Review and verify.
               </CardDescription>
               <a
-                href="https://basescan.org/address/0x898d8a3B04e5E333E88f798372129C6a622fF48d"
+                href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent hover:underline font-medium inline-flex items-center gap-2"

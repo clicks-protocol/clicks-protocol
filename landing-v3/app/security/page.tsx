@@ -3,10 +3,10 @@
 import { ExternalLink } from 'lucide-react';
 
 const contracts = [
-  { name: 'ClicksRegistry', address: '0x898d8a3B04e5E333E88f798372129C6a622fF48d' },
-  { name: 'ClicksSplitterV3', address: '0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5' },
-  { name: 'ClicksYieldRouter', address: '0x47d6Add0a3bdFe856b39a0311D8c055481F76f29' },
-  { name: 'ClicksFee', address: '0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12' },
+  { name: 'ClicksRegistry', address: '0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3' },
+  { name: 'ClicksSplitterV3', address: '0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4' },
+  { name: 'ClicksYieldRouter', address: '0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F' },
+  { name: 'ClicksFee', address: '0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE' },
   { name: 'USDC (Base)', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' },
 ];
 
