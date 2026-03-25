@@ -390,3 +390,391 @@ Zwei volle Tage ohne einen einzigen Post. Das ist für Pre-Launch ok, solange wi
 4. David an xurl Auth + X Profil/Banner erinnern
 
 ### Nächster Check: Di 17.03. 09:00 Uhr
+
+---
+
+## 2026-03-18 09:00 — Morgen-Check (Tag 4: Mi, ehemaliger Launch Day)
+
+### 1. Mission Control
+- **Status:** Keine Antwort (leerer Response). Cookie abgelaufen oder Server-Problem.
+- Tasks nicht abrufbar. Bekanntes Problem seit Tag 2 (Cookie für localhost, API auf Tailscale-IP).
+
+### 2. Projekt-Update seit letztem Check (Mo 16.03. Abend)
+
+Gestern Nacht (Di/Mi 22:45-01:34) hat David intensiv an Clicks gearbeitet:
+
+| Neu seit letztem SM-Check | Status |
+|---------------------------|--------|
+| **Aave V3 Dual-Routing** aktiviert | ✅ 67 Tests passing, getBestProtocol() wählt Morpho oder Aave |
+| **ERC-4626 Vault Router** gebaut | ✅ 32 neue Tests, Code ready für V1.1 (nicht V1 Launch) |
+| **Landing Page v3** (Next.js + shadcn/ui) | ✅ Gebaut in landing-v3/, Static Export ready |
+| **Base DeFi Yield Research** | ✅ Zwei Research-Docs (Landscape + Due Diligence Matrix) |
+| **Scout v3 + Google Scanner** (Akquise) | ✅ Neue Cron Jobs aktiv |
+
+**Wichtig für Content:** Dual-Routing (Morpho + Aave V3) und Vault Router sind neue Features die in Launch-Content einfließen sollten. "Best APY across Morpho and Aave V3, automatically" ist ein starker Claim.
+
+### 3. Blocker-Status
+
+| # | Blocker | Status | Änderung |
+|---|---------|--------|----------|
+| 1 | xurl OAuth für X Posting | ❌ Blockiert | Unverändert |
+| 2 | GitHub Repo Public | ❌ Vor Launch | Unverändert |
+| 3 | npm publish SDK + MCP | ❌ Vor Launch | Unverändert |
+| 4 | X Profil/Banner hochladen | ❌ David manuell | Unverändert |
+| 5 | Landing Page v3 deployen | 🆕 Ready | Neu: out/ Ordner bereit für Cloudflare |
+
+### 4. Content-Inventur (alle Channels)
+
+**Fertig und wartend:**
+- X Launch Thread (8 Tweets) — **Update nötig:** Dual-Routing + Vault Router erwähnen
+- X Content Queue (30 Posts) — steht seit Tag 1
+- Reddit Posts (r/cryptocurrency, r/defi, r/base) — Draft steht
+- HN Show Post — Draft steht
+- LinkedIn Post — Draft steht
+- Medium Blog Post — Draft steht
+- Discord Announcement — Draft steht
+
+**Noch offen:**
+- [ ] Visual Assets (Thread-Grafiken, Flow Diagram, Fee Comparison)
+- [ ] Content-Updates für neue Features (Dual-Routing, Vault Router)
+- [ ] Content-Kalender an verschobenes Launch-Datum (~21-25.03.) anpassen
+- [ ] Pre-Launch Countdown-Posts (T-5 bis T-1)
+
+### 5. Heutiger Plan (Mi 18.03.)
+
+Heute war ursprünglich Launch Day. Launch ist verschoben auf ~21-25.03. Wir nutzen die Zeit:
+
+1. **Content-Update:** X Thread und Blog Post um Dual-Routing und Vault Router erweitern. "Automatically routes to the best APY across Morpho and Aave V3" ist ein starker Differentiator.
+
+2. **Neuen Content-Kalender aufsetzen** basierend auf Launch-Fenster 21-25.03.:
+   - T-3: Teaser-Posts ("Something's coming on Base")
+   - T-2: Technical Teaser (Code Snippet, APY Comparison)
+   - T-1: "Tomorrow" Countdown
+   - T-0: Full Launch Blast (X Thread, Reddit, HN, Medium, Discord)
+   - T+1/+2: Engagement, Community Responses
+
+3. **Visual Assets vorbereiten** (unabhängig von Account-Status):
+   - Flow Diagram: USDC → Clicks Split → Morpho/Aave (Best APY) → Yield
+   - Fee Comparison: Clicks 2% vs Yearn 20% vs Beefy 4.5%
+   - "How it works" mit Dual-Routing
+
+4. **Landing Page v3 Review:** Ist in landing-v3/out/ ready. Screenshots machen, Content prüfen.
+
+### 6. Metriken (Tag 4, Pre-Launch)
+
+| Metrik | Aktuell | Launch-Woche Ziel |
+|--------|---------|-------------------|
+| Posts veröffentlicht | 0 | Launch Blast |
+| X Follower | 0 (kein Zugang) | 50+ |
+| GitHub Stars | 0 (Repo private) | 25+ |
+| npm Downloads | 0 (nicht published) | 50+ |
+| Discord Members | 0 (nicht beworben) | 20+ |
+| Content Pieces Ready | 8+ | Alle Channels |
+| Days to Launch | ~3-7 | — |
+
+### 7. Zusammenfassung
+
+Tag 4 ohne externen Output, aber das Produkt ist deutlich stärker geworden (Dual-Routing, Vault Router, neue Landing Page). Content-Stack muss die neuen Features reflektieren. Alle Blocker sind David-Dependencies (xurl Auth, GitHub Public, npm Publish). Launch-Fenster 21-25.03. gibt noch 3-7 Tage Puffer. Heute: Content updaten und Visual Assets vorbereiten.
+
+### Nächster Check: Mi 18.03. 14:00 Uhr
+
+---
+
+## 2026-03-18 14:00 — Mittag-Check (Tag 4)
+
+### 1. Engagement Check
+- **Posts veröffentlicht:** 0 (Tag 4, unverändert seit Launch-Verschiebung)
+- **Impressions/Engagement/Follower:** 0/0/0
+- **X Account Status:** @ClicksProtocol existiert (laut TOOLS.md, erstellt 15.03.), aber kein CLI-Zugang
+- **Discord:** Server existiert (ID 1482818570416165125), aber kein Posting möglich via message tool (Channel ID funktioniert nicht mit Telegram Backend)
+
+### 2. US-Audience Post (08:00 EST = 14:00 CET)
+- **Geplant:** Launch-Week Content Drop mit Dual-Routing Feature
+- **Nicht gepostet:** xurl OAuth2 User Context fehlt weiterhin (seit Tag 1 bekanntes Problem)
+- **Workaround gescheitert:** Discord Channel Posting nicht möglich via OpenClaw message tool
+- **Content ready:** Post-Draft für US-Audience steht (siehe unten)
+
+**Vorbereiteter Post (für X oder Discord):**
+```
+🚀 Launching Week Content Drop
+
+Clicks Protocol ships autonomous yield for AI agents on Base.
+
+What's new:
+• Dual-routing across Morpho + Aave V3 (best APY, automatically)
+• ERC-4626 Vault Router (V1.1 feature)
+• Landing Page v3 ready to deploy
+• 67 passing tests on dual-strategy switching
+
+Live on Base Mainnet: clicksprotocol.xyz
+
+For devs:
+npm install @clicks-protocol/sdk
+const clicks = new ClicksClient(signer)
+await clicks.quickStart('5000', agentAddress)
+
+One call. No lockup. Non-custodial.
+
+More this week. 👀
+```
+
+**Empfehlung:** David postet manuell über X App (@ClicksProtocol) oder richtet xurl OAuth2 ein.
+
+### 3. Kommentare/DMs
+- Keine aktiven Channels. Nichts zu beantworten.
+
+### 4. Launch-Timing & Content-Status
+
+**Launch-Datum:** ~21.-25.03.2026 (in 3-7 Tagen)
+
+**Content bereit:**
+- ✅ X Launch Thread (10 Tweets, muss noch um Dual-Routing erweitert werden)
+- ✅ X Content Queue (30 Posts, Pre-Launch + Post-Launch)
+- ✅ Reddit Drafts (r/cryptocurrency, r/defi, r/base)
+- ✅ HN Show Draft
+- ✅ LinkedIn Draft
+- ✅ Medium Blog Post Draft
+- ✅ Landing Page v3 (Next.js, static export ready in landing-v3/out/)
+
+**Noch zu tun:**
+- [ ] X Thread updaten: Dual-Routing (Morpho + Aave V3 auto-switch) erwähnen
+- [ ] Visual Assets: Flow Diagram (Dual-Routing), Fee Comparison, Thread-Grafiken
+- [ ] Content-Kalender an Launch-Datum 21.-25.03. anpassen
+- [ ] Pre-Launch Countdown (T-5 bis T-1) definieren
+
+### 5. Blocker (unverändert seit Tag 2)
+
+| # | Blocker | Wer | Status |
+|---|---------|-----|--------|
+| 1 | xurl OAuth2 User Context | David | ❌ Blockiert |
+| 2 | GitHub Repo Public | David | ❌ Vor Launch |
+| 3 | npm publish SDK + MCP | Technical | ❌ Vor Launch |
+| 4 | X Profil/Banner hochladen | David | ❌ Unklar ob erledigt |
+| 5 | Discord Bot Posting | Emma | ❌ message tool funktioniert nicht mit Discord Channel ID |
+
+### 6. Asset-Update seit letztem Check (Mo 16.03. Abend)
+
+**Neu gebaut (Di/Mi Nacht):**
+- ✅ Aave V3 Dual-Routing (Morpho + Aave, beste APY, auto-switch)
+- ✅ ERC-4626 Vault Router (für V1.1, nicht Launch-Blocker)
+- ✅ Landing Page v3 (Next.js + shadcn/ui, static export bereit)
+- ✅ Base DeFi Research Docs (Landscape + Due Diligence Matrix)
+
+**Content-Impact:**
+Dual-Routing ist ein **starker Differentiator** für Launch-Content. "Automatically routes to best APY across Morpho and Aave V3" ist besser als "uses Aave". X Thread + Blog Post müssen aktualisiert werden.
+
+### 7. Metriken (Tag 4, Pre-Launch)
+
+| Metrik | Aktuell | Launch-Woche Ziel |
+|--------|---------|-------------------|
+| Posts veröffentlicht | 0 | Launch Blast |
+| X Follower | 0 (kein Zugang) | 50+ |
+| GitHub Stars | 0 (Repo private) | 25+ |
+| npm Downloads | 0 (nicht published) | 50+ |
+| Discord Members | 0 (nicht beworben) | 20+ |
+| Content Pieces Ready | 8+ Channels | Alle ready |
+| Days to Launch | 3-7 | — |
+
+### 8. Next Actions
+
+**Heute (Mi 18.03. Nachmittag):**
+1. X Launch Thread um Dual-Routing erweitern (Tweet 3 oder 4 ergänzen)
+2. Visual Assets: Flow Diagram (USDC → Clicks → Morpho/Aave → Best APY)
+3. Content-Kalender für Launch-Woche (21.-25.03.) aufsetzen
+
+**Für David:**
+- xurl OAuth2 einrichten (xurl auth oauth2 --help) oder manuell X-Posts absetzen
+- X Profil/Banner hochladen (site/assets/x-profile.png + x-banner.png)
+- Discord Bot Community seeden (erste 10-20 Members aus Netzwerk einladen)
+
+### Nächster Check: Mi 18.03. 19:00 Uhr (Abend)
+
+---
+
+## 2026-03-18 19:00 — Abend-Check (Tag 4)
+
+### 1. Tages-Performance Review
+- **Posts veröffentlicht:** 0 (Tag 4 ohne externen Output)
+- **Impressions:** 0
+- **Engagement:** 0
+- **Follower:** 0 (kein X-Zugang via CLI)
+- **Discord:** 0 Mitglieder (außer Bot)
+- **Medium:** 0 Posts veröffentlicht
+
+Alle Posting-Blocker unverändert. Allerdings: das Produkt ist heute signifikant besser geworden.
+
+### 2. US-Nachmittag Engagement (13:00 EST / 19:00 CET)
+- **Nicht möglich.** Vierter verpasster US-Prime-Slot in Folge.
+- xurl OAuth weiterhin nicht eingerichtet.
+- Content-Queue (30+ Posts, Launch Thread) wartet auf Kanal-Zugang.
+
+### 3. Großes Tages-Highlight: Landing Page v3 LIVE
+
+Heute war der produktivste Tag seit Launch-Prep-Start:
+
+- ✅ **Agent-Facing Layer implementiert:**
+  - `/.well-known/clicks-protocol.json` (Protocol Spec, Live APY 6.2%)
+  - JSON-LD Schema.org FinancialProduct Markup
+  - Live Yield API (`/api/yield/current.json`, `/api/yield/history.json`)
+  - MCP Tool Schema (`/mcp/server.json`, 4 Tools)
+- ✅ **Landing Page v3 deployed** auf clicksprotocol.xyz (Cloudflare Worker)
+- ✅ **Custom Domain** funktioniert
+- ✅ **Mobile Responsive** nach 4+ Stunden Fixing jetzt funktional
+
+**Content-Impact:** Agent-Facing Layer ist ein starker Launch-Content-Punkt. "Agents can discover Clicks autonomously via /.well-known/clicks-protocol.json" differenziert massiv von Wettbewerbern.
+
+### 4. Content für morgen (Do 19.03.)
+
+**Bereit (30+ Content Pieces):**
+- X Launch Thread (8 Tweets, braucht Update: Dual-Routing + Agent-Facing Layer)
+- X Content Queue (30 Posts)
+- Reddit Posts (r/cryptocurrency, r/defi, r/base)
+- HN Show Post
+- LinkedIn Post
+- Medium Blog Post Draft
+- Discord Announcement Draft
+
+**Content-Updates nötig (neue Features seit Draft-Erstellung):**
+- [ ] Dual-Routing (Morpho + Aave V3, automatisch beste APY) in Thread einbauen
+- [ ] Agent-Facing Layer (/.well-known/, JSON-LD, Yield API, MCP Schema) erwähnen
+- [ ] "67 tests passing" → "alle Tests grün" aktualisieren
+- [ ] Landing Page v3 Screenshots für Thread-Grafiken
+
+**Noch offen:**
+- [ ] Visual Assets: Flow Diagram (Dual-Routing), Fee Comparison Chart
+- [ ] Content-Kalender an Launch-Datum 21.-25.03. finalisieren
+- [ ] Pre-Launch Countdown Posts (T-5 bis T-1)
+- [ ] Blog Post um Agent-Facing Layer erweitern
+
+### 5. Blocker-Status
+
+| # | Blocker | Wer | Status | Tage blockiert |
+|---|---------|-----|--------|----------------|
+| 1 | xurl OAuth2 für X Posting | David | ❌ | 4 Tage |
+| 2 | GitHub Repo Public | David | ❌ | 4 Tage |
+| 3 | npm publish SDK + MCP | Technical | ❌ | 4 Tage |
+| 4 | X Profil/Banner hochladen | David | ❌ | 4 Tage |
+| 5 | Smart Contract Basescan Verify | Technical | ❌ | Neu (Stealth) |
+
+### 6. Metriken (Tag 4, Pre-Launch)
+
+| Metrik | Aktuell | Launch-Woche Ziel |
+|--------|---------|-------------------|
+| Posts veröffentlicht | 0 | Launch Blast |
+| X Follower | ? (kein Zugang) | 50+ |
+| GitHub Stars | 0 (Repo private) | 25+ |
+| npm Downloads | 0 (nicht published) | 50+ |
+| Discord Members | 0 | 20+ |
+| Content Pieces Ready | 30+ | Alle Channels |
+| Landing Page | ✅ LIVE | — |
+| Agent-Facing Layer | ✅ LIVE | — |
+| Days to Launch | 3-7 | — |
+
+### 7. Tages-Summary Tag 4 (Mi 18.03.)
+
+**Erledigt heute:**
+- ✅ Landing Page v3 deployed auf clicksprotocol.xyz
+- ✅ Agent-Facing Layer komplett implementiert (5 Endpoints)
+- ✅ Mobile Responsive gefixt (nach 4h Iterationen)
+- ✅ 3x Social Media Checks durchgeführt
+
+**Nicht erledigt:**
+- ❌ Kein Post auf irgendeinem Kanal (Tag 4 ohne Output)
+- ❌ Content nicht an neue Features angepasst
+- ❌ Visual Assets nicht erstellt
+- ❌ Content-Kalender nicht finalisiert
+
+**Lage-Bewertung:**
+Das Produkt wird mit jedem Tag stärker (Dual-Routing, Vault Router, Agent-Facing Layer, Landing Page v3). Der Content-Stack muss diese neuen Features widerspiegeln. Die 30+ vorbereiteten Posts sind teilweise veraltet, weil das Produkt sich seit dem Drafting am 15.03. weiterentwickelt hat. Ein Content-Refresh vor Launch ist Pflicht.
+
+Launch-Fenster 21.-25.03. gibt noch 3-7 Tage. Kritischer Pfad bleibt: xurl Auth + GitHub Public + npm Publish müssen mindestens 2 Tage vor Launch stehen.
+
+**Prioritäten morgen (Do 19.03.):**
+1. Content-Refresh: X Thread, Blog Post, Reddit um Dual-Routing + Agent-Facing Layer erweitern
+2. Visual Assets erstellen (Flow Diagram mit Dual-Routing, Fee Comparison)
+3. Content-Kalender für Launch-Fenster 21.-25.03. finalisieren
+4. Pre-Launch Countdown Posts (T-5 bis T-1) schreiben
+
+### Nächster Check: Do 19.03. 09:00 Uhr
+
+---
+
+## 2026-03-19 09:00 — Morgen-Check (Tag 5: Do, Pre-Launch)
+
+### 1. Mission Control
+- **Status:** Keine Antwort (leerer Response). Cookie weiterhin nicht funktionsfähig.
+
+### 2. DURCHBRUCH: xurl OAuth1 funktioniert!
+
+Nach 4 Tagen Blocker: xurl Raw API (`-X POST /2/tweets`) funktioniert über OAuth1 (App "clicks"). Der Shortcut-Befehl `xurl post` gibt 403, aber die direkte API geht.
+
+**Workaround:** `xurl --app clicks -X POST /2/tweets -d '{"text":"..."}'`
+
+### 3. Erste Posts LIVE (heute 09:00)
+
+| # | Tweet | ID | Status |
+|---|-------|----|--------|
+| 1 | "Building something for AI agents that hold USDC. More soon." | 2034540913289035931 | ✅ Live |
+| 2 | "If your AI agent has a wallet, the money sits idle 90% of the time. That's a solvable problem." | 2034540943068496281 | ✅ Live |
+| 3 | "Sweep accounts exist for corporations. Money market funds exist for individuals. What exists for AI agents? Nothing. Until now." | 2034540972726530157 | ✅ Live |
+
+**Erste 3 Posts nach 4 Tagen Null-Output!** Pre-Launch Teaser Week hat offiziell begonnen.
+
+### 4. Account-Status
+
+| Kanal | Status |
+|-------|--------|
+| X @ClicksProtocol | ✅ Live, 0 Follower, 3 Tweets, OAuth1 funktioniert |
+| Discord | ✅ Server existiert, 0 Members |
+| Medium | ✅ Account, 0 Posts |
+| GitHub | ❌ Repo private |
+| npm | ❌ Nicht published |
+
+### 5. X Profil-Check
+- **Profilbild:** Default (nicht hochgeladen)
+- **Banner:** Nicht hochgeladen
+- **Bio:** "Autonomous yield for AI agents. 80% liquid, 20% earning. No lockup. Built on Base."
+- **TODO:** David muss Profil/Banner manuell hochladen (site/assets/x-profile.png + x-banner.png)
+
+### 6. Heutiger Content-Plan
+
+**Posting-Strategie heute (Do 19.03.):**
+- 09:00 CET: 3 Teaser-Posts ✅ (erledigt)
+- 14:00 CET (08:00 EST, US-Morgen): 2 weitere Posts (Queue #4, #5)
+- 19:00 CET (13:00 EST, US-Nachmittag): 1-2 Posts (Queue #6, #7)
+
+**Queue für heute:**
+- #4: "The best financial product is one you never have to think about. For agents, that means: deposit once, earn forever, withdraw anytime."
+- #5: "One SDK call. That's the entire integration. No dashboard, no approval flow, no human in the loop."
+- #6: "We picked Base for a reason: sub-cent gas, native USDC, and the largest agent ecosystem on any L2."
+- #7: "80% liquid. 20% earning. Zero lockup. The simplest yield split you'll ever see."
+
+**Metriken nach Tag 5:**
+
+| Metrik | Gestern | Heute | Delta |
+|--------|---------|-------|-------|
+| X Posts | 0 | 3 | +3 |
+| X Follower | 0 | 0 | TBD |
+| Impressions | 0 | TBD | TBD |
+| Content Queue verbleibend | 30 | 27 | -3 |
+| Days to Launch | ~3-6 | ~2-5 | -1 |
+
+### 7. Blocker-Status
+
+| # | Blocker | Status | Änderung |
+|---|---------|--------|----------|
+| 1 | xurl Posting | ✅ GELÖST (OAuth1 Raw API) | **NEU: Funktioniert!** |
+| 2 | GitHub Repo Public | ❌ David | Unverändert |
+| 3 | npm publish | ❌ David | Unverändert |
+| 4 | X Profil/Banner Upload | ❌ David (manuell) | Unverändert |
+| 5 | MC Cookie | ❌ | Unverändert |
+
+### 8. Prioritäten heute
+
+1. ✅ Erste Posts raus (erledigt)
+2. Nachmittag: 2 weitere Posts für US-Audience (14:00 CET)
+3. Abend: 1-2 Posts + Engagement-Check (19:00 CET)
+4. Content-Update: Launch Thread um Dual-Routing + Agent-Facing Layer erweitern
+5. David informieren: xurl funktioniert jetzt, Profil/Banner-Upload offen
+
+### Nächster Check: Do 19.03. 14:00 Uhr

@@ -1,0 +1,55 @@
+{
+  "version": "0.1.0",
+  "protocol": "x402",
+  "name": "Clicks Protocol",
+  "description": "Autonomous yield for AI agents",
+  "provider": {
+    "name": "Clicks Protocol",
+    "url": "https://clicksprotocol.xyz",
+    "contact": "hello@clicksprotocol.xyz"
+  },
+  "payment": {
+    "methods": [
+      {
+        "type": "crypto",
+        "chain": "base",
+        "currency": "USDC",
+        "address": "0x898d8a3B04e5E333E88f798372129C6a622fF48d"
+      }
+    ],
+    "features": {
+      "auto_split": true,
+      "yield_earning": true,
+      "instant_settlement": true,
+      "zero_lockup": true
+    }
+  },
+  "capabilities": {
+    "split": {
+      "liquid": 0.8,
+      "earning": 0.2
+    },
+    "yield": {
+      "enabled": true,
+      "provider": "morpho",
+      "apy_range": [0.04, 0.08],
+      "compound_frequency": "daily"
+    }
+  },
+  "integration": {
+    "sdk": {
+      "npm": "@clicks-protocol/sdk",
+      "repo": "https://github.com/clicks-protocol/sdk"
+    },
+    "mcp": {
+      "npm": "@clicks-protocol/mcp-server",
+      "repo": "https://github.com/clicks-protocol/mcp-server"
+    }
+  },
+  "links": {
+    "documentation": "https://clicksprotocol.xyz/docs",
+    "github": "https://github.com/clicks-protocol",
+    "discord": "https://discord.gg/clicks-protocol",
+    "twitter": "https://x.com/ClicksProtocol"
+  }
+}

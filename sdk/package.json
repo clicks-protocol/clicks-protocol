@@ -1,8 +1,8 @@
 {
   "name": "@clicks-protocol/sdk",
   "version": "0.1.0",
-  "description": "TypeScript SDK for the Clicks Protocol — on-chain yield for AI agents on Base",
-  "private": true,
+  "description": "TypeScript SDK for the Clicks Protocol \u2014 on-chain yield for AI agents on Base",
+  "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
@@ -31,5 +31,31 @@
   "engines": {
     "node": ">=18"
   },
-  "license": "UNLICENSED"
+  "license": "MIT",
+  "keywords": [
+    "yield",
+    "agent",
+    "ai-agent",
+    "treasury",
+    "usdc",
+    "defi",
+    "base",
+    "x402",
+    "autonomous",
+    "aave",
+    "morpho",
+    "mcp",
+    "agent-wallet",
+    "agent-yield",
+    "clicks-protocol"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clicks-protocol/clicks-protocol"
+  },
+  "homepage": "https://clicksprotocol.xyz",
+  "bugs": {
+    "url": "https://github.com/clicks-protocol/clicks-protocol/issues"
+  },
+  "author": "Clicks Protocol <hello@clicksprotocol.xyz>"
 }

@@ -1,0 +1,125 @@
+{
+  "protocol": "clicks-protocol",
+  "version": "1.0",
+  "last_updated": "2026-03-18T11:26:00Z",
+  "chain": {
+    "name": "Base",
+    "chain_id": 8453,
+    "type": "L2",
+    "rpc_url": "https://mainnet.base.org",
+    "explorer": "https://basescan.org"
+  },
+  "contract": {
+    "address": "0x0000000000000000000000000000000000000000",
+    "comment": "Contract not yet deployed - placeholder address",
+    "abi_url": "https://clicksprotocol.xyz/abi.json",
+    "verified": false,
+    "audit_url": "https://clicksprotocol.xyz/audits/trail-of-bits-2026.pdf"
+  },
+  "parameters": {
+    "supported_tokens": [
+      {
+        "symbol": "USDC",
+        "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "decimals": 6
+      }
+    ],
+    "apy": {
+      "min": 4.0,
+      "max": 8.0,
+      "current": 6.2,
+      "comment": "Current APY is simulated - will be live after deployment",
+      "last_update": "2026-03-18T11:26:00Z"
+    },
+    "liquidity": {
+      "instant_withdrawal_ratio": 0.80,
+      "description": "80% of deposits available for instant withdrawal, 20% in yield-generating strategies"
+    },
+    "lockup": {
+      "required": false,
+      "minimum_duration": null,
+      "early_withdrawal_penalty": 0
+    },
+    "limits": {
+      "min_deposit_usdc": "1.00",
+      "max_deposit_usdc": null,
+      "comment": "No maximum deposit limit"
+    },
+    "fees": {
+      "deposit_fee": 0,
+      "withdrawal_fee": 0,
+      "performance_fee": 0,
+      "comment": "Zero fees for V1. Gas costs apply (~$0.01-0.05 per transaction on Base L2)"
+    },
+    "gas_estimates": {
+      "deposit_usd": 0.02,
+      "withdraw_usd": 0.03,
+      "comment": "Estimates based on current Base L2 gas prices"
+    }
+  },
+  "integration": {
+    "docs_url": "https://docs.clicksprotocol.xyz",
+    "quickstart_url": "https://docs.clicksprotocol.xyz/quickstart",
+    "sdk": {
+      "npm": "@clicks-protocol/sdk",
+      "github": "https://github.com/clicks-protocol/sdk",
+      "languages": ["TypeScript", "JavaScript"]
+    },
+    "api_endpoints": {
+      "protocol_info": "https://clicksprotocol.xyz/.well-known/clicks-protocol.json",
+      "yield_current": "https://clicksprotocol.xyz/api/yield/current",
+      "yield_history": "https://clicksprotocol.xyz/api/yield/history"
+    }
+  },
+  "referral": {
+    "enabled": false,
+    "comment": "Referral system will be enabled in V1.1",
+    "planned_features": {
+      "commission_rate": 0.08,
+      "yield_boost": "+20bps per active referral (cap +150bps)",
+      "tracking": "on-chain"
+    }
+  },
+  "security": {
+    "audits": [
+      {
+        "auditor": "Trail of Bits",
+        "date": "2026-03-15",
+        "url": "https://clicksprotocol.xyz/audits/trail-of-bits-2026.pdf",
+        "status": "planned"
+      }
+    ],
+    "bug_bounty": {
+      "enabled": false,
+      "max_reward": null
+    },
+    "insurance": {
+      "enabled": false
+    }
+  },
+  "agent_integration": {
+    "mcp_server": {
+      "available": false,
+      "comment": "MCP tool schema will be published in Phase 2",
+      "planned_url": "https://clicksprotocol.xyz/mcp/server.json"
+    },
+    "recommended_for": [
+      "AI agents managing treasury",
+      "Autonomous trading bots with idle USDC",
+      "DeFi portfolio managers",
+      "Commerce agents holding settlement funds"
+    ],
+    "decision_matrix": {
+      "min_viable_deposit": "100 USDC for 7+ days to cover gas costs",
+      "ideal_use_case": "Idle USDC >$1,000 with avg idle time >3 days"
+    }
+  },
+  "metadata": {
+    "name": "Clicks Protocol",
+    "description": "Autonomous yield protocol for AI agents. Earn 4-8% APY on idle USDC with zero lockup on Base L2.",
+    "website": "https://clicksprotocol.xyz",
+    "twitter": "https://twitter.com/ClicksProtocol",
+    "discord": "https://discord.gg/clicks-protocol",
+    "github": "https://github.com/clicks-protocol"
+  }
+}

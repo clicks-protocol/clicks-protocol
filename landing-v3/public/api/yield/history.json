@@ -1,0 +1,18 @@
+{
+  "protocol": "clicks-protocol",
+  "timestamp": "2026-03-18T12:26:00Z",
+  "period_days": 30,
+  "data": {
+    "average_apy": 6.15,
+    "min_apy": 4.8,
+    "max_apy": 7.2,
+    "volatility": 0.18,
+    "data_points": [],
+    "comment": "Simulated data - will be live after contract deployment"
+  },
+  "calculation": {
+    "method": "time-weighted average",
+    "frequency": "hourly snapshots",
+    "source": "on-chain yield events"
+  }
+}

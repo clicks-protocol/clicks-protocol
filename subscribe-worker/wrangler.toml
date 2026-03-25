@@ -1,0 +1,7 @@
+name = "clicks-subscribe"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[[kv_namespaces]]
+binding = "SUBSCRIBERS"
+id = "06ff25875fd3405092a3aa2df841a8d9"

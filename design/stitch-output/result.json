@@ -1,0 +1,55 @@
+{
+  "outputComponents": [
+    {
+      "design": {
+        "screens": [
+          {
+            "deviceType": "DESKTOP",
+            "generatedBy": "figaro_agent",
+            "height": "5472",
+            "htmlCode": {
+              "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2QxMmE2MGU4N2UyZjQ3YThiZjgzMDk2MmYwNTg1YTZmEgsSBxCQlr-KzwsYAZIBJAoKcHJvamVjdF9pZBIWQhQxMDk5Nzk1MjAxOTI0OTE1ODk5Mg&filename=&opi=96797242",
+              "mimeType": "text/html",
+              "name": "projects/10997952019249158992/files/8be46d36b8ee43dcbc2879ca4f1eb72e"
+            },
+            "id": "337260763fc74b29937e3bdd47d109bc",
+            "name": "projects/10997952019249158992/screens/337260763fc74b29937e3bdd47d109bc",
+            "prompt": "Design a high-fidelity, Stripe-inspired landing page for Clicks Protocol. \nBackground: #0F0814 (dark purple). Accent: #00FF9B (neon green). Surface: #191020 (glassmorphic cards). Text: white. Font: Inter.\nSections:\n1) Hero: Headline \"Autonomous Yield for AI Agents\". Subtext: \"The first DeFi yield protocol built for AI agents on Base L2. Smart 80/20 USDC split earning 4-8% APY with zero manual management.\" Two CTAs: \"Launch App\" (neon green) and \"Read Docs\" (ghost). Include a realistic code snippet component showing a sample SDK call on the right.\n2) Stats: Horizontal bar with four metrics: \"80/20 Split\", \"4-8% APY\", \"0 Lockup\", \"1 SDK Call\".\n3) How it Works: Three steps: (1) Deposit USDC, (2) Auto-allocation, (3) Accrue Yield. Each with a modern icon.\n4) Developers: Two cards using glassmorphism. Card 1: \"Clicks SDK - Integrate yield into any AI agent with one line of code.\" Card 2: \"MCP Server - Native support for Model Context Protocol agents.\"\n5) Footer: Minimal with \"Subscribe to Updates\" email input and neon green \"Join\" button.\nAesthetic: Modern, clean, enterprise SaaS, developer-centric, use glassmorphic effects for cards. Dark mode.",
+            "screenMetadata": {
+              "agentType": "HATTER_AGENT",
+              "status": "COMPLETE"
+            },
+            "screenType": "DESIGN",
+            "screenshot": {
+              "downloadUrl": "https://lh3.googleusercontent.com/aida/ADBb0ugq75MNCU8I3dGz8GmMj-8beVJxutTALYjgsIFORbgrewaw8mxzT267Q4KQa0fDDcp6Le1PKKPQw0wxVYGYGIe8df3fMCnLPGGBMN4n7H55qrUXLkmpdEDgr1XFM5ZfhK14bDYsyhh28T2J5PUN-Ubdb9hknb3xx6QjNqLwGJwJW-mu9JQQhbGCgjZOsT9siuwOPAP5wcFiphB8NI_cbdlYBWD5KjmZT5ysoAOvSCulSAIi5yArfF4P_0Pn",
+              "name": "projects/10997952019249158992/files/5b194d5d7b0f44d5bf144998ebc40a2b"
+            },
+            "theme": {
+              "colorMode": "DARK",
+              "customColor": "#00ff99",
+              "roundness": "ROUND_EIGHT",
+              "saturation": 3
+            },
+            "title": "Clicks Protocol Landing Page",
+            "width": "2560"
+          }
+        ],
+        "theme": {}
+      }
+    },
+    {
+      "text": "I've designed the full landing page for Clicks Protocol as you described. \n\nIt features:\n*   **A High-Impact Hero:** Leading with the \"Autonomous Yield for AI Agents\" headline and a functional-looking code snippet to immediately signal the developer focus.\n*   **A Unified Stats Bar:** Showcasing the 80/20 split and 4-8% APY metrics.\n*   **\"How it Works\" and Developer Cards:** Utilizing glassmorphic surface cards to keep the design modern and professional, similar to high-end SaaS platforms.\n*   **Branding:** Applied your #00FF9B neon green as the primary accent on the deep #0F0814 purple background.\n\nHow does this look for the initial concept? Let me know if you'd like to tweak any sections or add more detail to the developer documentation area!"
+    },
+    {
+      "suggestion": "Add a pricing table"
+    },
+    {
+      "suggestion": "Design the 'Launch App' dashboard view"
+    },
+    {
+      "suggestion": "Flesh out the SDK documentation page"
+    }
+  ],
+  "projectId": "10997952019249158992",
+  "sessionId": "2179885620236062773"
+}

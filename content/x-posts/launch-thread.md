@@ -47,7 +47,7 @@ Five contracts on Base Mainnet. All verified. All open source.
 
 ClicksRegistry: tracks agents
 ClicksSplitterV3: handles splits  
-ClicksYieldRouter: routes to strategies
+ClicksYieldRouter: dual-routing (Morpho + Aave V3, auto-switches to best APY)
 ClicksFee: protocol fee on yield only
 USDC: native Base USDC
 

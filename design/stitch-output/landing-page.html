@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Public+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00FF9B",
+                        "background-light": "#f5f8f7",
+                        "background-dark": "#0F0814",
+                        "surface": "#191020",
+                        "accent-purple": "#2D1B4B"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(25, 16, 32, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .code-gradient {
+            background: linear-gradient(135deg, #191020 0%, #2D1B4B 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+<div class="relative min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 w-full border-b border-white/5 bg-background-dark/80 backdrop-blur-md px-6 md:px-20 py-4">
+<div class="max-w-7xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-background-dark font-bold text-xl">bolt</span>
+</div>
+<span class="text-xl font-extrabold tracking-tight text-white">Clicks Protocol</span>
+</div>
+<nav class="hidden md:flex items-center gap-10">
+<a class="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="#">SDK</a>
+<a class="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="#">Docs</a>
+<a class="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="#">Security</a>
+<a class="text-sm font-medium text-slate-400 hover:text-primary transition-colors" href="#">Governance</a>
+</nav>
+<button class="bg-primary hover:bg-primary/90 text-background-dark px-5 py-2 rounded-lg text-sm font-bold transition-all transform hover:scale-105">
+                    Launch App
+                </button>
+</div>
+</header>
+<main class="flex-1">
+<section class="relative px-6 md:px-20 pt-16 pb-24 overflow-hidden">
+<div class="absolute top-0 right-0 -z-10 w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
+<div class="absolute bottom-0 left-0 -z-10 w-[500px] h-[500px] bg-accent-purple/30 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2"></div>
+<div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+<div class="flex flex-col gap-8">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 w-fit">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Live on Base L2</span>
+</div>
+<h1 class="text-5xl md:text-7xl font-extrabold text-white leading-[1.1] tracking-tight">
+                            Autonomous Yield for <span class="text-primary">AI Agents</span>
+</h1>
+<p class="text-lg md:text-xl text-slate-400 leading-relaxed max-w-xl">
+                            The first DeFi yield protocol built for AI agents on Base L2. Smart 80/20 USDC split earning 4-8% APY with zero manual management.
+                        </p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-primary text-background-dark h-14 px-8 rounded-xl text-base font-bold flex items-center justify-center hover:opacity-90 transition-all">
+                                Launch App
+                            </button>
+<button class="border border-white/20 text-white h-14 px-8 rounded-xl text-base font-bold flex items-center justify-center hover:bg-white/5 transition-all">
+                                Read Docs
+                            </button>
+</div>
+</div>
+<div class="relative">
+<div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
+<div class="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/10">
+<div class="flex gap-1.5">
+<div class="w-3 h-3 rounded-full bg-red-500/50"></div>
+<div class="w-3 h-3 rounded-full bg-amber-500/50"></div>
+<div class="w-3 h-3 rounded-full bg-emerald-500/50"></div>
+</div>
+<span class="text-[10px] text-slate-500 font-mono uppercase tracking-widest ml-2">clicks_sdk_init.ts</span>
+</div>
+<div class="p-6 font-mono text-sm leading-relaxed">
+<div class="flex gap-4">
+<span class="text-slate-600">01</span>
+<code class="text-primary">import { ClicksAgent } from '@clicks/sdk';</code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">02</span>
+<code> </code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">03</span>
+<code class="text-slate-300">const agent = new ClicksAgent({</code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">04</span>
+<code class="text-slate-300">  strategy: 'yield_optimizer',</code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">05</span>
+<code class="text-slate-300">  asset: 'USDC',</code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">06</span>
+<code class="text-slate-300">  network: 'base_mainnet'</code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">07</span>
+<code class="text-slate-300">});</code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">08</span>
+<code> </code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">09</span>
+<code class="text-purple-400">// Activate autonomous yield</code>
+</div>
+<div class="flex gap-4">
+<span class="text-slate-600">10</span>
+<code class="text-slate-300">await agent.enableAutoYield();</code>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="px-6 md:px-20 py-12">
+<div class="max-w-7xl mx-auto">
+<div class="glass-card rounded-2xl grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0 divide-white/10 overflow-hidden">
+<div class="p-8 text-center flex flex-col gap-1">
+<span class="text-slate-400 text-sm font-medium">Strategy</span>
+<span class="text-white text-3xl font-extrabold tracking-tight">80/20 Split</span>
+</div>
+<div class="p-8 text-center flex flex-col gap-1">
+<span class="text-slate-400 text-sm font-medium">Target APY</span>
+<span class="text-primary text-3xl font-extrabold tracking-tight">4-8%</span>
+</div>
+<div class="p-8 text-center flex flex-col gap-1 border-t md:border-t-0">
+<span class="text-slate-400 text-sm font-medium">Liquidity</span>
+<span class="text-white text-3xl font-extrabold tracking-tight">0 Lockup</span>
+</div>
+<div class="p-8 text-center flex flex-col gap-1 border-t md:border-t-0">
+<span class="text-slate-400 text-sm font-medium">Integration</span>
+<span class="text-white text-3xl font-extrabold tracking-tight">1 SDK Call</span>
+</div>
+</div>
+</div>
+</section>
+<section class="px-6 md:px-20 py-24">
+<div class="max-w-7xl mx-auto">
+<h2 class="text-3xl md:text-4xl font-extrabold text-white mb-16 text-center">How it Works</h2>
+<div class="grid md:grid-cols-3 gap-8">
+<div class="glass-card p-10 rounded-2xl flex flex-col gap-6 group hover:border-primary/30 transition-all">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">account_balance_wallet</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-xl font-bold text-white">Deposit USDC</h3>
+<p class="text-slate-400 leading-relaxed">Securely bridge or deposit USDC on Base L2. Your funds remain under agent-controlled smart contracts.</p>
+</div>
+</div>
+<div class="glass-card p-10 rounded-2xl flex flex-col gap-6 group hover:border-primary/30 transition-all">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">account_tree</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-xl font-bold text-white">Auto-allocation</h3>
+<p class="text-slate-400 leading-relaxed">Smart contracts automatically split funds into high-performance, yield-bearing vaults across Base ecosystem.</p>
+</div>
+</div>
+<div class="glass-card p-10 rounded-2xl flex flex-col gap-6 group hover:border-primary/30 transition-all">
+<div class="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-3xl">trending_up</span>
+</div>
+<div class="flex flex-col gap-3">
+<h3 class="text-xl font-bold text-white">Accrue Yield</h3>
+<p class="text-slate-400 leading-relaxed">Real-time yield accrual with zero manual management. Monitor performance through our dashboard or via API.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="px-6 md:px-20 py-24 bg-surface/30">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+<div>
+<h2 class="text-primary font-bold tracking-widest uppercase text-sm mb-4">Developers</h2>
+<h3 class="text-4xl font-extrabold text-white">Built for the AI-Native Economy</h3>
+</div>
+</div>
+<div class="grid md:grid-cols-2 gap-8">
+<div class="glass-card p-8 rounded-2xl border-l-4 border-l-primary flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h4 class="text-2xl font-bold text-white">Clicks SDK</h4>
+<span class="px-3 py-1 bg-white/5 rounded text-[10px] text-slate-400 font-mono">v1.4.0</span>
+</div>
+<p class="text-slate-400 text-lg">Integrate institutional-grade yield into any AI agent with one line of code. Support for LangChain, AutoGPT, and custom frameworks.</p>
+<a class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all" href="#">
+                                View SDK Docs <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="glass-card p-8 rounded-2xl border-l-4 border-l-purple-500 flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<h4 class="text-2xl font-bold text-white">MCP Server</h4>
+<span class="px-3 py-1 bg-white/5 rounded text-[10px] text-slate-400 font-mono">Official</span>
+</div>
+<p class="text-slate-400 text-lg">Native support for Model Context Protocol agents. Allow your models to reason about yield strategies and execute balance management.</p>
+<a class="text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all" href="#">
+                                Explore MCP Integration <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<section class="px-6 md:px-20 py-24">
+<div class="max-w-4xl mx-auto">
+<div class="glass-card p-12 rounded-[2rem] relative overflow-hidden text-center flex flex-col items-center gap-8">
+<div class="absolute inset-0 bg-primary/5 -z-10"></div>
+<h2 class="text-3xl md:text-4xl font-extrabold text-white">Stay ahead of the curve</h2>
+<p class="text-slate-400 max-w-lg">Get the latest updates on new yield strategies, SDK releases, and the future of AI-driven finance.</p>
+<div class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+<input class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all" placeholder="Enter your email" type="email"/>
+<button class="bg-primary text-background-dark font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-all">Join</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer class="px-6 md:px-20 py-12 border-t border-white/5">
+<div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+<div class="flex items-center gap-3 opacity-60">
+<div class="w-6 h-6 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-background-dark font-bold text-xs">bolt</span>
+</div>
+<span class="text-sm font-bold tracking-tight text-white uppercase">Clicks Protocol</span>
+</div>
+<div class="flex gap-8">
+<a class="text-slate-500 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">description</span></a>
+<a class="text-slate-500 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">code</span></a>
+<a class="text-slate-500 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">hub</span></a>
+</div>
+<p class="text-slate-500 text-xs font-medium">
+                    © 2024 Clicks Protocol. Built for the autonomous age.
+                </p>
+</div>
+</footer>
+</div>
+</body></html>

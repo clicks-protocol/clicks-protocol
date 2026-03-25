@@ -1,0 +1,19 @@
+{
+  "name": "Clicks Protocol",
+  "short_name": "Clicks",
+  "icons": [
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#00FF9B",
+  "background_color": "#0A0A0B",
+  "display": "standalone"
+}

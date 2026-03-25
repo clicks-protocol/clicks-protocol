@@ -1,0 +1,44 @@
+{
+  "name": "agent-treasury",
+  "version": "0.1.0",
+  "description": "Treasury management utilities for AI agents. Track balances, detect idle USDC, compare DeFi yields, and activate autonomous earning.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "agent",
+    "treasury",
+    "ai-agent",
+    "usdc",
+    "yield",
+    "defi",
+    "base",
+    "idle",
+    "balance",
+    "autonomous",
+    "wallet",
+    "x402"
+  ],
+  "homepage": "https://clicksprotocol.xyz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clicks-protocol/agent-treasury"
+  },
+  "license": "MIT",
+  "author": "Clicks Protocol <hello@clicksprotocol.xyz>",
+  "peerDependencies": {
+    "ethers": "^6.0.0"
+  },
+  "devDependencies": {
+    "ethers": "^6.13.0",
+    "typescript": "^5.4.0"
+  }
+}

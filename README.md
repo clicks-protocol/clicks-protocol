@@ -1,4 +1,5 @@
 <p align="center">
+  <img src="assets/logo.svg" width="200" alt="Clicks Protocol Logo">
   <h1 align="center">Clicks Protocol ⚡</h1>
   <p align="center">Your agent earns USDC. That USDC sits idle. Clicks fixes that.</p>
 </p>
@@ -9,9 +10,18 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@clicks-protocol/sdk"><img src="https://img.shields.io/npm/v/@clicks-protocol/sdk?color=00FF9B&label=sdk" alt="npm"></a>
-  <a href="https://basescan.org/address/0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5"><img src="https://img.shields.io/badge/Base%20Mainnet-live-00FF9B" alt="Base Mainnet"></a>
+  <a href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"><img src="https://img.shields.io/badge/Base%20Mainnet-live-00FF9B" alt="Base Mainnet"></a>
   <a href="#"><img src="https://img.shields.io/badge/tests-58%20passing-00FF9B" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
+</p>
+
+<p align="center">
+  <a href="https://clicksprotocol.xyz">Website</a> ·
+  <a href="https://x.com/ClicksProtocol">Twitter</a> ·
+  <a href="https://discord.gg/clicks-protocol">Discord</a> ·
+  <a href="https://clicksprotocol.medium.com">Medium</a> ·
+  <a href="https://substack.com/@clicksprotocol">Substack</a> ·
+  <a href="https://reddit.com/user/clicksprotocol/">Reddit</a>
 </p>
 
 ---
@@ -198,10 +208,10 @@ Form squads, hit TVL milestones, earn bonus yield:
 
 | Contract | Address |
 |----------|---------|
-| ClicksRegistry | [`0x898d...F48d`](https://basescan.org/address/0x898d8a3B04e5E333E88f798372129C6a622fF48d) |
-| ClicksSplitterV3 | [`0xA1D0...Bac5`](https://basescan.org/address/0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5) |
-| ClicksYieldRouter | [`0x47d6...f29`](https://basescan.org/address/0x47d6Add0a3bdFe856b39a0311D8c055481F76f29) |
-| ClicksFee | [`0xb90c...E12`](https://basescan.org/address/0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12) |
+| ClicksRegistry | [`0x23bb...0C0a3`](https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3) |
+| ClicksFee | [`0xc47B...E6bE`](https://basescan.org/address/0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE) |
+| ClicksYieldRouter | [`0x4E29...849F`](https://basescan.org/address/0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F) |
+| ClicksSplitterV3 | [`0x2432...FcB4`](https://basescan.org/address/0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4) |
 | USDC | [`0x8335...913`](https://basescan.org/address/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
 
 All contracts verified on Basescan.
@@ -221,8 +231,7 @@ clicks-protocol/
 ├── sdk/                 TypeScript SDK
 ├── mcp-server/          MCP Server (9 tools)
 ├── site/                Landing page + llms.txt + agent.json
-├── test/                58 tests (Hardhat)
-└── strategy/            Internal docs
+└── test/                58 tests (Hardhat)
 ```
 
 ---

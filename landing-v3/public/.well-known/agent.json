@@ -1,0 +1,81 @@
+{
+  "name": "Clicks Protocol",
+  "description": "On-chain yield layer for AI agents on Base L2. Split USDC payments 80/20: 80% liquid, 20% earning 4-8% APY via Aave V3 or Morpho. No lockup. One SDK call.",
+  "version": "1.0.0",
+  "url": "https://clicksprotocol.xyz",
+  "protocol": "x402",
+  "chain": {
+    "name": "Base",
+    "chainId": 8453,
+    "rpc": "https://mainnet.base.org"
+  },
+  "payment": {
+    "currency": "USDC",
+    "usdcAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "split": {
+      "default": { "liquid": 0.8, "yield": 0.2 },
+      "configurable": { "min": 0.05, "max": 0.50 }
+    },
+    "yield": {
+      "providers": ["Aave V3", "Morpho"],
+      "apy": { "min": 4, "max": 8, "unit": "percent" },
+      "lockup": 0
+    },
+    "fee": {
+      "rate": 0.02,
+      "appliedTo": "yield only, never principal"
+    }
+  },
+  "contracts": {
+    "ClicksRegistry": "0x898d8a3B04e5E333E88f798372129C6a622fF48d",
+    "ClicksSplitterV3": "0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5",
+    "ClicksYieldRouter": "0x47d6Add0a3bdFe856b39a0311D8c055481F76f29",
+    "ClicksFee": "0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12"
+  },
+  "sdk": {
+    "npm": "@clicks-protocol/sdk",
+    "install": "npm install @clicks-protocol/sdk",
+    "quickStart": "const clicks = new ClicksClient(signer); await clicks.quickStart('1000', agentAddress);"
+  },
+  "mcp": {
+    "npm": "@clicks-protocol/mcp-server",
+    "run": "npx @clicks-protocol/mcp-server",
+    "tools": 9,
+    "toolNames": ["clicks_quick_start", "clicks_receive_payment", "clicks_withdraw_yield", "clicks_register_agent", "clicks_set_yield_pct", "clicks_get_agent_info", "clicks_simulate_split", "clicks_get_yield_info", "clicks_get_referral_stats"]
+  },
+  "treasury": {
+    "npm": "agent-treasury",
+    "install": "npm install agent-treasury",
+    "features": ["Multi-chain USDC balance tracking", "Idle balance detection", "APY comparison", "Clicks Protocol yield activation"]
+  },
+  "frameworkIntegrations": {
+    "langchain": { "language": "python", "package": "clicks-langchain" },
+    "crewai": { "language": "python", "package": "clicks-crewai" },
+    "eliza": { "language": "typescript", "package": "@clicks-protocol/eliza-plugin" }
+  },
+  "discovery": {
+    "llmsTxt": "https://clicksprotocol.xyz/llms.txt",
+    "openapi": "https://clicksprotocol.xyz/api/openapi.json",
+    "aiPlugin": "https://clicksprotocol.xyz/.well-known/ai-plugin.json",
+    "x402": "https://clicksprotocol.xyz/.well-known/x402.json",
+    "mcpSchema": "https://clicksprotocol.xyz/mcp/server.json",
+    "sitemap": "https://clicksprotocol.xyz/sitemap.xml"
+  },
+  "links": {
+    "website": "https://clicksprotocol.xyz",
+    "docs": "https://clicksprotocol.xyz/docs",
+    "apiReference": "https://clicksprotocol.xyz/docs/api",
+    "security": "https://clicksprotocol.xyz/security",
+    "whitepaper": "https://clicksprotocol.xyz/whitepaper",
+    "whitepaperPdf": "https://clicksprotocol.xyz/whitepaper.pdf",
+    "github": "https://github.com/clicks-protocol",
+    "discord": "https://discord.gg/clicks-protocol",
+    "twitter": "https://x.com/ClicksProtocol",
+    "medium": "https://clicksprotocol.medium.com",
+    "npm": "https://www.npmjs.com/org/clicks-protocol"
+  },
+  "contact": {
+    "general": "hello@clicksprotocol.xyz",
+    "security": "security@clicksprotocol.xyz"
+  }
+}

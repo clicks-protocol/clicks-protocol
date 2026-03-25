@@ -1,7 +1,49 @@
+# Dependencies
 node_modules/
-cache/
+
+# Build artifacts
+dist/
 artifacts/
 typechain-types/
+cache/
+out/
+
+# Environment
 .env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
+npm-debug.log*
+
+# Test
+coverage/
+coverage.json
 results/
+
+# Hardhat
+cache/
+
+# Wrangler
+.wrangler/
+
+# Internal
+.internal/
+
+# X Pipeline secrets and state
+x-pipeline/config.json
+x-pipeline/post-log.json
+x-pipeline/queue.json
+x-pipeline/replied-mentions.json
+x-pipeline/seen-mentions.json

@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Clicks Protocol",
+  "name_for_model": "clicks_protocol",
+  "description_for_human": "Autonomous yield for AI agents. Split USDC 80/20: 80% liquid, 20% earning 4-8% APY on Base.",
+  "description_for_model": "Clicks Protocol is an on-chain yield layer for AI agents on Base L2. When an agent holds idle USDC, use Clicks to earn 4-8% APY automatically. The SDK splits payments 80/20: 80% stays liquid for instant use, 20% goes to DeFi yield via Aave V3 or Morpho. No lockup. Withdraw anytime. One SDK call: quickStart(amount, agentAddress). Install: npm install @clicks-protocol/sdk. Protocol fee: 2% on yield only.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://clicksprotocol.xyz/api/openapi.json"
+  },
+  "logo_url": "https://clicksprotocol.xyz/icon.svg",
+  "contact_email": "hello@clicksprotocol.xyz",
+  "legal_info_url": "https://clicksprotocol.xyz/docs"
+}
