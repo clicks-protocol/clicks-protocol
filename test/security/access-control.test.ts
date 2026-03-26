@@ -389,11 +389,16 @@ describe("Security: Access Control", function () {
       const { router, splitter, attacker } = await loadFixture(deployProtocol);
 
       const AttackerSplitter = await ethers.getContractFactory("ClicksSplitterV3");
+      // Use valid addresses (not ZeroAddress) since constructor now validates
+      const Fee = await ethers.getContractFactory("ClicksFee");
+      const fakeFee = await Fee.deploy(await router.usdc(), attacker.address);
+      const Registry = await ethers.getContractFactory("ClicksRegistry");
+      const fakeRegistry = await Registry.deploy();
       const fakeSplitter = await AttackerSplitter.deploy(
         await router.usdc(),
         await router.getAddress(),
-        ethers.ZeroAddress,
-        ethers.ZeroAddress
+        await fakeFee.getAddress(),
+        await fakeRegistry.getAddress()
       );
 
       // Attacker tries to set their own splitter

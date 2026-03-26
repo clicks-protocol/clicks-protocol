@@ -120,12 +120,12 @@ describe("Security: Flash Loan Attacks", function () {
       await usdc.mint(await flashAttacker.getAddress(), ethers.parseUnits("1000000", 6));
 
       // Attack: Borrow 1M USDC, manipulate APY, try to trigger bad rebalance
-      await expect(
-        flashAttacker.attack()
-      ).to.be.reverted; // Should fail: no direct rebalance access
+      // The attack executes but can't trigger rebalance (no public rebalance function)
+      await flashAttacker.attack();
 
+      // State should be unchanged — attacker couldn't manipulate router balances
       const balanceAfter = await router.getTotalBalance();
-      expect(balanceAfter).to.equal(balanceBefore); // State unchanged
+      expect(balanceAfter).to.equal(balanceBefore);
     });
 
     it("Should not allow Morpho utilization manipulation via flash deposits", async function () {
