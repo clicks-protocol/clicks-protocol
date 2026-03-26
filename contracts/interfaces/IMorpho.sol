@@ -61,17 +61,21 @@ interface IMorpho {
 
     /// @notice Get market state
     /// @param id Market ID (keccak256 of MarketParams)
-    /// @return market Current market state
-    function market(bytes32 id) external view returns (Market memory);
+    function market(bytes32 id) external view returns (
+        uint128 totalSupplyAssets,
+        uint128 totalSupplyShares,
+        uint128 totalBorrowAssets,
+        uint128 totalBorrowShares,
+        uint128 lastUpdate,
+        uint128 fee
+    );
 
     /// @notice Get position of an account in a market
     /// @param id Market ID
     /// @param account Account address
-    /// @return position Current position
-    function position(bytes32 id, address account) external view returns (Position memory);
-
-    /// @notice Compute market ID from params
-    /// @param marketParams Market parameters
-    /// @return id keccak256 hash identifying the market
-    function id(MarketParams memory marketParams) external pure returns (bytes32);
+    function position(bytes32 id, address account) external view returns (
+        uint256 supplyShares,
+        uint128 borrowShares,
+        uint128 collateral
+    );
 }

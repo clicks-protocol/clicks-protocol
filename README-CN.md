@@ -210,8 +210,8 @@ Agent 推荐 agent。三级深度。链上记录。
 |------|------|
 | ClicksRegistry | [`0x23bb...0C0a3`](https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3) |
 | ClicksFee | [`0xc47B...E6bE`](https://basescan.org/address/0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE) |
-| ClicksYieldRouter | [`0x4E29...849F`](https://basescan.org/address/0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F) |
-| ClicksSplitterV3 | [`0x2432...FcB4`](https://basescan.org/address/0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4) |
+| ClicksYieldRouter | [`0x4E29...849F`](https://basescan.org/address/0x053167a233d18E05Bc65a8d5F3F8808782a3EECD) |
+| ClicksSplitterV3 | [`0x2432...FcB4`](https://basescan.org/address/0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D) |
 | USDC | [`0x8335...913`](https://basescan.org/address/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
 
 所有合约已在 Basescan 上验证。

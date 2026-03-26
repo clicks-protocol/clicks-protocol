@@ -249,7 +249,7 @@ export default function WhitepaperPage() {
           </p>
           <p className="text-text-secondary leading-relaxed">
             <span className="text-text-primary font-semibold">Contract Address:</span>{' '}
-            <BasescanLink address="0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4" />
+            <BasescanLink address="0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D" />
           </p>
         </div>
 
@@ -266,7 +266,7 @@ export default function WhitepaperPage() {
           </p>
           <p className="text-text-secondary leading-relaxed">
             <span className="text-text-primary font-semibold">Contract Address:</span>{' '}
-            <BasescanLink address="0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F" />
+            <BasescanLink address="0x053167a233d18E05Bc65a8d5F3F8808782a3EECD" />
           </p>
         </div>
 
@@ -312,11 +312,11 @@ export default function WhitepaperPage() {
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="px-4 py-3 text-text-secondary">ClicksSplitterV3</td>
-                    <td className="px-4 py-3"><BasescanLink address="0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4" /></td>
+                    <td className="px-4 py-3"><BasescanLink address="0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D" /></td>
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="px-4 py-3 text-text-secondary">ClicksYieldRouter</td>
-                    <td className="px-4 py-3"><BasescanLink address="0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F" /></td>
+                    <td className="px-4 py-3"><BasescanLink address="0x053167a233d18E05Bc65a8d5F3F8808782a3EECD" /></td>
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="px-4 py-3 text-text-secondary">ClicksFee</td>

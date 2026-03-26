@@ -254,15 +254,21 @@ contract ClicksYieldRouter is Ownable {
     function getMorphoAPY() public view returns (uint256 apyBps) {
         // DECISION: Morpho supply rate requires reading market utilization
         // This is an approximation — exact rate depends on IRM implementation
-        bytes32 marketId = morpho.id(morphoMarketParams);
-        IMorpho.Market memory mkt = morpho.market(marketId);
+        bytes32 marketId = keccak256(abi.encode(
+            morphoMarketParams.loanToken,
+            morphoMarketParams.collateralToken,
+            morphoMarketParams.oracle,
+            morphoMarketParams.irm,
+            morphoMarketParams.lltv
+        ));
+        (uint128 totalSupplyAssets,, uint128 totalBorrowAssets,,,) = morpho.market(marketId);
 
-        if (mkt.totalSupplyAssets == 0) return 0;
+        if (totalSupplyAssets == 0) return 0;
 
         // Utilization rate = totalBorrow / totalSupply
         // Supply APY ≈ borrowAPY * utilization * (1 - fee)
         // We return a conservative estimate; real rate is IRM-dependent
-        uint256 utilization = (uint256(mkt.totalBorrowAssets) * 1e18) / mkt.totalSupplyAssets;
+        uint256 utilization = (uint256(totalBorrowAssets) * 1e18) / totalSupplyAssets;
 
         // Conservative estimate: 0–15% APY scaled by utilization
         // TODO: integrate IRM contract for exact rate in Task 1.4 follow-up
@@ -282,11 +288,17 @@ contract ClicksYieldRouter is Ownable {
         if (activeProtocol == 1) {
             return aUsdc.balanceOf(address(this));
         } else if (activeProtocol == 2) {
-            bytes32 marketId = morpho.id(morphoMarketParams);
-            IMorpho.Position memory pos = morpho.position(marketId, address(this));
-            IMorpho.Market memory mkt = morpho.market(marketId);
-            if (mkt.totalSupplyShares == 0) return 0;
-            return (uint256(pos.supplyShares) * mkt.totalSupplyAssets) / mkt.totalSupplyShares;
+            bytes32 marketId = keccak256(abi.encode(
+                morphoMarketParams.loanToken,
+                morphoMarketParams.collateralToken,
+                morphoMarketParams.oracle,
+                morphoMarketParams.irm,
+                morphoMarketParams.lltv
+            ));
+            (uint256 supplyShares,,) = morpho.position(marketId, address(this));
+            (uint128 totalSupplyAssets, uint128 totalSupplyShares,,,,) = morpho.market(marketId);
+            if (totalSupplyShares == 0) return 0;
+            return (supplyShares * totalSupplyAssets) / totalSupplyShares;
         }
         return 0;
     }
@@ -346,10 +358,16 @@ contract ClicksYieldRouter is Ownable {
             if (aBalance == 0) return;
             balance = aavePool.withdraw(address(usdc), type(uint256).max, address(this));
         } else if (fromProtocol == 2) {
-            bytes32 marketId = morpho.id(morphoMarketParams);
-            IMorpho.Position memory pos = morpho.position(marketId, address(this));
-            if (pos.supplyShares == 0) return;
-            (balance,) = morpho.withdraw(morphoMarketParams, 0, pos.supplyShares, address(this), address(this));
+            bytes32 marketId = keccak256(abi.encode(
+                morphoMarketParams.loanToken,
+                morphoMarketParams.collateralToken,
+                morphoMarketParams.oracle,
+                morphoMarketParams.irm,
+                morphoMarketParams.lltv
+            ));
+            (uint256 supplyShares,,) = morpho.position(marketId, address(this));
+            if (supplyShares == 0) return;
+            (balance,) = morpho.withdraw(morphoMarketParams, 0, supplyShares, address(this), address(this));
         }
 
         if (balance == 0) return;

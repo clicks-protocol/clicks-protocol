@@ -1,0 +1,5 @@
+name = "clicks-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-03-20"
+compatibility_flags = ["nodejs_compat"]
+account_id = "613482732d4af6ca8f094e90fcea3169"

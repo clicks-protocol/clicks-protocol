@@ -1,0 +1,22 @@
+{
+  "name": "@clicks-protocol/mcp-http",
+  "version": "0.1.0",
+  "description": "HTTP MCP Server for Clicks Protocol — Cloudflare Worker with read-only tools",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "wrangler deploy --dry-run --outdir=dist"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250313.0",
+    "typescript": "^5.5.0",
+    "wrangler": "^4.0.0"
+  },
+  "private": true,
+  "author": "Clicks Protocol <hello@clicksprotocol.xyz>",
+  "license": "MIT"
+}
