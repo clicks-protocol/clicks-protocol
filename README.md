@@ -13,6 +13,9 @@
   <a href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"><img src="https://img.shields.io/badge/Base%20Mainnet-live-00FF9B" alt="Base Mainnet"></a>
   <a href="#"><img src="https://img.shields.io/badge/tests-58%20passing-00FF9B" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
+  <a href="https://registry.modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP%20Registry-published-00FF9B" alt="MCP Registry"></a>
+  <a href="https://discord.gg/vkczMC8g3J"><img src="https://img.shields.io/badge/Discord-join-5865F2" alt="Discord"></a>
+  <a href="https://clawhub.ai/protogenosone/clicks-protocol"><img src="https://img.shields.io/badge/ClawHub-40%2B%20downloads-00FF9B" alt="ClawHub"></a>
 </p>
 
 <p align="center">
@@ -21,7 +24,9 @@
   <a href="https://discord.gg/clicks-protocol">Discord</a> ·
   <a href="https://clicksprotocol.medium.com">Medium</a> ·
   <a href="https://substack.com/@clicksprotocol">Substack</a> ·
-  <a href="https://reddit.com/user/clicksprotocol/">Reddit</a>
+  <a href="https://reddit.com/user/clicksprotocol/">Reddit</a> ·
+  <a href="https://api.clicksprotocol.xyz/lab">Treasury Lab</a> ·
+  <a href="https://mcpservers.org">mcpservers.org</a>
 </p>
 
 ---
