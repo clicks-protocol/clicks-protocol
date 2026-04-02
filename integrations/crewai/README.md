@@ -197,9 +197,9 @@ while True:
 
 | Contract | Address |
 |----------|---------|
-| Registry | `0x898d8a3B04e5E333E88f798372129C6a622fF48d` |
-| Splitter | `0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5` |
-| YieldRouter | `0x47d6Add0a3bdFe856b39a0311D8c055481F76f29` |
+| Registry | `0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3` |
+| Splitter | `0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4` |
+| YieldRouter | `0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F` |
 | USDC | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
 
 ## License
