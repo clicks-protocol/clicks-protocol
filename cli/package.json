@@ -1,6 +1,6 @@
 {
   "name": "@clicks-protocol/cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "CLI for Clicks Protocol — autonomous DeFi yield for AI agents on Base. Check yield rates, simulate payment splits, manage agents, and withdraw earnings from the terminal.",
   "keywords": [
     "clicks-protocol",

@@ -14,6 +14,7 @@ export async function statusCommand(options: { json?: boolean }): Promise<void> 
         morphoAPY: Number(info.morphoAPY) / 100,
         totalDeposited: formatUSDC(info.totalDeposited),
         totalBalance: formatUSDC(info.totalBalance),
+        protocolFee: '2% on yield only',
         links: {
           website: 'https://clicksprotocol.xyz',
           sdk: 'https://npmjs.com/package/@clicks-protocol/sdk',
@@ -32,6 +33,7 @@ export async function statusCommand(options: { json?: boolean }): Promise<void> 
     label('Morpho APY', formatAPY(info.morphoAPY));
     label('Total Deposits', `${formatUSDC(info.totalDeposited)} USDC`);
     label('Total Balance', `${formatUSDC(info.totalBalance)} USDC`);
+    label('Protocol Fee', '2% on yield only');
     console.log('');
     footer();
     console.log('');

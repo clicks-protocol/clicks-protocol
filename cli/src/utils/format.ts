@@ -15,12 +15,13 @@ export function formatAPY(bps: bigint): string {
 }
 
 /** Format protocol enum to name */
-export function formatProtocol(id: number): string {
-  switch (id) {
+export function formatProtocol(id: number | bigint): string {
+  const n = Number(id);
+  switch (n) {
     case 0: return 'None';
     case 1: return 'Aave V3';
     case 2: return 'Morpho';
-    default: return `Unknown (${id})`;
+    default: return `Unknown (${n})`;
   }
 }
 

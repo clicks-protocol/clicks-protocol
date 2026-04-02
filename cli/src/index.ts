@@ -18,7 +18,7 @@ const program = new Command();
 program
   .name('clicks')
   .description('Autonomous DeFi yield for AI agents on Base. 80% liquid. 20% earning. No lockup.')
-  .version('0.2.0')
+  .version('0.2.1')
   .addHelpText('after', `
 
 ${chalk.bold('Quick Start:')}
