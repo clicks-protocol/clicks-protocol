@@ -1,5 +1,5 @@
 import { getWriteClient } from '../utils/config.js';
-import { header, label, success } from '../utils/format.js';
+import { header, label, success, footer } from '../utils/format.js';
 
 export async function yieldPctCommand(pct: string): Promise<void> {
   const client = getWriteClient();
@@ -23,6 +23,8 @@ export async function yieldPctCommand(pct: string): Promise<void> {
     await tx.wait();
     console.log('');
     success(`Yield split set to ${pctNum}%. Future payments: ${100 - pctNum}% liquid, ${pctNum}% yield.`);
+    console.log('');
+    footer();
     console.log('');
   } catch (err: any) {
     console.error(`Error setting yield percentage: ${err.message}`);

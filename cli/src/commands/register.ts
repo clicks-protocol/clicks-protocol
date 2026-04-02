@@ -1,5 +1,5 @@
 import { getWriteClient } from '../utils/config.js';
-import { header, label, success } from '../utils/format.js';
+import { header, label, success, footer } from '../utils/format.js';
 
 export async function registerCommand(address: string, options: { referrer?: string }): Promise<void> {
   const client = getWriteClient();
@@ -11,11 +11,12 @@ export async function registerCommand(address: string, options: { referrer?: str
   }
 
   try {
-    // Check if already registered
     const info = await client.getAgentInfo(address);
     if (info.isRegistered) {
       console.log('');
       console.log('  Agent is already registered.');
+      console.log('');
+      footer();
       console.log('');
       return;
     }
@@ -30,6 +31,8 @@ export async function registerCommand(address: string, options: { referrer?: str
     success('Agent registered on Base Mainnet.');
     console.log('');
     console.log('  Next: clicks deposit <amount> --agent ' + address);
+    console.log('');
+    footer();
     console.log('');
   } catch (err: any) {
     console.error(`Error registering agent: ${err.message}`);

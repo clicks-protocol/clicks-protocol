@@ -51,3 +51,24 @@ export function success(text: string): void {
 export function error(text: string): void {
   console.error(chalk.red(`❌ ${text}`));
 }
+
+/** Print footer with discovery links */
+export function footer(): void {
+  console.log(chalk.gray('  ─────────────────────────────────────────'));
+  console.log(chalk.gray('  Docs: https://clicksprotocol.xyz/llms.txt'));
+}
+
+/** Print connection error with helpful fallback */
+export function connectionError(err: any): void {
+  console.error(chalk.red(`\n  Cannot connect to Base: ${err.message}\n`));
+  console.log('  Troubleshooting:');
+  console.log('    1. Check your internet connection');
+  console.log('    2. Set a custom RPC: export CLICKS_RPC_URL=https://...');
+  console.log('    3. Use the MCP Server instead (no RPC needed for remote):');
+  console.log('       npx @clicks-protocol/mcp-server');
+  console.log('');
+  console.log(chalk.gray('  Docs: https://clicksprotocol.xyz/llms.txt'));
+  console.log(chalk.gray('  SDK:  npm install @clicks-protocol/sdk'));
+  console.log('');
+  process.exit(1);
+}

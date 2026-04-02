@@ -1,6 +1,6 @@
 {
   "name": "@clicks-protocol/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI for Clicks Protocol — autonomous DeFi yield for AI agents on Base. Check yield rates, simulate payment splits, manage agents, and withdraw earnings from the terminal.",
   "keywords": [
     "clicks-protocol",
@@ -44,7 +44,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx src/index.ts",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "postinstall": "echo '\n  ✅ @clicks-protocol/cli installed\n     Run clicks status to see live yield rates on Base.\n     Run clicks doctor to check your setup.\n     Docs: https://clicksprotocol.xyz/llms.txt\n'"
   },
   "dependencies": {
     "@clicks-protocol/sdk": "^0.1.3",

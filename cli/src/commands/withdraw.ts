@@ -1,5 +1,5 @@
 import { getWriteClient } from '../utils/config.js';
-import { header, label, success } from '../utils/format.js';
+import { header, label, success, footer } from '../utils/format.js';
 
 export async function withdrawCommand(address: string, options: { amount?: string }): Promise<void> {
   const client = getWriteClient();
@@ -18,6 +18,8 @@ export async function withdrawCommand(address: string, options: { amount?: strin
     console.log('');
     success('Withdrawal complete. USDC returned to agent wallet.');
     console.log('  2% fee deducted from yield earned (not from principal).');
+    console.log('');
+    footer();
     console.log('');
   } catch (err: any) {
     console.error(`Error withdrawing: ${err.message}`);

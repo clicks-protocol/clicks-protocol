@@ -1,5 +1,5 @@
 import { getWriteClient } from '../utils/config.js';
-import { header, label, success } from '../utils/format.js';
+import { header, label, success, footer } from '../utils/format.js';
 
 export async function depositCommand(amount: string, options: { agent: string; referrer?: string }): Promise<void> {
   const client = getWriteClient();
@@ -25,6 +25,8 @@ export async function depositCommand(amount: string, options: { agent: string; r
     }
     console.log('');
     success(`${amount} USDC deposited. 80% liquid, 20% earning yield.`);
+    console.log('');
+    footer();
     console.log('');
   } catch (err: any) {
     console.error(`Error depositing: ${err.message}`);
