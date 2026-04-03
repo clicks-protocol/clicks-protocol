@@ -249,11 +249,76 @@ clicks-protocol/
 
 ---
 
+## Connect Your AI Agent
+
+The Clicks MCP server is live at `https://mcp.clicksprotocol.xyz/mcp` — connect any MCP-compatible client in seconds.
+
+### Claude Desktop
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}
+```
+
+### OpenClaw
+
+```bash
+openclaw mcp set clicks-protocol --url https://mcp.clicksprotocol.xyz/mcp
+```
+
+### Codex CLI
+
+Add to `.codex/config.json`:
+
+```json
+{
+  "mcpServers": {
+    "clicks-protocol": {
+      "type": "url",
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}
+```
+
+### Gemini CLI
+
+```json
+{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}
+```
+
+### Available MCP Tools
+
+| Tool | Description |
+|------|-------------|
+| `get_protocol_stats` | TVL, APY, agent count |
+| `get_agent_info` | Check if an agent is registered |
+| `get_yield_info` | Yield balance for an agent |
+| `simulate_yield` | Project earnings over time |
+| `clicks://protocol/overview` | Resource: protocol overview |
+
+See [`examples/integrations/`](examples/integrations/) for ready-to-use config files.
+
+---
+
 ## Works with
 
 Any agent framework that handles USDC on Base:
 
-x402 · LangChain · CrewAI · AutoGen · Eliza · OpenClaw · Claude · Cursor · Phidata
+x402 · LangChain · CrewAI · AutoGen · Eliza · OpenClaw · Claude · Cursor · Codex · Gemini · Hummingbot · Phidata
 
 ---
 

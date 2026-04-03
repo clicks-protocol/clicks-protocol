@@ -106,6 +106,139 @@ export default function DocsOverview() {
         </div>
       </div>
 
+      {/* MCP Integration */}
+      <div id="mcp-integration" className="mb-12">
+        <h2 className="text-2xl font-bold mb-4">MCP Integration</h2>
+        <p className="text-text-secondary mb-6">
+          Connect your AI agent to Clicks Protocol via the public MCP server. Copy the config for your client:
+        </p>
+
+        <div className="space-y-6">
+          {/* Claude Desktop */}
+          <div>
+            <h3 className="font-semibold text-lg mb-2">Claude Desktop</h3>
+            <p className="text-text-secondary text-sm mb-3">
+              Add to your <code className="text-accent">claude_desktop_config.json</code>:
+            </p>
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
+                <span className="text-xs text-text-secondary font-mono">json</span>
+                <CopyButton text={`{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}`} />
+              </div>
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+                <code>{`{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}`}</code>
+              </pre>
+            </div>
+          </div>
+
+          {/* OpenClaw */}
+          <div>
+            <h3 className="font-semibold text-lg mb-2">OpenClaw</h3>
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
+                <span className="text-xs text-text-secondary font-mono">bash</span>
+                <CopyButton text="openclaw mcp set clicks-protocol --url https://mcp.clicksprotocol.xyz/mcp" />
+              </div>
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+                <code>openclaw mcp set clicks-protocol --url https://mcp.clicksprotocol.xyz/mcp</code>
+              </pre>
+            </div>
+          </div>
+
+          {/* Codex CLI */}
+          <div>
+            <h3 className="font-semibold text-lg mb-2">Codex CLI</h3>
+            <p className="text-text-secondary text-sm mb-3">
+              Add to <code className="text-accent">.codex/config.json</code>:
+            </p>
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
+                <span className="text-xs text-text-secondary font-mono">json</span>
+                <CopyButton text={`{
+  "mcpServers": {
+    "clicks-protocol": {
+      "type": "url",
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}`} />
+              </div>
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+                <code>{`{
+  "mcpServers": {
+    "clicks-protocol": {
+      "type": "url",
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}`}</code>
+              </pre>
+            </div>
+          </div>
+
+          {/* Gemini CLI */}
+          <div>
+            <h3 className="font-semibold text-lg mb-2">Gemini CLI</h3>
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
+                <span className="text-xs text-text-secondary font-mono">json</span>
+                <CopyButton text={`{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}`} />
+              </div>
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+                <code>{`{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}`}</code>
+              </pre>
+            </div>
+          </div>
+        </div>
+
+        {/* Available Tools */}
+        <div className="mt-6 glassmorphism rounded-xl p-6">
+          <h3 className="font-semibold text-lg mb-3">Available MCP Tools</h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-start gap-3">
+              <code className="text-accent font-mono whitespace-nowrap">get_protocol_stats</code>
+              <span className="text-text-secondary">TVL, APY, agent count</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <code className="text-accent font-mono whitespace-nowrap">get_agent_info</code>
+              <span className="text-text-secondary">Check if an agent is registered</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <code className="text-accent font-mono whitespace-nowrap">get_yield_info</code>
+              <span className="text-text-secondary">Yield balance for an agent</span>
+            </div>
+            <div className="flex items-start gap-3">
+              <code className="text-accent font-mono whitespace-nowrap">simulate_yield</code>
+              <span className="text-text-secondary">Project earnings over time</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Help */}
       <div className="glassmorphism rounded-xl p-6">
         <h3 className="font-semibold text-lg mb-3">Need help?</h3>
