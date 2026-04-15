@@ -10,6 +10,10 @@ export function CopyButton({ text }: { text: string }) {
     await navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    // X Pixel: Track SDK install copy as Lead conversion
+    if (typeof window !== 'undefined' && (window as any).twq && text.includes('@clicks-protocol/sdk')) {
+      (window as any).twq('event', 'tw-rbppe-137mgq', {});
+    }
   };
 
   return (

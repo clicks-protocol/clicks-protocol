@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clicks Protocol — Proof Widget</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --border: #222;
+    --text: #e0e0e0;
+    --dim: #888;
+    --accent: #3b82f6;
+    --green: #22c55e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  h1 { font-size: 18px; font-weight: 600; }
+  .subtitle { color: var(--dim); font-size: 13px; margin-top: 4px; }
+
+  /* ── Badge Variants ─────────────────────────────────────── */
+
+  .badge-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s;
+  }
+  .badge-inline:hover { border-color: var(--accent); }
+  .badge-inline .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+  .badge-inline .label { color: var(--dim); }
+  .badge-inline .value { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* ── Card Widget ────────────────────────────────────────── */
+
+  .proof-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    width: 320px;
+  }
+  .proof-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .proof-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .proof-card-title .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .proof-card-chain {
+    font-size: 11px;
+    color: var(--dim);
+    background: #1a1a1a;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .proof-card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .proof-card-metric {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .proof-card-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dim);
+  }
+  .proof-card-value {
+    font-size: 18px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .proof-card-value.small {
+    font-size: 14px;
+  }
+  .proof-card-footer {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--dim);
+  }
+  .proof-card-footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .proof-card-footer a:hover { text-decoration: underline; }
+
+  /* ── Preview Section ───────────────────────────────────── */
+
+  .preview-section {
+    width: 100%;
+    max-width: 640px;
+  }
+  .preview-section h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .embed-code {
+    background: #111;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--dim);
+    white-space: pre-wrap;
+    word-break: break-all;
+    margin-top: 8px;
+  }
+  #error-msg {
+    color: #ef4444;
+    font-size: 13px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <h1>Clicks Protocol — Proof Widgets</h1>
+  <div class="subtitle">Live on-chain metrics, embeddable anywhere</div>
+</div>
+
+<div id="error-msg"></div>
+
+<!-- Inline Badge -->
+<div class="preview-section">
+  <h2>Inline Badge</h2>
+  <a class="badge-inline" id="badge-inline" href="https://basescan.org/address/0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D" target="_blank">
+    <span class="dot"></span>
+    <span class="label">Clicks Protocol</span>
+    <span class="value" id="badge-tvl">—</span>
+    <span class="label">TVL</span>
+    <span class="value" id="badge-apy">—</span>
+    <span class="label">APY</span>
+  </a>
+</div>
+
+<!-- Card Widget -->
+<div class="preview-section">
+  <h2>Proof Card</h2>
+  <div class="proof-card" id="proof-card">
+    <div class="proof-card-header">
+      <div class="proof-card-title"><span class="dot"></span> Clicks Protocol</div>
+      <div class="proof-card-chain" id="card-chain">Base</div>
+    </div>
+    <div class="proof-card-grid">
+      <div class="proof-card-metric">
+        <div class="proof-card-label">TVL</div>
+        <div class="proof-card-value" id="card-tvl">—</div>
+      </div>
+      <div class="proof-card-metric">
+        <div class="proof-card-label">Current APY</div>
+        <div class="proof-card-value" id="card-apy">—</div>
+      </div>
+      <div class="proof-card-metric">
+        <div class="proof-card-label">Agents</div>
+        <div class="proof-card-value small" id="card-agents">—</div>
+      </div>
+      <div class="proof-card-metric">
+        <div class="proof-card-label">Payments</div>
+        <div class="proof-card-value small" id="card-payments">—</div>
+      </div>
+      <div class="proof-card-metric">
+        <div class="proof-card-label">Volume</div>
+        <div class="proof-card-value small" id="card-volume">—</div>
+      </div>
+      <div class="proof-card-metric">
+        <div class="proof-card-label">Protocol</div>
+        <div class="proof-card-value small" id="card-protocol">—</div>
+      </div>
+    </div>
+    <div class="proof-card-footer">
+      <span id="card-updated">—</span>
+      <a href="https://basescan.org/address/0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D" target="_blank">Verify on BaseScan</a>
+    </div>
+  </div>
+</div>
+
+<!-- Embed Code -->
+<div class="preview-section">
+  <h2>Embed Code</h2>
+  <div class="embed-code">&lt;iframe src="http://localhost:3847/widget" width="340" height="260" frameborder="0" style="border-radius:10px"&gt;&lt;/iframe&gt;</div>
+</div>
+
+<script>
+const API_BASE = window.CLICKS_API_BASE || '';
+
+function fmtUsdc(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n.toFixed(2);
+}
+
+function timeAgo(iso) {
+  if (!iso) return 'never';
+  const ms = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(ms / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  return Math.floor(h / 24) + 'd ago';
+}
+
+async function load() {
+  try {
+    const res = await fetch(API_BASE + '/api/public/metrics');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const m = await res.json();
+
+    // Inline badge
+    document.getElementById('badge-tvl').textContent = fmtUsdc(m.tvlUsdc) + ' USDC';
+    document.getElementById('badge-apy').textContent = m.currentApyPct.toFixed(1) + '%';
+
+    // Card
+    document.getElementById('card-tvl').textContent = fmtUsdc(m.tvlUsdc) + ' USDC';
+    document.getElementById('card-apy').textContent = m.currentApyPct.toFixed(1) + '%';
+    document.getElementById('card-agents').textContent = m.totalAgents;
+    document.getElementById('card-payments').textContent = m.totalPaymentCount;
+    document.getElementById('card-volume').textContent = fmtUsdc(m.totalPaymentsUsdc) + ' USDC';
+    document.getElementById('card-protocol').textContent = m.activeProtocol;
+    document.getElementById('card-chain').textContent = m.chain;
+    document.getElementById('card-updated').textContent = 'Updated ' + timeAgo(m.lastUpdatedAt);
+  } catch (err) {
+    const el = document.getElementById('error-msg');
+    el.textContent = 'Failed to load metrics: ' + err.message;
+    el.style.display = 'block';
+  }
+}
+
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

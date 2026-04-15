@@ -1,12 +1,16 @@
 # @clicks-protocol/sdk
 
-TypeScript SDK for **Clicks Protocol**: autonomous yield for AI agents on Base.
+![npm version](https://img.shields.io/npm/v/@clicks-protocol/sdk) ![license](https://img.shields.io/badge/license-UNLICENSED-blue) ![Base](https://img.shields.io/badge/chain-Base-0052FF) ![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6)
 
-One SDK call. 80% liquid, 20% earning. No lockup.
+**Your AI agent's idle USDC earns 0% yield. Change that with one SDK call.**
+
+Clicks Protocol: autonomous yield for AI agents on Base. 80% liquid, 20% earning. No lockup.
 
 ## Overview
 
 Clicks Protocol automatically splits AI agent payments into:
+
+**Works With:** AI agents using Claude, Cursor, Codex, LangChain, OpenAI, x402, and any MCP-compatible client.
 - **Liquid portion** → agent wallet immediately
 - **Yield portion** → best DeFi yield (Aave V3 or Morpho on Base)
 
@@ -178,30 +182,27 @@ const splitter = new Contract(BASE_MAINNET.splitter, SPLITTER_ABI, provider);
 
 | Contract | Address |
 |----------|---------|
-| ClicksRegistry | `0x898d8a3B04e5E333E88f798372129C6a622fF48d` |
-| ClicksFee | `0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12` |
-| ClicksYieldRouter | `0x47d6Add0a3bdFe856b39a0311D8c055481F76f29` |
-| ClicksSplitterV3 | `0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5` |
+| ClicksRegistry | `0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3` |
+| ClicksFeeV2 | `0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5` |
+| ClicksYieldRouter | `0x053167a233d18E05Bc65a8d5F3F8808782a3EECD` |
+| ClicksSplitterV4 | `0xB7E0016d543bD443ED2A6f23d5008400255bf3C8` |
+| ClicksReferral | `0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC` |
 | USDC | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
 
 ## How the Protocol Works
 
-```
-Payment (100 USDC)
-    │
-    ▼
-ClicksSplitterV3
-    ├── 80 USDC → Agent Wallet (immediate)
-    └── 20 USDC → ClicksYieldRouter
-                      ├── Aave V3 (if best APY)
-                      └── Morpho  (if best APY)
-
-Withdrawal
-    │
-    ▼
-ClicksSplitterV3
-    ├── Principal + Yield → Agent
-    └── 2% of Yield → ClicksFee → Treasury
+```mermaid
+graph TD
+    A[Payment 100 USDC] --> B[ClicksSplitterV4]
+    B --> C[80 USDC → Agent Wallet<br/>immediate liquidity]
+    B --> D[20 USDC → ClicksYieldRouter]
+    D --> E{Aave V3 or Morpho?}
+    E -->|Best APY| F[Aave V3]
+    E -->|Best APY| G[Morpho]
+    
+    H[Withdrawal] --> I[ClicksSplitterV4]
+    I --> J[Principal + Yield → Agent]
+    I --> K[2% of Yield → ClicksFeeV2 → Treasury]
 ```
 
 ## License

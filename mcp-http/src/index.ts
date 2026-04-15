@@ -9,7 +9,14 @@
  * GET  /     — Server info (JSON)
  */
 
-import { Interface, parseUnits, formatUnits } from 'ethers';
+import { Interface, parseUnits, formatUnits, getAddress, isAddress } from 'ethers';
+
+function validateAddress(addr: string): string {
+  if (typeof addr !== 'string' || !isAddress(addr)) {
+    throw new Error(`Invalid Ethereum address: ${addr}`);
+  }
+  return getAddress(addr);
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────
 
@@ -33,9 +40,9 @@ const RPC_URL = 'https://1rpc.io/base';
 
 const ADDRESSES = {
   registry: '0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3',
-  feeCollector: '0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE',
+  feeCollector: '0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5',
   yieldRouter: '0x053167a233d18E05Bc65a8d5F3F8808782a3EECD',
-  splitter: '0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D',
+  splitter: '0xB7E0016d543bD443ED2A6f23d5008400255bf3C8',
   usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
   referral: '0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC',
 };
@@ -231,7 +238,7 @@ async function executeTool(
 ): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
   switch (name) {
     case 'clicks_get_agent_info': {
-      const addr = args.agent_address as string;
+      const addr = validateAddress(args.agent_address as string);
 
       const [[isRegistered], [operator], [deposited], [yieldPct], [balance]] = await Promise.all([
         callContract(ADDRESSES.registry, REGISTRY_ABI, 'isRegistered', [addr]),
@@ -264,7 +271,7 @@ async function executeTool(
 
     case 'clicks_simulate_split': {
       const amount = args.amount as string;
-      const addr = args.agent_address as string;
+      const addr = validateAddress(args.agent_address as string);
       const amountWei = parseUnits(amount, 6);
       const [liquid, toYield] = await callContract(
         ADDRESSES.splitter, SPLITTER_ABI, 'simulateSplit', [amountWei, addr],
@@ -336,7 +343,7 @@ async function executeTool(
     }
 
     case 'clicks_get_referral_stats': {
-      const addr = args.agent_address as string;
+      const addr = validateAddress(args.agent_address as string);
 
       const [stats, chain, [bonusBps]] = await Promise.all([
         callContract(ADDRESSES.referral, REFERRAL_ABI, 'getReferralStats', [addr]),
@@ -541,6 +548,55 @@ export default {
         resources: RESOURCES.map((r) => ({ uri: r.uri, name: r.name })),
         docs: 'https://clicksprotocol.xyz/llms.txt',
         source: 'https://github.com/clicks-protocol/clicks-protocol',
+      });
+    }
+
+    // GET /server.json — MCP manifest
+    if (url.pathname === '/server.json' && request.method === 'GET') {
+      return jsonResponse({
+        $schema: 'https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json',
+        name: 'io.github.clicksprotocol/mcp-server',
+        description: 'Autonomous DeFi yield for AI agents on Base. Query APY, simulate splits, manage treasury.',
+        repository: {
+          url: 'https://github.com/clicks-protocol/clicks-protocol',
+          source: 'github',
+          subfolder: 'mcp-server',
+        },
+        version: '1.0.0',
+        packages: [
+          {
+            registryType: 'npm',
+            identifier: '@clicks-protocol/mcp-server',
+            version: '0.1.4',
+            transport: {
+              type: 'stdio',
+            },
+            environmentVariables: [
+              {
+                description: 'Private key for write operations (register, deposit, withdraw). Not needed for read-only tools.',
+                isRequired: false,
+                format: 'string',
+                isSecret: true,
+                name: 'CLICKS_PRIVATE_KEY',
+              },
+              {
+                description: 'Base RPC URL. Defaults to https://mainnet.base.org',
+                isRequired: false,
+                format: 'string',
+                isSecret: false,
+                name: 'CLICKS_RPC_URL',
+              },
+            ],
+          },
+        ],
+        remoteEndpoints: [
+          {
+            url: 'https://mcp.clicksprotocol.xyz/mcp',
+            transport: {
+              type: 'streamable-http',
+            },
+          },
+        ],
       });
     }
 

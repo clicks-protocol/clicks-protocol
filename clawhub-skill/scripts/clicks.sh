@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Clicks Protocol — Query tool (zero dependencies, just curl + jq)
-# Uses the HTTP MCP Server at clicks-mcp.rechnung-613.workers.dev
+# Uses the HTTP MCP Server at mcp.clicksprotocol.xyz
 
 set -euo pipefail
 
-MCP_URL="https://clicks-mcp.rechnung-613.workers.dev/mcp"
+MCP_URL="https://mcp.clicksprotocol.xyz/mcp"
 
 call_mcp() {
   local tool="$1"

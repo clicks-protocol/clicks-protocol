@@ -11,10 +11,46 @@
  *   CLICKS_RPC_URL=https://mainnet.base.org clicks-mcp
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { Contract, JsonRpcProvider, Wallet, parseUnits, formatUnits } from 'ethers';
+import { Contract, JsonRpcProvider, Wallet, parseUnits, formatUnits, getAddress, isAddress } from 'ethers';
+
+// ─── Input Validation ────────────────────────────────────────────────────
+
+function validateAddress(addr: string): string {
+  if (!isAddress(addr)) throw new Error(`Invalid Ethereum address: ${addr}`);
+  return getAddress(addr); // Returns checksummed address
+}
+
+/** Zod schema for validated Ethereum address */
+const ethAddress = z.string()
+  .regex(/^0x[0-9a-fA-F]{40}$/, 'Must be a valid 42-character hex address')
+  .transform(validateAddress);
+
+// ─── Usage Logging ────────────────────────────────────────────────────────
+
+const MCP_LOG_PATH = process.env.CLICKS_MCP_LOG_PATH
+  || path.resolve(process.env.HOME || '.', '.clicks-protocol', 'mcp-usage.jsonl');
+
+function logToolCall(toolName: string, direction: 'read' | 'write', success: boolean, durationMs: number, error?: string): void {
+  try {
+    fs.mkdirSync(path.dirname(MCP_LOG_PATH), { recursive: true });
+    const entry = {
+      ts: new Date().toISOString(),
+      tool: toolName,
+      direction,
+      success,
+      durationMs,
+      ...(error ? { error } : {}),
+    };
+    fs.appendFileSync(MCP_LOG_PATH, JSON.stringify(entry) + '\n');
+  } catch {
+    // Never let logging break the server
+  }
+}
 
 // ─── Contract ABIs (minimal) ──────────────────────────────────────────────
 
@@ -66,9 +102,9 @@ const REFERRAL_ABI = [
 
 const ADDRESSES = {
   registry: '0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3',
-  feeCollector: '0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE',
+  feeCollector: '0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5',
   yieldRouter: '0x053167a233d18E05Bc65a8d5F3F8808782a3EECD',
-  splitter: '0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D',
+  splitter: '0xB7E0016d543bD443ED2A6f23d5008400255bf3C8',
   usdc: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
   referral: '0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC',
 };
@@ -97,13 +133,22 @@ const server = new McpServer({
   version: '0.1.0',
 });
 
+/** Wrap an async tool handler with usage logging */
+function tracked<T>(toolName: string, direction: 'read' | 'write', fn: () => Promise<T>): Promise<T> {
+  const start = Date.now();
+  return fn().then(
+    (result) => { logToolCall(toolName, direction, true, Date.now() - start); return result; },
+    (err) => { logToolCall(toolName, direction, false, Date.now() - start, (err as Error).message); throw err; },
+  );
+}
+
 // ─── Read Tools ───────────────────────────────────────────────────────────
 
 server.tool(
   'clicks_get_agent_info',
-  'Get comprehensive info about an AI agent registered with Clicks Protocol: registration status, operator, deposited principal, yield percentage, and USDC balance.',
-  { agent_address: z.string().describe('Ethereum address of the AI agent') },
-  async ({ agent_address }) => {
+  'Check how much yield an AI agent earns on idle USDC. Returns current APY, balance, deposited principal, and pending rewards.',
+  { agent_address: ethAddress.describe('Ethereum address of the AI agent') },
+  async ({ agent_address }) => tracked('clicks_get_agent_info', 'read', async () => {
     const provider = getProvider();
     const registry = new Contract(ADDRESSES.registry, REGISTRY_ABI, provider);
     const splitter = new Contract(ADDRESSES.splitter, SPLITTER_ABI, provider);
@@ -131,17 +176,17 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 server.tool(
   'clicks_simulate_split',
-  'Preview how a USDC payment would be split for an agent: how much goes to wallet (liquid) and how much to DeFi yield.',
+  'See how idle USDC gets split: what stays liquid vs what earns yield. Preview before depositing.',
   {
     amount: z.string().describe('Payment amount in USDC (e.g. "100" for 100 USDC)'),
-    agent_address: z.string().describe('Ethereum address of the AI agent'),
+    agent_address: ethAddress.describe('Ethereum address of the AI agent'),
   },
-  async ({ amount, agent_address }) => {
+  async ({ amount, agent_address }) => tracked('clicks_simulate_split', 'read', async () => {
     const provider = getProvider();
     const splitter = new Contract(ADDRESSES.splitter, SPLITTER_ABI, provider);
     const amountWei = parseUnits(amount, 6);
@@ -158,14 +203,14 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 server.tool(
   'clicks_get_yield_info',
-  'Get current yield protocol information: active protocol (Aave or Morpho), APYs, total balance, and total deposited across all agents.',
+  'Find the best APY for idle USDC. Returns current yields on Aave vs Morpho, total protocol balance, fees collected, and yield earned.',
   {},
-  async () => {
+  async () => tracked('clicks_get_yield_info', 'read', async () => {
     const provider = getProvider();
     const yieldRouter = new Contract(ADDRESSES.yieldRouter, YIELD_ROUTER_ABI, provider);
     const fee = new Contract(ADDRESSES.feeCollector, FEE_ABI, provider);
@@ -195,14 +240,14 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 server.tool(
   'clicks_get_referral_stats',
-  'Get referral network stats for an agent: direct referrals count, total earned from referrals, claimable rewards, and referral chain.',
-  { agent_address: z.string().describe('Ethereum address of the AI agent') },
-  async ({ agent_address }) => {
+  'Earn extra yield by referring agents. Track how much you earn from agents you refer to earn yield on idle USDC. See direct referrals, total earned, and team bonuses.',
+  { agent_address: ethAddress.describe('Ethereum address of the AI agent') },
+  async ({ agent_address }) => tracked('clicks_get_referral_stats', 'read', async () => {
     if (!ADDRESSES.referral) {
       return {
         content: [{ type: 'text' as const, text: 'Referral contract not yet deployed. Coming soon.' }],
@@ -236,20 +281,20 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 // ─── Write Tools ──────────────────────────────────────────────────────────
 
 server.tool(
   'clicks_quick_start',
-  'One-call setup: register agent, approve USDC, and receive first payment. The fastest way to start earning yield. Skips already-done steps.',
+  'Start earning yield on idle USDC in one command. Registers agent, approves USDC, and deposits first payment automatically.',
   {
     amount: z.string().describe('First payment amount in USDC (e.g. "100")'),
-    agent_address: z.string().describe('Ethereum address of the AI agent'),
-    referrer: z.string().optional().describe('Optional: address of the agent who referred you (earns 40% of your protocol fee)'),
+    agent_address: ethAddress.describe('Ethereum address of the AI agent'),
+    referrer: ethAddress.optional().describe('Optional: address of the agent who referred you (earns 40% of your protocol fee)'),
   },
-  async ({ amount, agent_address, referrer }) => {
+  async ({ amount, agent_address, referrer }) => tracked('clicks_quick_start', 'write', async () => {
     const signer = getSigner();
     const registry = new Contract(ADDRESSES.registry, REGISTRY_ABI, signer);
     const splitter = new Contract(ADDRESSES.splitter, SPLITTER_ABI, signer);
@@ -281,8 +326,8 @@ server.tool(
       steps.push('USDC already approved (skipped)');
     }
 
-    // Step 3: Payment
-    const tx = await splitter.receivePayment(amountWei, agent_address);
+    // Step 3: Payment (explicit gasLimit for deep cross-contract calls)
+    const tx = await splitter.receivePayment(amountWei, agent_address, { gasLimit: 500000n });
     await tx.wait();
     steps.push(`Payment split: ${amount} USDC`);
     txHashes.push(tx.hash);
@@ -298,21 +343,21 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 server.tool(
   'clicks_receive_payment',
-  'Split a USDC payment for an agent: 80% liquid to wallet, 20% to DeFi yield. Agent must be registered first.',
+  'Stop wasting idle USDC payments. Automatically split payments: 80% stays liquid, 20% earns DeFi yield. Turn idle treasury into working capital.',
   {
     amount: z.string().describe('Payment amount in USDC (e.g. "100")'),
-    agent_address: z.string().describe('Ethereum address of the AI agent'),
+    agent_address: ethAddress.describe('Ethereum address of the AI agent'),
   },
-  async ({ amount, agent_address }) => {
+  async ({ amount, agent_address }) => tracked('clicks_receive_payment', 'write', async () => {
     const signer = getSigner();
     const splitter = new Contract(ADDRESSES.splitter, SPLITTER_ABI, signer);
     const amountWei = parseUnits(amount, 6);
-    const tx = await splitter.receivePayment(amountWei, agent_address);
+    const tx = await splitter.receivePayment(amountWei, agent_address, { gasLimit: 500000n });
     const receipt = await tx.wait();
 
     return {
@@ -327,17 +372,17 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 server.tool(
   'clicks_withdraw_yield',
-  'Withdraw yield + principal for an agent. Only the agent, their operator, or contract owner can withdraw.',
+  'Withdraw earned yield from idle USDC. Get principal + yield back anytime, no lockups.',
   {
-    agent_address: z.string().describe('Ethereum address of the AI agent'),
+    agent_address: ethAddress.describe('Ethereum address of the AI agent'),
     amount: z.string().optional().describe('Amount to withdraw in USDC. Omit to withdraw everything.'),
   },
-  async ({ agent_address, amount }) => {
+  async ({ agent_address, amount }) => tracked('clicks_withdraw_yield', 'write', async () => {
     const signer = getSigner();
     const splitter = new Contract(ADDRESSES.splitter, SPLITTER_ABI, signer);
     const amountWei = amount ? parseUnits(amount, 6) : 0n;
@@ -356,16 +401,16 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 server.tool(
   'clicks_register_agent',
-  'Register a new AI agent with Clicks Protocol. The caller becomes the operator.',
+  'Register your AI agent to start earning yield on idle USDC. Required before first deposit.',
   {
-    agent_address: z.string().describe('Ethereum address of the AI agent to register'),
+    agent_address: ethAddress.describe('Ethereum address of the AI agent to register'),
   },
-  async ({ agent_address }) => {
+  async ({ agent_address }) => tracked('clicks_register_agent', 'write', async () => {
     const signer = getSigner();
     const registry = new Contract(ADDRESSES.registry, REGISTRY_ABI, signer);
     const tx = await registry.registerAgent(agent_address);
@@ -383,16 +428,16 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 server.tool(
   'clicks_set_yield_pct',
-  'Set custom yield split percentage for the calling operator. Controls how much of each payment goes to DeFi yield vs agent wallet.',
+  'Control how much idle USDC earns yield vs stays liquid. Set custom split (5-50%) for your agent.',
   {
-    pct: z.number().min(5).max(50).describe('Yield percentage (5-50). Default is 20.'),
+    pct: z.number().int().min(5).max(50).describe('Yield percentage (5-50, integer). Default is 20.'),
   },
-  async ({ pct }) => {
+  async ({ pct }) => tracked('clicks_set_yield_pct', 'write', async () => {
     const signer = getSigner();
     const splitter = new Contract(ADDRESSES.splitter, SPLITTER_ABI, signer);
     const tx = await splitter.setOperatorYieldPct(pct);
@@ -409,7 +454,7 @@ server.tool(
         }, null, 2),
       }],
     };
-  },
+  }),
 );
 
 // ─── Resources ────────────────────────────────────────────────────────────

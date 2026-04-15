@@ -1,6 +1,6 @@
 import { Contract, type ContractTransactionResponse, type Provider, type Signer } from 'ethers';
 import { type ClicksAddresses } from './addresses';
-import type { AgentInfo, ClicksClientOptions, FeeInfo, QuickStartResult, SplitPreview, WithdrawResult, YieldInfo } from './types';
+import type { AgentInfo, AgentYieldBalance, ClicksClientOptions, FeeInfo, QuickStartResult, SplitPreview, WithdrawResult, YieldInfo } from './types';
 /**
  * High-level client for the Clicks Protocol.
  *
@@ -58,7 +58,9 @@ export declare class ClicksClient {
      * // Agent registered, USDC approved, 80 USDC liquid + 20 USDC earning yield
      * ```
      */
-    quickStart(amount: string | bigint, agentAddress: string, referrer?: string): Promise<QuickStartResult>;
+    quickStart(amount: string | bigint, agentAddress: string, referrer?: string, options?: {
+        gasLimit?: bigint;
+    }): Promise<QuickStartResult>;
     /**
      * Register an AI agent under the caller as operator.
      *
@@ -91,7 +93,9 @@ export declare class ClicksClient {
      * - 80 USDC → agent wallet immediately
      * - 20 USDC → DeFi yield (Aave or Morpho)
      */
-    receivePayment(amount: string | bigint, agentAddress: string): Promise<ContractTransactionResponse>;
+    receivePayment(amount: string | bigint, agentAddress: string, options?: {
+        gasLimit?: bigint;
+    }): Promise<ContractTransactionResponse>;
     /**
      * Withdraw yield + principal for an agent.
      *
@@ -163,11 +167,21 @@ export declare class ClicksClient {
      */
     setOperatorYieldPct(pct: number): Promise<ContractTransactionResponse>;
     /**
-     * Get current yield protocol information.
+     * Get current yield protocol information (global, not per-agent).
      *
      * @returns Active protocol, APYs, total balance, total deposited
      */
     getYieldInfo(): Promise<YieldInfo>;
+    /**
+     * Get yield balance for a specific agent.
+     *
+     * Returns the agent's deposited principal and estimated current value
+     * (principal + accrued yield) based on the protocol's total balance ratio.
+     *
+     * @param agentAddress - The agent address to query
+     * @returns Object with deposited principal, estimated current value, and earned yield
+     */
+    getAgentYieldBalance(agentAddress: string): Promise<AgentYieldBalance>;
     /**
      * Get protocol fee information.
      *

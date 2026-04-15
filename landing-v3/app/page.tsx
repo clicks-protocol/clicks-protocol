@@ -8,7 +8,7 @@ import { Calculator } from '@/components/calculator';
 import { HowItWorks } from '@/components/how-it-works';
 import { X402Section } from '@/components/x402-section';
 import { Developers } from '@/components/developers';
-import { WorksWith } from '@/components/works-with';
+import { XPixelDeveloperView } from '@/components/x-pixel-events';
 import { Footer } from '@/components/footer';
 
 export default function Home() {
@@ -99,11 +99,11 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Stats />
-      <WorksWith />
       <Calculator />
       <HowItWorks />
       <X402Section />
       <Developers />
+      <XPixelDeveloperView />
       <Footer />
     </>
   );

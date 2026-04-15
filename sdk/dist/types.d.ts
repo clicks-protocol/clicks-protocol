@@ -42,6 +42,17 @@ export interface WithdrawResult {
     /** Transaction response */
     tx: ContractTransactionResponse;
 }
+/** Per-agent yield balance */
+export interface AgentYieldBalance {
+    /** Principal deposited by this agent (USDC, 6 decimals) */
+    deposited: bigint;
+    /** Estimated current value including accrued yield (USDC, 6 decimals) */
+    currentValue: bigint;
+    /** Estimated yield earned (currentValue - deposited) */
+    yieldEarned: bigint;
+    /** Active protocol: 0 = none, 1 = Aave, 2 = Morpho */
+    activeProtocol: number;
+}
 /** Protocol yield information */
 export interface YieldInfo {
     /** Active protocol: 0 = none, 1 = Aave, 2 = Morpho */

@@ -1,0 +1,63 @@
+{
+  "name": "@clicks-protocol/cli",
+  "version": "0.2.1",
+  "description": "CLI for Clicks Protocol — autonomous DeFi yield for AI agents on Base. Check yield rates, simulate payment splits, manage agents, and withdraw earnings from the terminal.",
+  "keywords": [
+    "clicks-protocol",
+    "defi",
+    "yield",
+    "usdc",
+    "base",
+    "ai-agent",
+    "autonomous",
+    "treasury",
+    "mcp",
+    "x402",
+    "aave",
+    "morpho",
+    "cli",
+    "command-line",
+    "web3",
+    "blockchain",
+    "agent-economics",
+    "coinbase",
+    "stablecoin"
+  ],
+  "license": "MIT",
+  "author": "Clicks Protocol <hello@clicksprotocol.xyz>",
+  "homepage": "https://clicksprotocol.xyz",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clicks-protocol/clicks-protocol",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/clicks-protocol/clicks-protocol/issues"
+  },
+  "bin": {
+    "clicks": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build",
+    "postinstall": "echo '\n  ✅ @clicks-protocol/cli installed\n     Run clicks status to see live yield rates on Base.\n     Run clicks doctor to check your setup.\n     Docs: https://clicksprotocol.xyz/llms.txt\n'"
+  },
+  "dependencies": {
+    "@clicks-protocol/sdk": "^0.1.3",
+    "chalk": "^5.4.1",
+    "commander": "^13.1.0",
+    "ethers": "^6.16.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

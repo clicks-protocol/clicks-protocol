@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "clicks-langchain"
-version = "0.1.0"
+version = "0.2.0"
 description = "Clicks Protocol yield management tools for LangChain agents on Base"
 readme = "README.md"
 license = {text = "MIT"}
@@ -25,7 +25,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
 ]
 dependencies = [
-    "langchain>=0.1.0",
+    "langchain-core>=0.1.0",
     "pydantic>=2.0",
 ]
 
@@ -34,8 +34,5 @@ Homepage = "https://clicksprotocol.xyz"
 Repository = "https://github.com/clicks-protocol/clicks-langchain"
 Documentation = "https://docs.clicksprotocol.xyz/integrations/langchain"
 
-[tool.setuptools.packages.find]
-include = ["clicks_langchain*"]
-
 [tool.setuptools]
-py-modules = ["clicks_tool"]
+py-modules = ["clicks_langchain"]

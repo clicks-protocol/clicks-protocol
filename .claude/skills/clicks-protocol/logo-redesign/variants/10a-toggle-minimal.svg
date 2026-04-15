@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Toggle ultra-minimal: no spark lines, just track + knob -->
+  <!-- The simplest possible "click into ON" -->
+  
+  <!-- Track -->
+  <rect x="108" y="192" width="296" height="128" rx="64" 
+        stroke="#00FF9B" stroke-width="14" fill="none"/>
+  
+  <!-- Knob: ON position (right) -->
+  <circle cx="340" cy="256" r="48" fill="#00FF9B"/>
+</svg>

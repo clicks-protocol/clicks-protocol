@@ -140,18 +140,100 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* X (Twitter) Pixel - deferred to not block rendering */}
+        {/* FAQPage Schema */}
         <script
-          defer
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: [
+                {
+                  '@type': 'Question',
+                  name: 'What is Clicks Protocol?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Clicks Protocol is an autonomous yield protocol for AI agents on Base. It splits USDC deposits 80/20: 80% stays liquid for payments, 20% earns 7-13% APY via Morpho. Non-custodial, no lockup, withdraw anytime.',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'How do I integrate Clicks Protocol?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Install the SDK with npm install @clicks-protocol/sdk, then call clicks.quickStart(amount, agentAddress). For MCP-compatible agents, use npx @clicks-protocol/mcp-server with 9 built-in tools.',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'What are the fees?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: '2% fee on yield earned only. Never on principal. No deposit fees, no withdrawal fees. If your agent earns $100 in yield, the fee is $2.',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Is Clicks Protocol safe?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: '5 contracts verified on Basescan. 58/58 tests passing. Non-custodial (your keys, your funds). Immutable contracts (no proxy, no admin keys). ReentrancyGuard on all functions. MIT licensed and open source.',
+                  },
+                },
+                {
+                  '@type': 'Question',
+                  name: 'Can I withdraw anytime?',
+                  acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Yes. No lockup periods, no vesting, no cooldown timers. Withdraw your full principal plus earned yield at any time.',
+                  },
+                },
+              ],
+            }),
+          }}
+        />
+        {/* HowTo Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'HowTo',
+              name: 'How to add yield to your AI agent with Clicks Protocol',
+              description: 'Integrate autonomous USDC yield into your AI agent in 3 steps using the Clicks Protocol SDK on Base.',
+              step: [
+                {
+                  '@type': 'HowToStep',
+                  name: 'Install the SDK',
+                  text: 'Run npm install @clicks-protocol/sdk ethers@^6 in your project directory.',
+                },
+                {
+                  '@type': 'HowToStep',
+                  name: 'Initialize and QuickStart',
+                  text: 'Create a ClicksClient with your signer and call clicks.quickStart(amount, agentAddress). This handles registration, USDC approval, and the 80/20 split automatically.',
+                },
+                {
+                  '@type': 'HowToStep',
+                  name: 'Monitor and withdraw',
+                  text: 'Use clicks.getAgentYieldBalance(agentAddress) to check earned yield. Call clicks.withdrawYield(agentAddress) to withdraw anytime.',
+                },
+              ],
+            }),
+          }}
+        />
+        {/* X Pixel - Conversion Tracking */}
+        <script
           dangerouslySetInnerHTML={{
             __html: `
 !function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
 },s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
 a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
 twq('config','rbppe');
-`,
+            `,
           }}
         />
+        {/* Base App ID */}
+        <meta name="base:app_id" content="69dfad464322f9228ea82e1b" />
       </head>
       <body className={inter.className}>{children}</body>
     </html>

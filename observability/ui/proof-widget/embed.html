@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --border: #222;
+    --text: #e0e0e0;
+    --dim: #888;
+    --accent: #3b82f6;
+    --green: #22c55e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    width: 320px;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .title {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+  }
+  .chain {
+    font-size: 10px;
+    color: var(--dim);
+    background: #1a1a1a;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .metric { display: flex; flex-direction: column; gap: 1px; }
+  .label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dim);
+  }
+  .val {
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .val.sm { font-size: 13px; }
+  .footer {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--dim);
+  }
+  .footer a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .footer a:hover { text-decoration: underline; }
+  .threshold-msg {
+    text-align: center;
+    padding: 12px 0;
+    font-size: 12px;
+    color: var(--dim);
+    line-height: 1.5;
+  }
+  .grid.hidden, .threshold-msg.hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="title"><span class="dot"></span> Clicks Protocol</div>
+    <div class="chain" id="chain">Base</div>
+  </div>
+  <div class="threshold-msg hidden" id="threshold-msg">
+    Protocol is live on Base.<br>First agents are onboarding.
+  </div>
+  <div class="grid" id="metrics-grid">
+    <div class="metric">
+      <div class="label">TVL</div>
+      <div class="val" id="tvl">--</div>
+    </div>
+    <div class="metric">
+      <div class="label">Current APY</div>
+      <div class="val" id="apy">--</div>
+    </div>
+    <div class="metric">
+      <div class="label">Registered Agents</div>
+      <div class="val sm" id="agents">--</div>
+    </div>
+    <div class="metric">
+      <div class="label">Total Volume</div>
+      <div class="val sm" id="vol">--</div>
+    </div>
+  </div>
+  <div class="footer">
+    <span id="updated">--</span>
+    <a href="https://basescan.org/address/0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D" target="_blank">Verify</a>
+  </div>
+</div>
+<script>
+function fmtUsdc(n) {
+  if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+  return n.toFixed(2);
+}
+function ago(iso) {
+  if (!iso) return '--';
+  var m = Math.floor((Date.now()-new Date(iso).getTime())/60000);
+  if (m<1) return 'just now';
+  if (m<60) return m+'m ago';
+  var h = Math.floor(m/60);
+  return h<24 ? h+'h ago' : Math.floor(h/24)+'d ago';
+}
+// Threshold: show real metrics only above these values
+var MIN_AGENTS = 1;
+var MIN_TVL_USDC = 1.0;
+
+(async function load() {
+  try {
+    var base = (window.parent !== window && document.referrer)
+      ? new URL(document.referrer).origin
+      : window.location.origin;
+    var r = await fetch(base + '/api/public/metrics');
+    var d = await r.json();
+
+    var belowThreshold = d.totalAgents < MIN_AGENTS || d.tvlUsdc < MIN_TVL_USDC;
+
+    if (belowThreshold) {
+      document.getElementById('metrics-grid').classList.add('hidden');
+      document.getElementById('threshold-msg').classList.remove('hidden');
+    } else {
+      document.getElementById('metrics-grid').classList.remove('hidden');
+      document.getElementById('threshold-msg').classList.add('hidden');
+      document.getElementById('tvl').textContent = fmtUsdc(d.tvlUsdc)+' USDC';
+      document.getElementById('apy').textContent = d.currentApyPct.toFixed(1)+'%';
+      document.getElementById('agents').textContent = d.totalAgents;
+      document.getElementById('vol').textContent = fmtUsdc(d.totalPaymentsUsdc)+' USDC';
+    }
+    document.getElementById('chain').textContent = d.chain;
+    document.getElementById('updated').textContent = ago(d.lastUpdatedAt);
+  } catch(e) {
+    document.getElementById('tvl').textContent = 'error';
+  }
+  setTimeout(load, 60000);
+})();
+</script>
+</body>
+</html>

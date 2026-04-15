@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Click v2 refined: stroke version, rounded, more elegant -->
+  <!-- Two interlocking hooks with rounded corners -->
+  
+  <!-- Left hook -->
+  <path d="M 216 108
+           A 148 148 0 0 0 216 404
+           Q 216 340 256 310
+           Q 296 280 296 256
+           Q 296 232 256 202
+           Q 216 172 216 108 Z"
+        stroke="#00FF9B" stroke-width="14" fill="none" stroke-linejoin="round"/>
+  
+  <!-- Right hook -->
+  <path d="M 296 404
+           A 148 148 0 0 0 296 108
+           Q 296 172 256 202
+           Q 216 232 216 256
+           Q 216 280 256 310
+           Q 296 340 296 404 Z"
+        stroke="#00FF9B" stroke-width="14" fill="none" stroke-linejoin="round" opacity="0.5"/>
+</svg>

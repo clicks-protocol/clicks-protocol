@@ -8,10 +8,10 @@
 
 | Contract | Adresse | Verifiziert? | Link |
 |----------|---------|--------------|------|
-| ClicksRegistry | `0x898d8a3B04e5E333E88f798372129C6a622fF48d` | ❌ Nein | [Basescan](https://basescan.org/address/0x898d8a3B04e5E333E88f798372129C6a622fF48d#code) |
-| ClicksFee | `0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12` | ❌ Nein | [Basescan](https://basescan.org/address/0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12#code) |
-| ClicksYieldRouter | `0x47d6Add0a3bdFe856b39a0311D8c055481F76f29` | ❌ Nein | [Basescan](https://basescan.org/address/0x47d6Add0a3bdFe856b39a0311D8c055481F76f29#code) |
-| ClicksSplitterV3 | `0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5` | ❌ Nein | [Basescan](https://basescan.org/address/0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5#code) |
+| ClicksRegistry | `0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3` | ❌ Nein | [Basescan](https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3#code) |
+| ClicksFeeV2 | `0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5` | ❌ Nein | [Basescan](https://basescan.org/address/0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5#code) |
+| ClicksYieldRouter | `0x053167a233d18E05Bc65a8d5F3F8808782a3EECD` | ❌ Nein | [Basescan](https://basescan.org/address/0x053167a233d18E05Bc65a8d5F3F8808782a3EECD#code) |
+| ClicksSplitterV4 | `0xB7E0016d543bD443ED2A6f23d5008400255bf3C8` | ❌ Nein | [Basescan](https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8#code) |
 
 **Alle 4 Contracts müssen verifiziert werden.**
 
@@ -56,7 +56,7 @@ lltv:            860000000000000000 (0.86 ETH als BigNumber)
 
 ```bash
 cd /Users/davidbairaktaridis/.openclaw/workspace/projects/clicks-protocol
-npx hardhat verify --network base 0x898d8a3B04e5E333E88f798372129C6a622fF48d
+npx hardhat verify --network base 0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3
 ```
 
 ---
@@ -67,7 +67,7 @@ npx hardhat verify --network base 0x898d8a3B04e5E333E88f798372129C6a622fF48d
 
 ```bash
 npx hardhat verify --network base \
-  0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12 \
+  0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5 \
   "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" \
   "<TREASURY_ADDRESS>"
 ```
@@ -87,7 +87,7 @@ Wegen des komplexen `MorphoMarketParams` Structs ist hier ein dediziertes Verify
 ```typescript
 import { run } from "hardhat";
 
-const ROUTER_ADDRESS = "0x47d6Add0a3bdFe856b39a0311D8c055481F76f29";
+const ROUTER_ADDRESS = "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD";
 const USDC = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
 const AAVE_POOL = "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5";
 const A_USDC = "0x4e65fE4DbA92790696d040ac24Aa414708F5c0AB";
@@ -127,17 +127,17 @@ npx hardhat run scripts/verify-router.ts --network base
 
 ---
 
-### 4. ClicksSplitterV3
+### 4. ClicksSplitterV4
 
 **Constructor:** `(address usdc, address router, address fee, address registry)`
 
 ```bash
 npx hardhat verify --network base \
-  0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5 \
+  0xB7E0016d543bD443ED2A6f23d5008400255bf3C8 \
   "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" \
-  "0x47d6Add0a3bdFe856b39a0311D8c055481F76f29" \
-  "0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12" \
-  "0x898d8a3B04e5E333E88f798372129C6a622fF48d"
+  "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD" \
+  "0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5" \
+  "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"
 ```
 
 ---
@@ -162,9 +162,9 @@ cd /Users/davidbairaktaridis/.openclaw/workspace/projects/clicks-protocol
 
 Das Script verifiziert:
 1. ✅ ClicksRegistry (keine Abhängigkeiten)
-2. ✅ ClicksFee (USDC + Treasury)
+2. ✅ ClicksFeeV2 (USDC + Treasury)
 3. ⏭️  ClicksYieldRouter (überspringt, braucht separates TS-Script)
-4. ✅ ClicksSplitterV3 (alle Abhängigkeiten)
+4. ✅ ClicksSplitterV4 (alle Abhängigkeiten)
 
 **Option 2: Manuell einzeln**
 
@@ -172,10 +172,10 @@ Das Script verifiziert:
 cd /Users/davidbairaktaridis/.openclaw/workspace/projects/clicks-protocol
 
 # 1. Registry
-npx hardhat verify --network base 0x898d8a3B04e5E333E88f798372129C6a622fF48d
+npx hardhat verify --network base 0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3
 
 # 2. Fee
-npx hardhat verify --network base 0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12 \
+npx hardhat verify --network base 0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5 \
   "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" \
   "0xf873BB73e10D24cD3CF9bBed917F5E2d07dA8B80"
 
@@ -183,11 +183,11 @@ npx hardhat verify --network base 0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12 \
 npx hardhat run scripts/verify-router.ts --network base
 
 # 4. Splitter
-npx hardhat verify --network base 0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5 \
+npx hardhat verify --network base 0xB7E0016d543bD443ED2A6f23d5008400255bf3C8 \
   "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" \
-  "0x47d6Add0a3bdFe856b39a0311D8c055481F76f29" \
-  "0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12" \
-  "0x898d8a3B04e5E333E88f798372129C6a622fF48d"
+  "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD" \
+  "0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5" \
+  "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"
 ```
 
 **Nach Verifikation:**

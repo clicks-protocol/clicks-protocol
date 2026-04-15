@@ -27,9 +27,10 @@ from langchain.callbacks.manager import CallbackManagerForToolRun
 # ---------------------------------------------------------------------------
 CONTRACTS = {
     "registry": "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3",
-    "splitter": "0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4",
-    "yield_router": "0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F",
-    "fee": "0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE",
+    "splitter": "0xB7E0016d543bD443ED2A6f23d5008400255bf3C8",
+    "yield_router": "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD",
+    "fee": "0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5",
+    "referral": "0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC",
     "usdc": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
 }
 
@@ -69,17 +70,17 @@ class ClicksSDKBridge:
     def _call_sdk(self, method: str, **kwargs) -> dict:
         """Execute an SDK method via the Node.js bridge script."""
         script = f"""
-        const {{ ClicksSDK }} = require('@clicks-protocol/sdk');
+        const {{ ClicksClient }} = require('@clicks-protocol/sdk');
         const {{ ethers }} = require('ethers');
 
         (async () => {{
             const provider = new ethers.JsonRpcProvider('{self.rpc_url}');
             const wallet = new ethers.Wallet('{self.private_key}', provider);
-            const sdk = new ClicksSDK({{ signer: wallet, provider }});
+            const sdk = new ClicksClient(wallet);
 
             try {{
                 const result = await sdk.{method}({json.dumps(kwargs).strip('{}')});
-                console.log(JSON.stringify({{ success: true, data: result }}));
+                console.log(JSON.stringify({{ success: true, data: result }}, (k, v) => typeof v === 'bigint' ? v.toString() : v));
             }} catch (e) {{
                 console.log(JSON.stringify({{ success: false, error: e.message }}));
             }}
@@ -111,13 +112,80 @@ class ClicksSDKBridge:
         return self._call_sdk("simulateSplit", amount=amount, agentAddress=agent_address)
 
     def get_agent_info(self, agent_address: str) -> dict:
-        return self._call_sdk("getAgentInfo", agentAddress=agent_address)
+        """Get agent registration info + yield balance combined."""
+        script = f"""
+        const {{ ClicksClient }} = require('@clicks-protocol/sdk');
+        const {{ ethers }} = require('ethers');
+        (async () => {{
+            const provider = new ethers.JsonRpcProvider('{self.rpc_url}');
+            const wallet = new ethers.Wallet('{self.private_key}', provider);
+            const sdk = new ClicksClient(wallet);
+            try {{
+                const [info, yieldBal, usdcBal] = await Promise.all([
+                    sdk.getAgentInfo('{agent_address}'),
+                    sdk.getAgentYieldBalance('{agent_address}'),
+                    sdk.getUSDCBalance('{agent_address}'),
+                ]);
+                console.log(JSON.stringify({{ success: true, data: {{
+                    isRegistered: info.isRegistered,
+                    operator: info.operator,
+                    liquidBalance: usdcBal.toString(),
+                    depositedBalance: yieldBal.deposited.toString(),
+                    accruedYield: yieldBal.yieldEarned.toString(),
+                    yieldPct: info.yieldPct.toString(),
+                }} }}));
+            }} catch (e) {{
+                console.log(JSON.stringify({{ success: false, error: e.message }}));
+            }}
+        }})();
+        """
+        try:
+            result = subprocess.run(
+                ["node", "-e", script],
+                capture_output=True, text=True, timeout=60, cwd=self.sdk_path,
+            )
+            if result.returncode != 0:
+                return {"success": False, "error": result.stderr.strip()}
+            return json.loads(result.stdout.strip())
+        except subprocess.TimeoutExpired:
+            return {"success": False, "error": "SDK call timed out after 60s"}
+        except json.JSONDecodeError:
+            return {"success": False, "error": f"Invalid SDK response: {result.stdout[:200]}"}
 
     def get_yield_info(self) -> dict:
         return self._call_sdk("getYieldInfo")
 
     def get_current_apy(self) -> dict:
-        return self._call_sdk("getCurrentAPY")
+        """Get current APY from the active yield protocol."""
+        script = f"""
+        const {{ ClicksClient }} = require('@clicks-protocol/sdk');
+        const {{ ethers }} = require('ethers');
+        (async () => {{
+            const provider = new ethers.JsonRpcProvider('{self.rpc_url}');
+            const wallet = new ethers.Wallet('{self.private_key}', provider);
+            const sdk = new ClicksClient(wallet);
+            try {{
+                const info = await sdk.getYieldInfo();
+                const apy = info.activeProtocol === 1 ? info.aaveAPY : info.morphoAPY;
+                const apyPct = (Number(apy) / 100).toFixed(2);
+                console.log(JSON.stringify({{ success: true, data: apyPct }}));
+            }} catch (e) {{
+                console.log(JSON.stringify({{ success: false, error: e.message }}));
+            }}
+        }})();
+        """
+        try:
+            result = subprocess.run(
+                ["node", "-e", script],
+                capture_output=True, text=True, timeout=60, cwd=self.sdk_path,
+            )
+            if result.returncode != 0:
+                return {"success": False, "error": result.stderr.strip()}
+            return json.loads(result.stdout.strip())
+        except subprocess.TimeoutExpired:
+            return {"success": False, "error": "SDK call timed out after 60s"}
+        except json.JSONDecodeError:
+            return {"success": False, "error": f"Invalid SDK response: {result.stdout[:200]}"}
 
 
 # ---------------------------------------------------------------------------

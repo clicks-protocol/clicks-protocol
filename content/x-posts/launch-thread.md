@@ -85,10 +85,11 @@ Fiat bridge for agents that touch traditional payments
 **10/10**
 Clicks Protocol is live and open source.
 
-GitHub: github.com/clicks-protocol
+GitHub: github.com/clicks-protocol/clicks-protocol
 npm: @clicks-protocol/sdk
 Website: clicksprotocol.xyz
+Treasury Lab: api.clicksprotocol.xyz/lab
 
-If your agent holds USDC, it should be earning yield.
+Launching during EthCC week. If your agent holds USDC, it should be earning yield.
 
 That's the whole idea.

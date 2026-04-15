@@ -10,6 +10,7 @@ import { ADDRESSES_BY_CHAIN, BASE_MAINNET, type ClicksAddresses } from './addres
 import { ERC20_ABI, FEE_ABI, REGISTRY_ABI, SPLITTER_ABI, YIELD_ROUTER_ABI } from './abis';
 import type {
   AgentInfo,
+  AgentYieldBalance,
   ClicksClientOptions,
   FeeInfo,
   QuickStartResult,
@@ -101,6 +102,7 @@ export class ClicksClient {
     amount: string | bigint,
     agentAddress: string,
     referrer?: string,
+    options?: { gasLimit?: bigint },
   ): Promise<QuickStartResult> {
     const result: QuickStartResult = {
       registered: false,
@@ -132,7 +134,7 @@ export class ClicksClient {
     }
 
     // Step 3: Receive payment
-    const tx = await this.receivePayment(amount, agentAddress);
+    const tx = await this.receivePayment(amount, agentAddress, options);
     await tx.wait();
     result.paymentSplit = true;
     result.txHashes.push(tx.hash);
@@ -185,9 +187,15 @@ export class ClicksClient {
   async receivePayment(
     amount: string | bigint,
     agentAddress: string,
+    options?: { gasLimit?: bigint },
   ): Promise<ContractTransactionResponse> {
     const amountWei = typeof amount === 'string' ? parseUnits(amount, 6) : amount;
-    return this.splitter.receivePayment(amountWei, agentAddress) as Promise<ContractTransactionResponse>;
+    
+    // Default gas limit for cross-contract calls (Splitter → YieldRouter → Morpho)
+    // The standard estimation fails for deep contract calls, so we set a safe default
+    const gasLimit = options?.gasLimit ?? 500000n;
+    
+    return this.splitter.receivePayment(amountWei, agentAddress, { gasLimit }) as Promise<ContractTransactionResponse>;
   }
 
   /**
@@ -326,7 +334,7 @@ export class ClicksClient {
   // ─── View: Yield Router ───────────────────────────────────────────────────
 
   /**
-   * Get current yield protocol information.
+   * Get current yield protocol information (global, not per-agent).
    *
    * @returns Active protocol, APYs, total balance, total deposited
    */
@@ -340,6 +348,36 @@ export class ClicksClient {
     ]);
 
     return { activeProtocol, aaveAPY, morphoAPY, totalBalance, totalDeposited };
+  }
+
+  /**
+   * Get yield balance for a specific agent.
+   *
+   * Returns the agent's deposited principal and estimated current value
+   * (principal + accrued yield) based on the protocol's total balance ratio.
+   *
+   * @param agentAddress - The agent address to query
+   * @returns Object with deposited principal, estimated current value, and earned yield
+   */
+  async getAgentYieldBalance(agentAddress: string): Promise<AgentYieldBalance> {
+    const [deposited, totalDeposited, totalBalance, activeProtocol] = await Promise.all([
+      this.yieldRouter.agentDeposited(agentAddress) as Promise<bigint>,
+      this.yieldRouter.totalDeposited() as Promise<bigint>,
+      this.yieldRouter.getTotalBalance() as Promise<bigint>,
+      this.yieldRouter.activeProtocol() as Promise<number>,
+    ]);
+
+    // Estimate agent's share of the yield pool
+    // currentValue = (agentDeposited / totalDeposited) * totalBalance
+    let currentValue = deposited;
+    let yieldEarned = 0n;
+
+    if (totalDeposited > 0n && deposited > 0n) {
+      currentValue = (deposited * totalBalance) / totalDeposited;
+      yieldEarned = currentValue > deposited ? currentValue - deposited : 0n;
+    }
+
+    return { deposited, currentValue, yieldEarned, activeProtocol };
   }
 
   // ─── View: Fees ───────────────────────────────────────────────────────────

@@ -26,8 +26,9 @@ await clicks.quickStart('5000', agentAddress)
 
 **Why Base:** Sub-cent gas costs make sense for agents that make many small transactions. USDC is native, not bridged.
 
-GitHub: [link]
+GitHub: github.com/clicks-protocol/clicks-protocol
 npm: @clicks-protocol/sdk
 Docs: clicksprotocol.xyz
+Treasury Lab: api.clicksprotocol.xyz/lab
 
-Would love technical feedback. Contracts are verified and readable on Basescan.
+Launching during EthCC week. Would love technical feedback. Contracts are verified and readable on Basescan.

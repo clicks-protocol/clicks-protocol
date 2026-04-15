@@ -1,0 +1,211 @@
+# Clicks Protocol — CrewAI Integration
+
+On-chain yield management tools for CrewAI agent crews on Base.
+
+Powered by [Clicks Protocol](https://clicksprotocol.xyz)
+
+## What It Does
+
+Gives your CrewAI agents the ability to manage idle USDC as a team. A Treasury Manager agent monitors balances, an Investment Analyst evaluates yield rates, and together they autonomously split funds 80/20: 80% liquid, 20% earning 4-8% APY on Base.
+
+## Installation
+
+```bash
+pip install clicks-crewai
+```
+
+Or from source:
+
+```bash
+git clone https://github.com/clicks-protocol/clicks-crewai
+cd clicks-crewai
+pip install -e .
+```
+
+### Prerequisites
+
+- Python >= 3.9
+- Node.js >= 18 (for SDK bridge)
+- `@clicks-protocol/sdk` installed: `npm install @clicks-protocol/sdk`
+
+### Environment Variables
+
+```bash
+export CLICKS_PRIVATE_KEY="your-agent-wallet-private-key"
+export CLICKS_RPC_URL="https://mainnet.base.org"        # optional
+export CLICKS_SDK_PATH="/path/to/sdk"                     # optional
+```
+
+## Quick Start
+
+```python
+from crewai import Agent, Task, Crew
+from clicks_crewai import (
+    ClicksCheckBalanceTool,
+    ClicksActivateYieldTool,
+    ClicksGetAPYTool,
+    ClicksSimulateSplitTool,
+    ClicksWithdrawYieldTool,
+)
+
+AGENT_ADDRESS = "0xYourAgentAddress"
+
+# Create tools
+balance_tool = ClicksCheckBalanceTool()
+yield_tool = ClicksActivateYieldTool()
+apy_tool = ClicksGetAPYTool()
+simulate_tool = ClicksSimulateSplitTool()
+withdraw_tool = ClicksWithdrawYieldTool()
+
+# Define agents
+treasury_manager = Agent(
+    role="Treasury Manager",
+    goal="Maximize yield on idle USDC while maintaining operational liquidity",
+    backstory=(
+        "You are an autonomous treasury manager for an AI agent. "
+        "Your job is to ensure idle USDC earns yield via Clicks Protocol "
+        "while keeping enough liquid for operations. You never risk funds "
+        "needed for imminent transactions."
+    ),
+    tools=[balance_tool, yield_tool, withdraw_tool, simulate_tool],
+    verbose=True,
+)
+
+investment_analyst = Agent(
+    role="Investment Analyst",
+    goal="Monitor yield rates and recommend optimal treasury allocation",
+    backstory=(
+        "You analyze DeFi yield rates and market conditions to advise "
+        "the Treasury Manager. You track Clicks Protocol APY and recommend "
+        "when to activate, hold, or withdraw yield positions."
+    ),
+    tools=[apy_tool, balance_tool, simulate_tool],
+    verbose=True,
+)
+
+# Define tasks
+analysis_task = Task(
+    description=(
+        f"Analyze the current treasury position for {AGENT_ADDRESS}. "
+        "Check the current APY rate, simulate a split for any idle funds, "
+        "and provide a recommendation on whether to activate yield."
+    ),
+    expected_output=(
+        "A treasury analysis report with: current balances, APY rate, "
+        "simulated split breakdown, and a clear recommendation."
+    ),
+    agent=investment_analyst,
+)
+
+execution_task = Task(
+    description=(
+        f"Based on the analyst's recommendation, take action on {AGENT_ADDRESS}. "
+        "If yield activation is recommended and APY > 4%, activate yield on idle funds. "
+        "If withdrawal is recommended, withdraw. Always check balance first."
+    ),
+    expected_output=(
+        "Confirmation of action taken with transaction details, or explanation "
+        "of why no action was taken."
+    ),
+    agent=treasury_manager,
+    context=[analysis_task],
+)
+
+# Run the crew
+crew = Crew(
+    agents=[investment_analyst, treasury_manager],
+    tasks=[analysis_task, execution_task],
+    verbose=True,
+)
+
+result = crew.kickoff()
+print(result)
+```
+
+## Available Tools
+
+| Tool | Description | Best For |
+|------|-------------|----------|
+| `ClicksCheckBalanceTool` | View liquid vs. yield balances | Treasury Manager |
+| `ClicksActivateYieldTool` | Split USDC 80/20 to earn yield | Treasury Manager |
+| `ClicksWithdrawYieldTool` | Withdraw all yield + deposits | Treasury Manager |
+| `ClicksGetAPYTool` | Get current APY rate | Investment Analyst |
+| `ClicksSimulateSplitTool` | Preview split without moving funds | Both |
+
+## Configuration
+
+```python
+from clicks_crewai import configure_sdk
+
+# Configure before creating tools
+configure_sdk(
+    rpc_url="https://mainnet.base.org",
+    private_key="your-key",
+    sdk_path="/path/to/sdk",
+)
+```
+
+Or use environment variables (recommended):
+
+```bash
+export CLICKS_PRIVATE_KEY="..."
+export CLICKS_RPC_URL="https://mainnet.base.org"
+```
+
+## Example: Scheduled Treasury Optimization
+
+```python
+import schedule
+import time
+from crewai import Agent, Task, Crew
+from clicks_crewai import get_all_tools
+
+AGENT_ADDRESS = "0xYourAgentAddress"
+
+def run_treasury_check():
+    tools = get_all_tools()
+    
+    manager = Agent(
+        role="Treasury Manager",
+        goal="Optimize USDC yield allocation",
+        backstory="Autonomous treasury manager using Clicks Protocol on Base.",
+        tools=tools,
+    )
+    
+    task = Task(
+        description=(
+            f"Check treasury status for {AGENT_ADDRESS}. "
+            "If idle USDC > 500 and APY > 4%, activate yield. "
+            "Report current status."
+        ),
+        expected_output="Treasury status and actions taken.",
+        agent=manager,
+    )
+    
+    crew = Crew(agents=[manager], tasks=[task])
+    return crew.kickoff()
+
+# Run every 6 hours
+schedule.every(6).hours.do(run_treasury_check)
+
+while True:
+    schedule.run_pending()
+    time.sleep(60)
+```
+
+## Contract Addresses (Base Mainnet)
+
+| Contract | Address |
+|----------|---------|
+| Registry | `0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3` |
+| Splitter | `0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4` |
+| YieldRouter | `0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F` |
+| USDC | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+
+## License
+
+MIT
+
+---
+
+Built for autonomous AI agents. Powered by [Clicks Protocol](https://clicksprotocol.xyz).

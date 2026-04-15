@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 5A: Two C-hooks interlocking -->
+  <!-- Left hook opens right, right hook opens left, they mesh -->
+  
+  <!-- Left hook (C shape opening right) -->
+  <path d="M 220 120 
+           A 136 136 0 1 0 220 392" 
+        stroke="#00FF9B" stroke-width="28" stroke-linecap="round" fill="none"/>
+  
+  <!-- Right hook (C shape opening left) -->
+  <path d="M 292 392 
+           A 136 136 0 1 0 292 120" 
+        stroke="#00FF9B" stroke-width="28" stroke-linecap="round" fill="none" opacity="0.55"/>
+</svg>

@@ -1,0 +1,8 @@
+README.md
+clicks_crewai.py
+pyproject.toml
+clicks_crewai.egg-info/PKG-INFO
+clicks_crewai.egg-info/SOURCES.txt
+clicks_crewai.egg-info/dependency_links.txt
+clicks_crewai.egg-info/requires.txt
+clicks_crewai.egg-info/top_level.txt

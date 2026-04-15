@@ -1,7 +1,7 @@
 {
   "protocol": "clicks-protocol",
   "version": "1.0",
-  "last_updated": "2026-03-18T11:26:00Z",
+  "last_updated": "2026-04-08T00:00:00Z",
   "chain": {
     "name": "Base",
     "chain_id": 8453,
@@ -10,10 +10,15 @@
     "explorer": "https://basescan.org"
   },
   "contract": {
-    "address": "0x0000000000000000000000000000000000000000",
-    "comment": "Contract not yet deployed - placeholder address",
+    "address": {
+      "ClicksRegistry": "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3",
+      "ClicksSplitterV4": "0xB7E0016d543bD443ED2A6f23d5008400255bf3C8",
+      "ClicksYieldRouter": "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD",
+      "ClicksFeeV2": "0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5",
+      "ClicksReferral": "0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC"
+    },
     "abi_url": "https://clicksprotocol.xyz/abi.json",
-    "verified": false,
+    "verified": true,
     "audit_url": "https://clicksprotocol.xyz/audits/trail-of-bits-2026.pdf"
   },
   "parameters": {
@@ -28,8 +33,7 @@
       "min": 4.0,
       "max": 8.0,
       "current": 6.2,
-      "comment": "Current APY is simulated - will be live after deployment",
-      "last_update": "2026-03-18T11:26:00Z"
+      "last_update": "2026-04-08T00:00:00Z"
     },
     "liquidity": {
       "instant_withdrawal_ratio": 0.80,
@@ -48,8 +52,8 @@
     "fees": {
       "deposit_fee": 0,
       "withdrawal_fee": 0,
-      "performance_fee": 0,
-      "comment": "Zero fees for V1. Gas costs apply (~$0.01-0.05 per transaction on Base L2)"
+      "performance_fee": 0.02,
+      "comment": "2% protocol fee on yield only, never on principal"
     },
     "gas_estimates": {
       "deposit_usd": 0.02,
@@ -62,7 +66,7 @@
     "quickstart_url": "https://docs.clicksprotocol.xyz/quickstart",
     "sdk": {
       "npm": "@clicks-protocol/sdk",
-      "github": "https://github.com/clicks-protocol/sdk",
+      "github": "https://github.com/clicks-protocol/clicks-protocol",
       "languages": ["TypeScript", "JavaScript"]
     },
     "api_endpoints": {
@@ -72,12 +76,13 @@
     }
   },
   "referral": {
-    "enabled": false,
-    "comment": "Referral system will be enabled in V1.1",
-    "planned_features": {
-      "commission_rate": 0.08,
-      "yield_boost": "+20bps per active referral (cap +150bps)",
-      "tracking": "on-chain"
+    "enabled": true,
+    "status": "Live. Automatic fee distribution via ClicksFeeV2.",
+    "contract": "0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC",
+    "levels": {
+      "L1": "40% of protocol fee",
+      "L2": "20% of protocol fee",
+      "L3": "10% of protocol fee"
     }
   },
   "security": {
@@ -99,9 +104,9 @@
   },
   "agent_integration": {
     "mcp_server": {
-      "available": false,
-      "comment": "MCP tool schema will be published in Phase 2",
-      "planned_url": "https://clicksprotocol.xyz/mcp/server.json"
+      "available": true,
+      "hosted_endpoint": "https://mcp.clicksprotocol.xyz/mcp",
+      "npm": "@clicks-protocol/mcp-server"
     },
     "recommended_for": [
       "AI agents managing treasury",

@@ -128,7 +128,7 @@ None.
 - https://x.com/ClicksProtocol
 - https://clicksprotocol.medium.com
 - https://www.npmjs.com/package/@clicks-protocol/sdk
-- https://basescan.org/address/0x898d8a3B04e5E333E88f798372129C6a622fF48d
+- https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3
 - mailto:hello@clicksprotocol.xyz
 - mailto:security@clicksprotocol.xyz
 

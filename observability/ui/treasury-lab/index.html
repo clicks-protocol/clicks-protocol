@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treasury Lab — Clicks Protocol</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --border: #222;
+    --text: #e0e0e0;
+    --dim: #888;
+    --accent: #3b82f6;
+    --green: #22c55e;
+    --input-bg: #1a1a1a;
+    --input-border: #333;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 20px; font-weight: 600; }
+  .subtitle { color: var(--dim); font-size: 13px; margin-top: 4px; margin-bottom: 28px; }
+
+  /* Inputs */
+  .input-group { margin-bottom: 20px; }
+  .input-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dim);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .amount-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .amount-wrap:focus-within { border-color: var(--accent); }
+  .amount-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 16px;
+    padding: 10px 12px;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+    font-family: inherit;
+  }
+  .amount-suffix {
+    padding: 0 12px;
+    color: var(--dim);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* Period buttons */
+  .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn-period {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    color: var(--dim);
+    padding: 8px 16px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.1s;
+  }
+  .btn-period:hover { border-color: var(--accent); color: var(--text); }
+  .btn-period.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* Slider */
+  .slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .slider-wrap input[type=range] {
+    flex: 1;
+    accent-color: var(--accent);
+    height: 4px;
+  }
+  .slider-val {
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  /* KPI cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 28px 0 16px;
+  }
+  @media (max-width: 600px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+  }
+  .kpi {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dim);
+    margin-bottom: 6px;
+  }
+  .kpi-value {
+    font-size: 24px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Detail row */
+  .detail-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 24px;
+    font-size: 13px;
+  }
+  .detail-item span.dl { color: var(--dim); }
+  .detail-item span.dv {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    font-size: 12px;
+    color: var(--dim);
+    line-height: 1.6;
+  }
+
+  /* Error */
+  .error-msg {
+    color: #ef4444;
+    font-size: 13px;
+    margin: 28px 0 16px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<h1>Treasury Lab</h1>
+<div class="subtitle">See what idle USDC could earn through Clicks Protocol.</div>
+
+<!-- Amount -->
+<div class="input-group">
+  <label class="input-label">Amount</label>
+  <div class="amount-wrap">
+    <input type="text" class="amount-input" id="amount" value="10,000" inputmode="numeric">
+    <span class="amount-suffix">USDC</span>
+  </div>
+</div>
+
+<!-- Period -->
+<div class="input-group">
+  <label class="input-label">Period</label>
+  <div class="btn-group" id="period-group">
+    <button class="btn-period" data-days="30">1M</button>
+    <button class="btn-period" data-days="90">3M</button>
+    <button class="btn-period" data-days="180">6M</button>
+    <button class="btn-period active" data-days="365">1Y</button>
+    <button class="btn-period" data-days="1095">3Y</button>
+  </div>
+</div>
+
+<!-- Yield Split -->
+<div class="input-group">
+  <label class="input-label">Yield Split</label>
+  <div class="slider-wrap">
+    <input type="range" id="yield-slider" min="5" max="50" value="20" step="1">
+    <span class="slider-val" id="yield-val">20%</span>
+  </div>
+</div>
+
+<!-- Error -->
+<div class="error-msg" id="error-msg">Enter a valid amount</div>
+
+<!-- KPIs -->
+<div class="kpi-grid" id="kpi-grid">
+  <div class="kpi">
+    <div class="kpi-label">Liquid</div>
+    <div class="kpi-value" id="kpi-liquid">--</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">To Yield</div>
+    <div class="kpi-value" id="kpi-yield">--</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Net Earnings</div>
+    <div class="kpi-value" id="kpi-net">--</div>
+  </div>
+</div>
+
+<!-- Details -->
+<div class="detail-row" id="detail-row">
+  <div class="detail-item"><span class="dl">Total Return: </span><span class="dv" id="d-return">--</span></div>
+  <div class="detail-item"><span class="dl">Effective APY: </span><span class="dv" id="d-apy">--</span></div>
+  <div class="detail-item"><span class="dl">Protocol Fee: </span><span class="dv" id="d-fee">--</span></div>
+</div>
+
+<!-- Footer -->
+<div class="footer" id="footer">
+  <div id="footer-protocol">Based on current APY: --</div>
+  <div>Rates fluctuate. Not financial advice.</div>
+</div>
+
+<script>
+var API = '';
+var debounceTimer = null;
+var currentDays = 365;
+
+function fmtNum(n) {
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function parseAmount(str) {
+  var cleaned = str.replace(/[^0-9.]/g, '');
+  var n = parseFloat(cleaned);
+  return isNaN(n) ? NaN : n;
+}
+
+function getInputs() {
+  var amount = parseAmount(document.getElementById('amount').value);
+  var yieldPct = parseInt(document.getElementById('yield-slider').value, 10);
+  return { amount: amount, days: currentDays, yieldPct: yieldPct };
+}
+
+function showError(msg) {
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error-msg').style.display = 'block';
+  document.getElementById('kpi-grid').style.opacity = '0.3';
+  document.getElementById('detail-row').style.opacity = '0.3';
+}
+
+function hideError() {
+  document.getElementById('error-msg').style.display = 'none';
+  document.getElementById('kpi-grid').style.opacity = '1';
+  document.getElementById('detail-row').style.opacity = '1';
+}
+
+async function fetchSim() {
+  var inp = getInputs();
+  if (isNaN(inp.amount) || inp.amount < 1) {
+    showError('Enter a valid amount');
+    return;
+  }
+  hideError();
+
+  try {
+    var url = API + '/api/public/simulate?amount=' + inp.amount + '&days=' + inp.days + '&yieldPct=' + inp.yieldPct;
+    var res = await fetch(url);
+    if (!res.ok) {
+      var err = await res.json();
+      showError(err.error || 'Invalid input');
+      return;
+    }
+    var d = await res.json();
+    document.getElementById('kpi-liquid').textContent = fmtNum(d.split.liquid) + ' USDC';
+    document.getElementById('kpi-yield').textContent = fmtNum(d.split.toYield) + ' USDC';
+    document.getElementById('kpi-net').textContent = fmtNum(d.projection.netYield) + ' USDC';
+    document.getElementById('d-return').textContent = fmtNum(d.projection.totalReturn) + ' USDC';
+    document.getElementById('d-apy').textContent = d.projection.effectiveApyPct.toFixed(2) + '%';
+    document.getElementById('d-fee').textContent = fmtNum(d.projection.protocolFee) + ' USDC (2% on yield)';
+    document.getElementById('footer-protocol').textContent =
+      'Based on current ' + d.protocol.activeProtocol + ' APY: ' + d.protocol.currentApyPct.toFixed(2) + '%';
+  } catch (e) {
+    showError('Failed to load simulation');
+  }
+}
+
+function debouncedFetch() {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(fetchSim, 300);
+}
+
+// Amount input
+document.getElementById('amount').addEventListener('input', function() {
+  debouncedFetch();
+});
+document.getElementById('amount').addEventListener('blur', function() {
+  var n = parseAmount(this.value);
+  if (!isNaN(n) && n >= 1) {
+    this.value = fmtNum(n).replace(/\.00$/, n % 1 === 0 ? '' : '.00');
+    if (n === Math.floor(n)) this.value = Math.floor(n).toLocaleString('en-US');
+  }
+});
+
+// Period buttons
+document.querySelectorAll('.btn-period').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.btn-period').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    currentDays = parseInt(btn.dataset.days, 10);
+    fetchSim();
+  });
+});
+
+// Yield slider
+var slider = document.getElementById('yield-slider');
+slider.addEventListener('input', function() {
+  document.getElementById('yield-val').textContent = this.value + '%';
+  fetchSim();
+});
+
+// Initial load
+fetchSim();
+</script>
+</body>
+</html>

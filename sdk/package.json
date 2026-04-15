@@ -1,7 +1,7 @@
 {
   "name": "@clicks-protocol/sdk",
-  "version": "0.1.0",
-  "description": "TypeScript SDK for the Clicks Protocol \u2014 on-chain yield for AI agents on Base",
+  "version": "0.2.0",
+  "description": "TypeScript SDK for the Clicks Protocol — on-chain yield for AI agents on Base",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

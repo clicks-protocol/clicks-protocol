@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docs — Clicks Protocol</title>
+<meta name="description" content="Documentation for Clicks Protocol SDK and smart contracts.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="shortcut icon" href="/favicon.ico">
+<style>
+:root{--bg:#0F0814;--bg-card:#191020;--accent:#00FF9B;--text:#F4F1F6;--text-sec:#b0a8b9;--text-muted:#6b5f7d;--border:#2a1f3d;--mono:'SF Mono','Fira Code',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Helvetica Neue',Arial,sans-serif;line-height:1.7}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--bg-card);border-right:1px solid var(--border);padding:24px;position:fixed;top:0;bottom:0;overflow-y:auto}
+.sidebar h2{font-size:1rem;color:var(--accent);margin-bottom:16px;letter-spacing:2px}
+.sidebar ul{list-style:none}
+.sidebar li{margin-bottom:4px}
+.sidebar a{color:var(--text-sec);display:block;padding:6px 12px;border-radius:6px;font-size:.9rem}
+.sidebar a:hover,.sidebar a.active{background:rgba(0,255,155,0.08);color:var(--accent);text-decoration:none}
+.sidebar .section-title{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin:20px 0 8px 12px}
+.main{margin-left:260px;flex:1;padding:48px 64px;max-width:860px}
+.main h1{font-size:2rem;font-weight:700;margin-bottom:8px}
+.main h2{font-size:1.4rem;font-weight:600;margin:40px 0 12px;padding-top:16px;border-top:1px solid var(--border)}
+.main h3{font-size:1.1rem;font-weight:600;margin:24px 0 8px}
+.main p{margin-bottom:16px;color:var(--text-sec)}
+.main code{background:var(--bg-card);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:.85rem}
+.main pre{background:#0a0612;border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;margin:12px 0 24px;font-family:var(--mono);font-size:.82rem;line-height:1.6}
+.main pre code{background:none;padding:0}
+.main table{width:100%;border-collapse:collapse;margin:12px 0 24px}
+.main th,.main td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border)}
+.main th{color:var(--text-muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.04em}
+.main td{font-size:.9rem}
+.main td code{font-size:.82rem}
+.badge{display:inline-block;background:rgba(0,255,155,0.08);border:1px solid rgba(0,255,155,0.2);border-radius:12px;padding:2px 10px;font-size:.75rem;color:var(--accent);margin-left:8px}
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:24px}}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="sidebar">
+  <h2>CLICKS</h2>
+  <ul>
+    <li><a href="#getting-started" class="active">Getting Started</a></li>
+    <li><a href="#quick-start">Quick Start</a></li>
+    <li><a href="#installation">Installation</a></li>
+  </ul>
+  <div class="section-title">SDK</div>
+  <ul>
+    <li><a href="#client">ClicksClient</a></li>
+    <li><a href="#write-methods">Write Methods</a></li>
+    <li><a href="#read-methods">Read Methods</a></li>
+    <li><a href="#quick-start-method">quickStart()</a></li>
+  </ul>
+  <div class="section-title">MCP Server</div>
+  <ul>
+    <li><a href="#mcp-setup">Setup</a></li>
+    <li><a href="#mcp-tools">Tools</a></li>
+  </ul>
+  <div class="section-title">Contracts</div>
+  <ul>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#addresses">Addresses</a></li>
+    <li><a href="#security">Security</a></li>
+  </ul>
+  <div class="section-title">Links</div>
+  <ul>
+    <li><a href="/">Website</a></li>
+    <li><a href="https://github.com/clicks-protocol" target="_blank">GitHub</a></li>
+    <li><a href="https://www.npmjs.com/package/@clicks-protocol/sdk" target="_blank">npm</a></li>
+  </ul>
+</nav>
+
+<main class="main">
+<h1 id="getting-started">Getting Started</h1>
+<p>Clicks Protocol is an on-chain yield layer for AI agents on Base. Your agent deposits USDC, and the protocol automatically splits it: 80% stays liquid, 20% earns yield.</p>
+
+<h2 id="quick-start">Quick Start</h2>
+<p>Three lines to start earning yield:</p>
+<pre><code>import { ClicksClient } from '@clicks-protocol/sdk'
+import { ethers } from 'ethers'
+
+const provider = new ethers.JsonRpcProvider('https://mainnet.base.org')
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider)
+const clicks = new ClicksClient(signer)
+
+// Register agent + set split + deposit in one call
+await clicks.quickStart('5000', agentAddress)</code></pre>
+
+<h2 id="installation">Installation</h2>
+<pre><code>npm install @clicks-protocol/sdk</code></pre>
+<p>Requirements: Node.js 18+, ethers.js v6.</p>
+<p>For MCP-compatible agents:</p>
+<pre><code>npm install @clicks-protocol/mcp-server</code></pre>
+
+<h2 id="client">ClicksClient</h2>
+<pre><code>new ClicksClient(signerOrProvider, options?)</code></pre>
+<table>
+  <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+  <tr><td><code>signerOrProvider</code></td><td><code>Signer | Provider</code></td><td>ethers v6 Signer (write) or Provider (read-only)</td></tr>
+  <tr><td><code>options.chainId</code></td><td><code>number</code></td><td>Chain ID. Default: 8453 (Base Mainnet)</td></tr>
+  <tr><td><code>options.addresses</code></td><td><code>Partial&lt;ClicksAddresses&gt;</code></td><td>Override contract addresses</td></tr>
+</table>
+
+<h2 id="write-methods">Write Methods</h2>
+<p>All write methods require a Signer.</p>
+
+<h3>registerAgent(agentAddress)</h3>
+<p>Register an AI agent. The caller becomes the operator.</p>
+<pre><code>await clicks.registerAgent('0xAgentAddress')</code></pre>
+
+<h3>receivePayment(amount, agentAddress)</h3>
+<p>Deposit USDC. Automatically splits based on the agent's yield percentage (default 20%). Amount is human-readable USDC (e.g., "100" for 100 USDC).</p>
+<pre><code>await clicks.receivePayment('100', '0xAgentAddress')
+// Splits: 80 USDC liquid, 20 USDC to yield</code></pre>
+
+<h3>withdrawYield(agentAddress, amount?)</h3>
+<p>Withdraw accumulated yield + principal. Omit <code>amount</code> or pass "0" to withdraw everything. Only the agent, operator, or owner can withdraw. 2% protocol fee applies to yield earned (not principal).</p>
+<pre><code>// Withdraw everything
+await clicks.withdrawYield('0xAgentAddress')
+
+// Withdraw 50 USDC principal + accrued yield on that portion
+await clicks.withdrawYield('0xAgentAddress', '50')</code></pre>
+
+<h3>setOperatorYieldPct(pct)</h3>
+<p>Adjust the yield split for the calling operator (5-50%). Default is 20%. Pass 0 to revert to default.</p>
+<pre><code>await clicks.setOperatorYieldPct(30)
+// Future deposits for this operator's agents: 70% liquid, 30% yield</code></pre>
+
+<h3>approveUSDC(amount)</h3>
+<p>Approve USDC spending by the splitter contract. Pass <code>'max'</code> for unlimited approval.</p>
+<pre><code>await clicks.approveUSDC('max')</code></pre>
+
+<h2 id="quick-start-method">quickStart(amount, agentAddress) <span class="badge">Recommended</span></h2>
+<p>One function that does three things: register agent (if needed), set yield split, and deposit. Idempotent.</p>
+<pre><code>await clicks.quickStart('1000', agentAddress)
+// Registers agent if not registered
+// Sets 20% yield split
+// Deposits 1000 USDC (800 liquid, 200 yield)</code></pre>
+
+<h2 id="read-methods">Read Methods</h2>
+<p>Work with both Signer and Provider.</p>
+
+<h3>getAgentInfo(agentAddress)</h3>
+<p>Returns registration status, operator, deposited principal, and yield percentage.</p>
+<pre><code>const info = await clicks.getAgentInfo('0xAgentAddress')
+// { isRegistered: true, operator: '0x...', deposited: 20000000n, yieldPct: 20n }</code></pre>
+
+<h3>getYieldInfo()</h3>
+<p>Returns active yield protocol (1=Aave, 2=Morpho), current APYs, total balance (principal+yield), and total deposited across all agents.</p>
+<pre><code>const yieldInfo = await clicks.getYieldInfo()
+// { activeProtocol: 1, aaveAPY: 450n, morphoAPY: 380n, totalBalance: 1000000n, totalDeposited: 950000n }</code></pre>
+
+<h3>simulateSplit(amount, agentAddress)</h3>
+<p>Preview how a deposit would be split without making a transaction. Returns liquid amount, yield amount, and effective yield percentage.</p>
+<pre><code>const preview = await clicks.simulateSplit('100', '0xAgentAddress')
+// { liquid: 80000000n, toYield: 20000000n, yieldPct: 20n }</code></pre>
+
+<h3>getYieldPct(agentAddress)</h3>
+<p>Get the effective yield percentage for an agent.</p>
+<pre><code>const pct = await clicks.getYieldPct('0xAgentAddress') // 20n</code></pre>
+
+<h3>getOperatorAgents(operatorAddress)</h3>
+<p>Get all agents registered under an operator.</p>
+<pre><code>const agents = await clicks.getOperatorAgents('0xOperatorAddress')
+// ['0xAgent1', '0xAgent2']</code></pre>
+
+<h3>getFeeInfo()</h3>
+<p>Returns protocol fee stats: total collected, pending fees, treasury address, and fee basis points (200 = 2%).</p>
+<pre><code>const feeInfo = await clicks.getFeeInfo()
+// { totalCollected: 1500000n, pendingFees: 50000n, treasury: '0x...', feeBps: 200n }</code></pre>
+
+<h3>getUSDCBalance(address), getAllowance(address)</h3>
+<p>Check USDC balance and allowance for the splitter contract.</p>
+<pre><code>const balance = await clicks.getUSDCBalance('0xAddress')
+const allowance = await clicks.getAllowance('0xAddress')</code></pre>
+
+<h2 id="mcp-setup">MCP Server Setup</h2>
+<pre><code>npm install @clicks-protocol/mcp-server</code></pre>
+<p>Add to your MCP client config:</p>
+<pre><code>{
+  "mcpServers": {
+    "clicks": {
+      "command": "npx",
+      "args": ["@clicks-protocol/mcp-server"],
+      "env": {
+        "PRIVATE_KEY": "your-private-key",
+        "RPC_URL": "https://mainnet.base.org"
+      }
+    }
+  }
+}</code></pre>
+
+<h2 id="mcp-tools">MCP Tools</h2>
+<p>The MCP server exposes tools for Model Context Protocol clients (Claude Desktop, Cline, OpenClaw). Each tool wraps a corresponding SDK method.</p>
+
+<h3>Write Tools</h3>
+<table>
+  <tr><th>Tool</th><th>Parameters</th><th>Description</th></tr>
+  <tr><td><code>clicks_quick_start</code></td><td><code>amount</code>, <code>agentAddress</code></td><td>Register agent (if needed), approve USDC, and deposit in one call</td></tr>
+  <tr><td><code>clicks_receive_payment</code></td><td><code>amount</code>, <code>agentAddress</code></td><td>Deposit USDC with auto-split. Requires prior approval.</td></tr>
+  <tr><td><code>clicks_withdraw_yield</code></td><td><code>agentAddress</code>, <code>amount?</code></td><td>Withdraw yield + principal. Omit amount to withdraw all.</td></tr>
+  <tr><td><code>clicks_register_agent</code></td><td><code>agentAddress</code></td><td>Register an agent under the caller as operator</td></tr>
+  <tr><td><code>clicks_set_yield_pct</code></td><td><code>pct</code></td><td>Adjust yield split for the calling operator (5-50%)</td></tr>
+  <tr><td><code>clicks_approve_usdc</code></td><td><code>amount</code></td><td>Approve USDC spending. Pass "max" for unlimited.</td></tr>
+</table>
+
+<h3>Read Tools</h3>
+<table>
+  <tr><th>Tool</th><th>Parameters</th><th>Returns</th></tr>
+  <tr><td><code>clicks_get_agent_info</code></td><td><code>agentAddress</code></td><td>Registration status, operator, deposited principal, yield %</td></tr>
+  <tr><td><code>clicks_get_yield_info</code></td><td>—</td><td>Active protocol, APYs, total balance, total deposited</td></tr>
+  <tr><td><code>clicks_simulate_split</code></td><td><code>amount</code>, <code>agentAddress</code></td><td>Preview of liquid/yield split for a hypothetical deposit</td></tr>
+  <tr><td><code>clicks_get_operator_agents</code></td><td><code>operatorAddress</code></td><td>Array of agents registered under an operator</td></tr>
+  <tr><td><code>clicks_get_fee_info</code></td><td>—</td><td>Total fees collected, pending fees, treasury, fee BPS</td></tr>
+  <tr><td><code>clicks_get_usdc_balance</code></td><td><code>address</code></td><td>USDC balance for an address</td></tr>
+</table>
+
+<h3>Resources</h3>
+<p>The MCP server also exposes a <code>clicks://info</code> resource that returns a protocol overview (contracts, APYs, total deposited) for quick context injection.</p>
+
+<h3>Usage Example (Claude Desktop)</h3>
+<pre><code>// Agent asks: "Deposit 100 USDC for agent 0xABC123..."
+// Claude uses: clicks_quick_start(amount="100", agentAddress="0xABC123...")
+// Result: Agent registered, USDC approved, 80 liquid + 20 yield</code></pre>
+
+<h2 id="architecture">Contract Architecture</h2>
+<p>Five contracts work together:</p>
+<pre><code>Agent → ClicksSplitterV3 → 80% agent wallet
+                         → 20% ClicksYieldRouter → Aave/Compound/Morpho
+       ClicksRegistry (agent records)
+       ClicksFee (protocol fee on yield only)</code></pre>
+<p>The protocol fee is taken from yield earned, never from deposits or principal. If an agent earns nothing, the protocol charges nothing.</p>
+
+<h2 id="addresses">Contract Addresses</h2>
+
+<h3>Base Mainnet (Chain ID: 8453)</h3>
+<table>
+  <tr><th>Contract</th><th>Address</th><th>Verified</th></tr>
+  <tr><td>ClicksRegistry</td><td><code>0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3</code></td><td><a href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3#code" target="_blank">Basescan</a></td></tr>
+  <tr><td>ClicksFee</td><td><code>0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE</code></td><td><a href="https://basescan.org/address/0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE#code" target="_blank">Basescan</a></td></tr>
+  <tr><td>ClicksYieldRouter</td><td><code>0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F</code></td><td><a href="https://basescan.org/address/0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F#code" target="_blank">Basescan</a></td></tr>
+  <tr><td>ClicksSplitterV3</td><td><code>0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4</code></td><td><a href="https://basescan.org/address/0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4#code" target="_blank">Basescan</a></td></tr>
+  <tr><td>USDC (Base)</td><td><code>0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</code></td><td><a href="https://basescan.org/token/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" target="_blank">Basescan</a></td></tr>
+</table>
+<p>All contracts are deployed on Base Mainnet. No proxies, no admin upgrade keys on user funds. Immutable protocol logic.</p>
+
+<h2 id="base-defi-landscape">Base DeFi Yield Landscape</h2>
+<p>Clicks Protocol routes yield through Base's lending ecosystem. Here's the landscape and our routing strategy.</p>
+
+<h3>Core Lending & Money Markets</h3>
+<table>
+  <tr><th>Protocol</th><th>Type</th><th>Base TVL</th><th>Clicks-relevant</th></tr>
+  <tr><td><strong>Morpho</strong></td><td>Permissionless Lending</td><td>$2.27B (#1)</td><td>✅ Primary</td></tr>
+  <tr><td><strong>Aave V3</strong></td><td>Lending Pool</td><td>$786M (#2)</td><td>✅ Active now</td></tr>
+  <tr><td>Moonwell</td><td>Base-native Lending</td><td>$83M (#9)</td><td>⚠️ Tier 2</td></tr>
+  <tr><td>Seamless</td><td>Native Lending + Morpho Vaults</td><td>~$50M</td><td>⚠️ Tier 2</td></tr>
+  <tr><td>Compound III</td><td>Comet Markets</td><td>~$40M</td><td>⚠️ Tier 2</td></tr>
+  <tr><td>Euler v2</td><td>Modular Vault/Lending</td><td>~$20M</td><td>Future</td></tr>
+</table>
+
+<h3>Curated Morpho Vaults</h3>
+<table>
+  <tr><th>Vault</th><th>Curator</th><th>Focus</th></tr>
+  <tr><td>Steakhouse USDC</td><td>Steakhouse Financial</td><td>USDC, EURC, RWA</td></tr>
+  <tr><td>Gauntlet USDC Prime</td><td>Gauntlet</td><td>USDC Prime/Core</td></tr>
+  <tr><td>Moonwell Flagship USDC</td><td>Moonwell</td><td>USDC</td></tr>
+  <tr><td>Seamless USDC Vault</td><td>Gauntlet</td><td>USDC</td></tr>
+</table>
+
+<h3>Clicks Routing Strategy</h3>
+<table>
+  <tr><th>Version</th><th>Protocols</th><th>Risk Profile</th><th>APY Range</th></tr>
+  <tr><td><strong>V1 (Now)</strong></td><td>Morpho + Aave V3</td><td>Low</td><td>4-8%</td></tr>
+  <tr><td><strong>V1.1</strong></td><td>+ Moonwell + Compound III</td><td>Low</td><td>3-7%</td></tr>
+  <tr><td><strong>V2</strong></td><td>+ Curated Vaults (Steakhouse, Gauntlet)</td><td>Low</td><td>5-8%</td></tr>
+  <tr><td><strong>V3</strong></td><td>+ Aerodrome LP + Avantis Vaults (opt-in)</td><td>Medium-High</td><td>10-40%</td></tr>
+</table>
+<p>Auto-routing: <code>getBestProtocol()</code> selects the highest APY within the active tier. No manual intervention required.</p>
+
+<h2 id="x402-compatibility">x402 Network Compatibility</h2>
+<p>Clicks Protocol runs on Base, one of the three production mainnet chains in the x402 ecosystem. Here's how it fits.</p>
+
+<h3>Clicks x402 Position</h3>
+<table>
+  <tr><th>Dimension</th><th>Value</th></tr>
+  <tr><td>Chain</td><td><code>Base (eip155:8453)</code></td></tr>
+  <tr><td>Token</td><td>USDC via EIP-3009 (gasless authorization)</td></tr>
+  <tr><td>Payment Scheme</td><td><code>exact</code> (fixed USDC amounts)</td></tr>
+  <tr><td>Facilitator</td><td>CDP/Coinbase (official, no custom facilitator needed)</td></tr>
+  <tr><td>SDK Compatibility</td><td><code>quickStart()</code> + <code>receivePayment()</code> work with EIP-3009</td></tr>
+</table>
+
+<h3>CDP Facilitator: Live Mainnet Chains</h3>
+<table>
+  <tr><th>Chain</th><th>CAIP-2</th><th>Token Standard</th><th>Scheme</th></tr>
+  <tr style="background:rgba(0,255,155,0.05)"><td><strong>Base</strong></td><td><code>eip155:8453</code></td><td>EIP-3009 (USDC, EURC)</td><td><code>exact</code></td></tr>
+  <tr><td>Polygon</td><td><code>eip155:137</code></td><td>EIP-3009 (USDC, EURC)</td><td><code>exact</code></td></tr>
+  <tr><td>Solana</td><td><code>solana:5eykt...</code></td><td>SPL / Token-2022</td><td><code>exact</code></td></tr>
+</table>
+<p>Base is one of only 3 production mainnet chains on the official CDP Facilitator. Clicks Protocol leverages this position for maximum x402 compatibility. See <a href="https://docs.x402.org/core-concepts/network-and-token-support" target="_blank">x402 Network Support</a> for the full list.</p>
+
+<h2 id="security">Security</h2>
+<p>All contracts are verified on Basescan. No proxy upgrade patterns. No admin keys on user funds.</p>
+<p>The protocol has not been audited by a third-party firm. A self-audit with Slither and DeFiHackLabs checklists is planned before public launch.</p>
+<p>If you find a vulnerability, email <a href="mailto:dev@clicksprotocol.xyz">dev@clicksprotocol.xyz</a>.</p>
+
+</main>
+</div>
+</body>
+</html>
+
+<!-- x402 Network Compatibility Section -->
+<section style="margin-top: 60px; padding: 40px 0; border-top: 1px solid #2F0C48;">
+<h2 id="x402-compatibility" style="color: #00FF9B; font-size: 28px; margin-bottom: 20px;">x402 Network Compatibility</h2>
+<p style="color: #F4F1F6; margin-bottom: 30px;">Clicks Protocol runs on Base, the primary chain in the x402 ecosystem. Here's how it fits.</p>
+
+<h3 style="color: #FFFFFF; font-size: 20px; margin-bottom: 15px;">Clicks x402 Position</h3>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">Chain</td>
+<td style="padding: 12px; color: #00FF9B; font-weight: bold;">Base (eip155:8453)</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">Token</td>
+<td style="padding: 12px; color: #FFFFFF;">USDC via EIP-3009 (gasless authorization)</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">Payment Scheme</td>
+<td style="padding: 12px; color: #FFFFFF;">exact (fixed USDC amounts)</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">Facilitator</td>
+<td style="padding: 12px; color: #FFFFFF;">CDP/Coinbase (official, no custom facilitator needed)</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #71717A;">SDK Compatibility</td>
+<td style="padding: 12px; color: #FFFFFF;">quickStart() + receivePayment() work with EIP-3009</td>
+</tr>
+</table>
+
+<h3 style="color: #FFFFFF; font-size: 20px; margin-bottom: 15px;">CDP Facilitator: Live Mainnet Chains</h3>
+<table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+<thead>
+<tr style="border-bottom: 2px solid #2F0C48;">
+<th style="padding: 12px; color: #71717A; text-align: left;">Chain</th>
+<th style="padding: 12px; color: #71717A; text-align: left;">CAIP-2</th>
+<th style="padding: 12px; color: #71717A; text-align: left;">Token Standard</th>
+<th style="padding: 12px; color: #71717A; text-align: left;">Scheme</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-bottom: 1px solid #2F0C48; background: rgba(0,255,155,0.05);">
+<td style="padding: 12px; color: #00FF9B; font-weight: bold;">Base</td>
+<td style="padding: 12px; color: #FFFFFF;">eip155:8453</td>
+<td style="padding: 12px; color: #FFFFFF;">EIP-3009 (USDC, EURC)</td>
+<td style="padding: 12px; color: #FFFFFF;">exact</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #FFFFFF;">Polygon</td>
+<td style="padding: 12px; color: #FFFFFF;">eip155:137</td>
+<td style="padding: 12px; color: #FFFFFF;">EIP-3009 (USDC, EURC)</td>
+<td style="padding: 12px; color: #FFFFFF;">exact</td>
+</tr>
+<tr style="border-bottom: 1px solid #2F0C48;">
+<td style="padding: 12px; color: #FFFFFF;">Solana</td>
+<td style="padding: 12px; color: #FFFFFF;">solana:5eykt...</td>
+<td style="padding: 12px; color: #FFFFFF;">SPL / Token-2022</td>
+<td style="padding: 12px; color: #FFFFFF;">exact</td>
+</tr>
+</tbody>
+</table>
+
+<p style="color: #71717A; font-size: 14px;">
+Base is one of only 3 production mainnet chains on the official CDP Facilitator.
+Clicks Protocol leverages this position for maximum x402 compatibility.
+See <a href="https://docs.x402.org/core-concepts/network-and-token-support" style="color: #00FF9B;">x402 Network Support</a> for the full list.
+</p>
+</section>

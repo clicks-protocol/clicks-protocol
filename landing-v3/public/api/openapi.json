@@ -333,10 +333,11 @@
         "type": "object",
         "description": "Clicks Protocol contract addresses on Base Mainnet (Chain ID 8453)",
         "properties": {
-          "ClicksRegistry": { "type": "string", "example": "0x898d8a3B04e5E333E88f798372129C6a622fF48d" },
-          "ClicksSplitterV3": { "type": "string", "example": "0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5" },
-          "ClicksYieldRouter": { "type": "string", "example": "0x47d6Add0a3bdFe856b39a0311D8c055481F76f29" },
-          "ClicksFee": { "type": "string", "example": "0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12" },
+          "ClicksRegistry": { "type": "string", "example": "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3" },
+          "ClicksSplitterV4": { "type": "string", "example": "0xB7E0016d543bD443ED2A6f23d5008400255bf3C8" },
+          "ClicksYieldRouter": { "type": "string", "example": "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD" },
+          "ClicksFee": { "type": "string", "example": "0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5" },
+          "ClicksReferral": { "type": "string", "example": "0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC" },
           "USDC": { "type": "string", "example": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" }
         }
       },

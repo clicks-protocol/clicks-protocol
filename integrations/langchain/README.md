@@ -137,8 +137,9 @@ print(apy_tool.run({}))
 | Contract | Address |
 |----------|---------|
 | Registry | `0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3` |
-| Splitter | `0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4` |
-| YieldRouter | `0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F` |
+| Splitter | `0xB7E0016d543bD443ED2A6f23d5008400255bf3C8` |
+| YieldRouter | `0x053167a233d18E05Bc65a8d5F3F8808782a3EECD` |
+| ClicksReferral | `0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC` |
 | USDC | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
 
 ## License

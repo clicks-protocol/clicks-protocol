@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 1: The Perpetual Circuit -->
+  <!-- Two concentric circles with motion indicators, gap = entry point -->
+  
+  <!-- Outer circle with gap at ~45° (top-right) -->
+  <path d="M 362.04 149.96 A 160 160 0 1 1 335.14 131.14" 
+        stroke="#00FF9B" stroke-width="14" stroke-linecap="round" fill="none"/>
+  
+  <!-- Inner circle, closed -->
+  <circle cx="256" cy="256" r="96" stroke="#00FF9B" stroke-width="10" fill="none"/>
+  
+  <!-- Motion indicator 1: tangential at ~210° on outer circle -->
+  <line x1="118" y1="336" x2="94" y2="360" stroke="#00FF9B" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Motion indicator 2: tangential at ~300° on inner circle -->
+  <line x1="304" y1="340" x2="328" y2="356" stroke="#00FF9B" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Motion indicator 3: between circles at ~0° -->
+  <line x1="370" y1="256" x2="400" y2="256" stroke="#00FF9B" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Entry arrow hint at gap -->
+  <circle cx="348" cy="141" r="6" fill="#00FF9B"/>
+</svg>

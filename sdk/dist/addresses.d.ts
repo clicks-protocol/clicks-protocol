@@ -4,12 +4,14 @@
 export interface ClicksAddresses {
     /** ClicksRegistry contract */
     registry: string;
-    /** ClicksFee contract */
+    /** ClicksFeeV2 contract (with referral distribution) */
     feeCollector: string;
     /** ClicksYieldRouter contract */
     yieldRouter: string;
-    /** ClicksSplitterV3 contract (main entry point) */
+    /** ClicksSplitterV4 contract (main entry point, with referral) */
     splitter: string;
+    /** ClicksReferral contract */
+    referral: string;
     /** USDC token */
     usdc: string;
 }

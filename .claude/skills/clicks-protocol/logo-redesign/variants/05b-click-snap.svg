@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- 5B: Snap-fit — two halves clicking together -->
+  <!-- Left half with protruding tab, right half with receiving slot -->
+  
+  <!-- Left half: semicircle with a rectangular tooth protruding right -->
+  <path d="M 248 100 
+           A 156 156 0 0 0 248 412 
+           L 248 312 
+           L 280 296 
+           L 280 216 
+           L 248 200 
+           Z" 
+        fill="#00FF9B"/>
+  
+  <!-- Right half: semicircle with a rectangular slot receiving the tooth -->
+  <path d="M 264 412 
+           A 156 156 0 0 0 264 100 
+           L 264 200 
+           L 232 216 
+           L 232 296 
+           L 264 312 
+           Z" 
+        fill="#00FF9B" opacity="0.55"/>
+</svg>

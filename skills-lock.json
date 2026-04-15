@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "clicks-protocol": {
+      "source": "clicks-protocol/clicks-protocol",
+      "sourceType": "github",
+      "computedHash": "c7f3eb947d13f98f3783d454dc4313ea5b716cc5b13c1ad2dfed1d6606e0b130"
+    }
+  }
+}

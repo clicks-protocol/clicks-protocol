@@ -78,15 +78,15 @@ The ClicksRegistry contract manages the mapping between agents and their operato
 
 The registry is intentionally simple. It stores agent-operator pairs and exposes lookup functions. There is no approval queue, no KYC gate, and no permission system beyond operator ownership. Any address can register as an agent operator.
 
-**Contract Address:** `0x898d8a3B04e5E333E88f798372129C6a622fF48d`
+**Contract Address:** `0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3`
 
-### 3.3 ClicksSplitterV3
+### 3.3 ClicksSplitterV4
 
-The ClicksSplitterV3 contract is the entry point for all USDC payments. When an agent receives a payment through Clicks, the Splitter divides the USDC according to the agent's configured yield percentage. The default split is 80/20: 80% goes directly to the agent's wallet as liquid funds, and 20% is forwarded to the YieldRouter for deposit into DeFi protocols.
+The ClicksSplitterV4 contract is the entry point for all USDC payments. When an agent receives a payment through Clicks, the Splitter divides the USDC according to the agent's configured yield percentage. The default split is 80/20: 80% goes directly to the agent's wallet as liquid funds, and 20% is forwarded to the YieldRouter for deposit into DeFi protocols.
 
 The yield percentage is configurable by the agent's operator within a range of 5% to 50%. An agent with high transaction frequency might choose a lower yield allocation (say 10%) to keep more capital liquid. An agent with infrequent transactions might allocate up to 50% to yield. The Splitter enforces these bounds on-chain.
 
-**Contract Address:** `0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5`
+**Contract Address:** `0xB7E0016d543bD443ED2A6f23d5008400255bf3C8`
 
 ### 3.4 ClicksYieldRouter
 
@@ -96,19 +96,19 @@ The router implements deposit and withdrawal functions. On deposit, USDC is supp
 
 The current architecture (V1.0) routes to Aave V3 and Morpho direct markets. A planned V1.1 extension will add a separate ClicksVaultRouter for ERC-4626 curated vaults (Steakhouse, Gauntlet, Moonwell), which can be deployed independently without modifying the existing contracts.
 
-**Contract Address:** `0x47d6Add0a3bdFe856b39a0311D8c055481F76f29`
+**Contract Address:** `0x053167a233d18E05Bc65a8d5F3F8808782a3EECD`
 
 ### 3.5 ClicksFee
 
-The ClicksFee contract collects the protocol's 2% fee on yield. When an agent withdraws, the YieldRouter calculates the yield earned (withdrawal amount minus deposited principal), takes 2% of that yield, and sends it to the ClicksFee contract. The fee is never applied to principal. If an agent deposits 1,000 USDC and earns 80 USDC in yield over a year, the protocol takes 1.60 USDC. The agent receives 1,078.40 USDC.
+The ClicksFeeV2 contract collects the protocol's 2% fee on yield. When an agent withdraws, the YieldRouter calculates the yield earned (withdrawal amount minus deposited principal), takes 2% of that yield, and sends it to the ClicksFeeV2 contract. The fee is never applied to principal. If an agent deposits 1,000 USDC and earns 80 USDC in yield over a year, the protocol takes 1.60 USDC. The agent receives 1,078.40 USDC.
 
 This fee structure aligns the protocol's revenue with agent outcomes. If agents do not earn yield, the protocol earns nothing. There is no subscription fee, no deposit fee, and no withdrawal fee on principal.
 
-**Contract Address:** `0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12`
+**Contract Address:** `0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5`
 
 ### 3.6 Interaction Flow
 
-A typical interaction proceeds as follows. An operator registers their agent through the ClicksRegistry. The operator approves the ClicksSplitterV3 to spend USDC on the agent's behalf. When the agent receives a USDC payment, it calls `receivePayment` on the Splitter. The Splitter sends 80% of the USDC directly to the agent's wallet and forwards 20% to the ClicksYieldRouter. The YieldRouter deposits the 20% into Aave V3 or Morpho, recording the deposit against the agent's address. Over time, the lending protocol generates yield on the deposit. When the agent or operator calls `withdrawYield`, the YieldRouter redeems the position from the lending protocol, calculates the yield earned, sends 2% of that yield to ClicksFee, and returns the remaining principal plus yield to the agent.
+A typical interaction proceeds as follows. An operator registers their agent through the ClicksRegistry. The operator approves the ClicksSplitterV4 to spend USDC on the agent's behalf. When the agent receives a USDC payment, it calls `receivePayment` on the Splitter. The Splitter sends 80% of the USDC directly to the agent's wallet and forwards 20% to the ClicksYieldRouter. The YieldRouter deposits the 20% into Aave V3 or Morpho, recording the deposit against the agent's address. Over time, the lending protocol generates yield on the deposit. When the agent or operator calls `withdrawYield`, the YieldRouter redeems the position from the lending protocol, calculates the yield earned, sends 2% of that yield to ClicksFee, and returns the remaining principal plus yield to the agent.
 
 The SDK's `quickStart` function wraps the entire flow (registration, approval, first payment) into a single call, reducing integration to one line of code.
 
@@ -116,10 +116,10 @@ The SDK's `quickStart` function wraps the entire flow (registration, approval, f
 
 | Contract | Address |
 |----------|---------|
-| ClicksRegistry | `0x898d8a3B04e5E333E88f798372129C6a622fF48d` |
-| ClicksSplitterV3 | `0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5` |
-| ClicksYieldRouter | `0x47d6Add0a3bdFe856b39a0311D8c055481F76f29` |
-| ClicksFee | `0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12` |
+| ClicksRegistry | `0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3` |
+| ClicksSplitterV4 | `0xB7E0016d543bD443ED2A6f23d5008400255bf3C8` |
+| ClicksYieldRouter | `0x053167a233d18E05Bc65a8d5F3F8808782a3EECD` |
+| ClicksFeeV2 | `0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5` |
 | USDC (Base) | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
 
 ---
@@ -302,7 +302,7 @@ The release does not resolve all open questions. The FIT21 and CLARITY Act bills
 
 ### Phase 1: Core Contracts (Complete)
 
-Five smart contracts deployed to Base mainnet: ClicksRegistry, ClicksSplitterV3, ClicksYieldRouter, ClicksFee, and ClicksReferral. All contracts compiled, tested (58 tests passing), and verified on Basescan. CEI pattern violation identified and fixed. Internal security audit completed with zero critical vulnerabilities.
+Five smart contracts deployed to Base mainnet: ClicksRegistry, ClicksSplitterV4, ClicksYieldRouter, ClicksFee, and ClicksReferral. All contracts compiled, tested (58 tests passing), and verified on Basescan. CEI pattern violation identified and fixed. Internal security audit completed with zero critical vulnerabilities.
 
 ### Phase 2: SDK and MCP Server (Complete)
 

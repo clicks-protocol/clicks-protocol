@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 640" fill="none">
+  <!-- CLICKS PROTOCOL — Stacked Logo (Icon + Text) -->
+  
+  <!-- Icon -->
+  <rect x="100" y="160" width="312" height="128" rx="64" 
+        stroke="#00FF9B" stroke-width="16" fill="none"/>
+  <circle cx="348" cy="224" r="48" fill="#00FF9B"/>
+  <line x1="404" y1="192" x2="420" y2="176" stroke="#00FF9B" stroke-width="7" stroke-linecap="round" opacity="0.45"/>
+  <line x1="408" y1="224" x2="428" y2="224" stroke="#00FF9B" stroke-width="7" stroke-linecap="round" opacity="0.45"/>
+  <line x1="404" y1="256" x2="420" y2="272" stroke="#00FF9B" stroke-width="7" stroke-linecap="round" opacity="0.45"/>
+  
+  <!-- CLICKS -->
+  <text x="256" y="420" text-anchor="middle" 
+        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" 
+        font-weight="700" font-size="72" letter-spacing="12" 
+        fill="#00FF9B">CLICKS</text>
+  
+  <!-- PROTOCOL -->
+  <text x="256" y="480" text-anchor="middle" 
+        font-family="'Inter', 'Helvetica Neue', Arial, sans-serif" 
+        font-weight="400" font-size="28" letter-spacing="16" 
+        fill="#00FF9B" opacity="0.6">PROTOCOL</text>
+</svg>

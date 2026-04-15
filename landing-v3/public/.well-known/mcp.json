@@ -5,7 +5,7 @@
   "description": "MCP tool server for Clicks Protocol - autonomous yield for AI agents. Earn 4-8% APY on idle USDC with zero lockup on Base L2.",
   "author": "Clicks Protocol",
   "homepage": "https://clicksprotocol.xyz",
-  "repository": "https://github.com/clicks-protocol/mcp-server",
+  "repository": "https://github.com/clicks-protocol/clicks-protocol",
   "license": "MIT",
   "capabilities": {
     "tools": true,
@@ -14,187 +14,163 @@
   },
   "tools": [
     {
-      "name": "clicks_deposit",
-      "description": "Deposit USDC into Clicks Protocol to earn 4-8% APY. 80% stays liquid (instant withdrawal), 20% generates yield in DeFi strategies. No lockup period.",
+      "name": "clicks_get_agent_info",
+      "description": "Check how much yield an AI agent earns on idle USDC. Returns current APY, balance, deposited principal, and pending rewards.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_address": {
+            "type": "string",
+            "description": "Ethereum address of the AI agent"
+          }
+        },
+        "required": ["agent_address"]
+      }
+    },
+    {
+      "name": "clicks_simulate_split",
+      "description": "Preview how a USDC payment would be split for an agent: how much goes to wallet (liquid) and how much to DeFi yield.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "amount": {
             "type": "string",
-            "description": "Amount of USDC to deposit (in USDC units, e.g., '1000' for 1000 USDC)"
+            "description": "Payment amount in USDC (e.g. \"100\" for 100 USDC)"
           },
-          "wallet_address": {
+          "agent_address": {
             "type": "string",
-            "description": "Ethereum address (agent wallet) that will receive the deposit receipt"
+            "description": "Ethereum address of the AI agent"
           }
         },
-        "required": ["amount", "wallet_address"]
-      },
-      "returns": {
-        "type": "object",
-        "properties": {
-          "tx_hash": {
-            "type": "string",
-            "description": "Transaction hash on Base L2"
-          },
-          "deposit_amount": {
-            "type": "string",
-            "description": "Amount deposited in USDC"
-          },
-          "instant_liquidity": {
-            "type": "string",
-            "description": "Amount available for instant withdrawal (80%)"
-          },
-          "yield_generating": {
-            "type": "string",
-            "description": "Amount deployed in yield strategies (20%)"
-          },
-          "estimated_apy": {
-            "type": "number",
-            "description": "Current estimated APY (%)"
-          }
-        }
+        "required": ["amount", "agent_address"]
       }
     },
     {
-      "name": "clicks_withdraw",
-      "description": "Withdraw USDC from Clicks Protocol. Up to 80% of your deposit is available instantly. Full withdrawal requires claiming yield from DeFi strategies (may take 1-2 blocks).",
+      "name": "clicks_get_yield_info",
+      "description": "Find the best APY for idle USDC. Returns current yields on Aave vs Morpho, total protocol balance, fees collected, and yield earned.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "clicks_get_referral_stats",
+      "description": "Get referral network stats for an agent: direct referrals count, total earned from referrals, claimable rewards, and referral chain.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_address": {
+            "type": "string",
+            "description": "Ethereum address of the AI agent"
+          }
+        },
+        "required": ["agent_address"]
+      }
+    },
+    {
+      "name": "clicks_quick_start",
+      "description": "Start earning yield on idle USDC in one command. Registers agent, approves USDC, and deposits first payment automatically.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "amount": {
             "type": "string",
-            "description": "Amount of USDC to withdraw (in USDC units)"
+            "description": "First payment amount in USDC (e.g. \"100\")"
           },
-          "wallet_address": {
+          "agent_address": {
             "type": "string",
-            "description": "Ethereum address to receive the withdrawn USDC"
+            "description": "Ethereum address of the AI agent"
+          },
+          "referrer": {
+            "type": "string",
+            "description": "Optional: address of the agent who referred you (earns 40% of your protocol fee)"
           }
         },
-        "required": ["amount", "wallet_address"]
-      },
-      "returns": {
-        "type": "object",
-        "properties": {
-          "tx_hash": {
-            "type": "string",
-            "description": "Transaction hash on Base L2"
-          },
-          "withdrawn_amount": {
-            "type": "string",
-            "description": "Amount withdrawn in USDC"
-          },
-          "remaining_balance": {
-            "type": "string",
-            "description": "Remaining deposit balance"
-          },
-          "accrued_yield": {
-            "type": "string",
-            "description": "Total yield earned to date"
-          }
-        }
+        "required": ["amount", "agent_address"]
       }
     },
     {
-      "name": "clicks_get_balance",
-      "description": "Check current balance, accrued yield, and APY for an agent's Clicks Protocol deposit.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "wallet_address": {
-            "type": "string",
-            "description": "Ethereum address to query"
-          }
-        },
-        "required": ["wallet_address"]
-      },
-      "returns": {
-        "type": "object",
-        "properties": {
-          "total_deposited": {
-            "type": "string",
-            "description": "Original deposit amount (principal)"
-          },
-          "accrued_yield": {
-            "type": "string",
-            "description": "Yield earned since deposit"
-          },
-          "current_balance": {
-            "type": "string",
-            "description": "Total balance (principal + yield)"
-          },
-          "current_apy": {
-            "type": "number",
-            "description": "Current APY (%)"
-          },
-          "instant_withdrawal_available": {
-            "type": "string",
-            "description": "Amount available for instant withdrawal (80% of balance)"
-          },
-          "deposit_duration_days": {
-            "type": "number",
-            "description": "Days since deposit"
-          }
-        }
-      }
-    },
-    {
-      "name": "clicks_estimate_yield",
-      "description": "Calculate expected yield for a given deposit amount and duration. Helps agents decide if depositing is worthwhile after gas costs.",
+      "name": "clicks_receive_payment",
+      "description": "Split a USDC payment for an agent: 80% liquid to wallet, 20% to DeFi yield. Agent must be registered first.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "amount": {
             "type": "string",
-            "description": "Hypothetical deposit amount in USDC"
+            "description": "Payment amount in USDC (e.g. \"100\")"
           },
-          "duration_days": {
-            "type": "number",
-            "description": "Expected deposit duration in days"
+          "agent_address": {
+            "type": "string",
+            "description": "Ethereum address of the AI agent"
           }
         },
-        "required": ["amount", "duration_days"]
-      },
-      "returns": {
+        "required": ["amount", "agent_address"]
+      }
+    },
+    {
+      "name": "clicks_withdraw_yield",
+      "description": "Withdraw yield + principal for an agent. Only the agent, their operator, or contract owner can withdraw.",
+      "inputSchema": {
         "type": "object",
         "properties": {
-          "deposit_amount": {
-            "type": "string"
-          },
-          "duration_days": {
-            "type": "number"
-          },
-          "estimated_yield": {
+          "agent_address": {
             "type": "string",
-            "description": "Expected yield in USDC"
+            "description": "Ethereum address of the AI agent"
           },
-          "estimated_gas_cost": {
+          "amount": {
             "type": "string",
-            "description": "Estimated gas cost for deposit + withdrawal (in USD)"
-          },
-          "net_profit": {
-            "type": "string",
-            "description": "Yield minus gas costs"
-          },
-          "break_even_days": {
-            "type": "number",
-            "description": "Days needed to break even on gas costs"
-          },
-          "recommendation": {
-            "type": "string",
-            "description": "Worthwhile or not, based on net profit"
+            "description": "Amount to withdraw in USDC. Omit to withdraw everything."
           }
-        }
+        },
+        "required": ["agent_address"]
+      }
+    },
+    {
+      "name": "clicks_register_agent",
+      "description": "Register a new AI agent with Clicks Protocol. The caller becomes the operator.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_address": {
+            "type": "string",
+            "description": "Ethereum address of the AI agent to register"
+          }
+        },
+        "required": ["agent_address"]
+      }
+    },
+    {
+      "name": "clicks_set_yield_pct",
+      "description": "Set custom yield split percentage for the calling operator. Controls how much of each payment goes to DeFi yield vs agent wallet.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pct": {
+            "type": "number",
+            "description": "Yield percentage (5-50). Default is 20.",
+            "minimum": 5,
+            "maximum": 50
+          }
+        },
+        "required": ["pct"]
       }
     }
   ],
   "metadata": {
     "chain": "Base L2 (Chain ID: 8453)",
-    "contract_address": "0x0000000000000000000000000000000000000000",
-    "contract_status": "not_deployed",
-    "comment": "Contract will be deployed before MCP server goes live",
+    "contract_address": {
+      "ClicksRegistry": "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3",
+      "ClicksSplitterV4": "0xB7E0016d543bD443ED2A6f23d5008400255bf3C8",
+      "ClicksYieldRouter": "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD",
+      "ClicksFeeV2": "0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5",
+      "ClicksReferral": "0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC"
+    },
+    "contract_status": "deployed",
     "audit_url": "https://clicksprotocol.xyz/audits/trail-of-bits-2026.pdf",
     "docs_url": "https://docs.clicksprotocol.xyz",
-    "api_spec_url": "https://clicksprotocol.xyz/.well-known/clicks-protocol.json"
+    "api_spec_url": "https://clicksprotocol.xyz/.well-known/clicks-protocol.json",
+    "hosted_endpoint": "https://mcp.clicksprotocol.xyz/mcp",
+    "transport": ["stdio", "streamable-http"]
   }
 }

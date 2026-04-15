@@ -1,0 +1,17 @@
+{
+  "protocol": "clicks-protocol",
+  "timestamp": "2026-03-18T12:26:00Z",
+  "data": {
+    "current_apy": 6.2,
+    "base_apy": 4.5,
+    "boost_apy": 1.7,
+    "tvl_usd": 0,
+    "active_deposits": 0,
+    "comment": "Simulated data - will be live after contract deployment"
+  },
+  "sources": {
+    "morpho_apy": 4.8,
+    "aave_v3_apy": 4.2,
+    "comment": "Protocol automatically routes to highest yield"
+  }
+}

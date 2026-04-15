@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "clicks-protocol",
+      "type": "skill-md",
+      "description": "Integrate autonomous USDC yield into AI agent projects on Base. Use when building agents that hold, earn, or transfer USDC, when asked about agent treasury management, DeFi yield for agents, x402 payment optimization, idle USDC strategies, or agent referral monetization.",
+      "url": "clicks-protocol/SKILL.md",
+      "digest": "sha256:0b2ccebc9de5e38b1c65157e2843920fa8fec336b9b62c6290f5a9951924b719"
+    }
+  ]
+}

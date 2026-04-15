@@ -76,9 +76,10 @@ interface Provider {
 
 const CONTRACTS = {
   registry: "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3",
-  splitter: "0x24323A30626BBE78C00beA45A3c0eE36bA31FcB4",
-  yieldRouter: "0x4E29571FCCE958823c0B184a66EEb7bCbe1c849F",
-  fee: "0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE",
+  splitter: "0xB7E0016d543bD443ED2A6f23d5008400255bf3C8",
+  yieldRouter: "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD",
+  fee: "0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5",
+  referral: "0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC",
   usdc: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
 } as const;
 
@@ -86,7 +87,7 @@ const CONTRACTS = {
 // SDK Bridge
 // ---------------------------------------------------------------------------
 
-class ClicksSDK {
+class ClicksSDKBridge {
   private provider: ethers.JsonRpcProvider;
   private wallet: ethers.Wallet;
 
@@ -99,44 +100,62 @@ class ClicksSDK {
     return this.wallet.address;
   }
 
+  private async getClient() {
+    const { ClicksClient } = await import("@clicks-protocol/sdk");
+    return new ClicksClient(this.wallet);
+  }
+
   async quickStart(amount: string): Promise<{ txHash: string; liquid: string; yield: string }> {
-    // Import and use @clicks-protocol/sdk
-    const { ClicksSDK: SDK } = await import("@clicks-protocol/sdk");
-    const sdk = new SDK({ signer: this.wallet, provider: this.provider });
+    const sdk = await this.getClient();
     const result = await sdk.quickStart(amount, this.agentAddress);
     return {
-      txHash: result.txHash || result.hash || "pending",
+      txHash: result.txHashes[result.txHashes.length - 1] || "pending",
       liquid: (parseFloat(amount) * 0.8).toFixed(2),
       yield: (parseFloat(amount) * 0.2).toFixed(2),
     };
   }
 
   async withdrawYield(): Promise<{ txHash: string; amount: string }> {
-    const { ClicksSDK: SDK } = await import("@clicks-protocol/sdk");
-    const sdk = new SDK({ signer: this.wallet, provider: this.provider });
+    const sdk = await this.getClient();
     const result = await sdk.withdrawYield(this.agentAddress);
     return {
-      txHash: result.txHash || result.hash || "pending",
-      amount: result.amount || "N/A",
+      txHash: result.tx.hash || "pending",
+      amount: "N/A",
     };
   }
 
   async getAgentInfo(): Promise<Record<string, unknown>> {
-    const { ClicksSDK: SDK } = await import("@clicks-protocol/sdk");
-    const sdk = new SDK({ signer: this.wallet, provider: this.provider });
-    return sdk.getAgentInfo(this.agentAddress);
+    const sdk = await this.getClient();
+    const [info, yieldBal, usdcBal] = await Promise.all([
+      sdk.getAgentInfo(this.agentAddress),
+      sdk.getAgentYieldBalance(this.agentAddress),
+      sdk.getUSDCBalance(this.agentAddress),
+    ]);
+    return {
+      isRegistered: info.isRegistered,
+      operator: info.operator,
+      liquidBalance: usdcBal.toString(),
+      depositedBalance: yieldBal.deposited.toString(),
+      accruedYield: yieldBal.yieldEarned.toString(),
+      yieldPct: info.yieldPct.toString(),
+    };
   }
 
   async getCurrentAPY(): Promise<string> {
-    const { ClicksSDK: SDK } = await import("@clicks-protocol/sdk");
-    const sdk = new SDK({ signer: this.wallet, provider: this.provider });
-    return sdk.getCurrentAPY();
+    const sdk = await this.getClient();
+    const info = await sdk.getYieldInfo();
+    const apy = info.activeProtocol === 1 ? info.aaveAPY : info.morphoAPY;
+    return (Number(apy) / 100).toFixed(2);
   }
 
   async simulateSplit(amount: string): Promise<Record<string, unknown>> {
-    const { ClicksSDK: SDK } = await import("@clicks-protocol/sdk");
-    const sdk = new SDK({ signer: this.wallet, provider: this.provider });
-    return sdk.simulateSplit(amount, this.agentAddress);
+    const sdk = await this.getClient();
+    const result = await sdk.simulateSplit(amount, this.agentAddress);
+    return {
+      liquid: result.liquid.toString(),
+      toYield: result.toYield.toString(),
+      yieldPct: result.yieldPct.toString(),
+    };
   }
 }
 
@@ -144,7 +163,7 @@ class ClicksSDK {
 // Helper: get SDK instance from runtime settings
 // ---------------------------------------------------------------------------
 
-function getSDK(runtime: AgentRuntime): ClicksSDK {
+function getSDK(runtime: AgentRuntime): ClicksSDKBridge {
   const rpcUrl = runtime.getSetting("CLICKS_RPC_URL") || "https://mainnet.base.org";
   const privateKey = runtime.getSetting("CLICKS_PRIVATE_KEY");
 
@@ -154,7 +173,7 @@ function getSDK(runtime: AgentRuntime): ClicksSDK {
     );
   }
 
-  return new ClicksSDK(rpcUrl, privateKey);
+  return new ClicksSDKBridge(rpcUrl, privateKey);
 }
 
 // ---------------------------------------------------------------------------

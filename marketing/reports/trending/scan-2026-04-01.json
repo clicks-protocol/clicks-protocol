@@ -1,0 +1,25 @@
+{
+  "date": "2026-04-01 19:00",
+  "api_calls": 24,
+  "scanned": 20,
+  "relevant": 1,
+  "results": [
+    {
+      "repo": "EthanYolo01/Awesome-OpenClaw",
+      "stars": 145,
+      "desc": "A carefully curated list of awesome OpenClaw resources \u2014 not everything, just the best.  Skills \u00b7 Pl",
+      "topics": [
+        "agent",
+        "awesome",
+        "awesome-list",
+        "awesome-lists",
+        "openclaw"
+      ],
+      "url": "https://github.com/EthanYolo01/Awesome-OpenClaw",
+      "score": 30,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-03-19"
+    }
+  ]
+}

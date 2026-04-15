@@ -1,0 +1,93 @@
+{
+  "date": "2026-04-11 19:02",
+  "api_calls": 24,
+  "scanned": 24,
+  "relevant": 5,
+  "results": [
+    {
+      "repo": "swapperfinance/swapper-toolkit",
+      "stars": 578,
+      "desc": "DeFi toolkit for AI agents and coding assistants \u2014 deposit funds, execute trades, and manage crypto ",
+      "topics": [
+        "ai-agent",
+        "ai-agent-tools",
+        "ai-coding-assistant",
+        "autogpt",
+        "autonomous-agents"
+      ],
+      "url": "https://github.com/swapperfinance/swapper-toolkit",
+      "score": 42,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-03-23"
+    },
+    {
+      "repo": "ghostwright/phantom",
+      "stars": 1249,
+      "desc": "An AI co-worker with its own computer. Self-evolving, persistent memory, MCP server, secure credenti",
+      "topics": [
+        "ai-agents",
+        "ai-coworker",
+        "anthropic",
+        "autonomous-agents",
+        "bun"
+      ],
+      "url": "https://github.com/ghostwright/phantom",
+      "score": 36,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-03-26"
+    },
+    {
+      "repo": "BlockRunAI/franklin",
+      "stars": 278,
+      "desc": "Franklin \u2014 The AI agent with a wallet. The first AI agent that can actually spend USDC to get real w",
+      "topics": [
+        "ai-agent",
+        "ai-marketing",
+        "ai-trading",
+        "autonomous-economic-agent",
+        "blockrun"
+      ],
+      "url": "https://github.com/BlockRunAI/franklin",
+      "score": 34,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-03-22"
+    },
+    {
+      "repo": "cporter202/agentic-ai-apis",
+      "stars": 259,
+      "desc": "The ultimate collection of APIs for building autonomous AI agents \u2014 2,036 production-ready APIs acro",
+      "topics": [
+        "agentic-ai",
+        "ai-agents",
+        "ai-tools",
+        "api-collection",
+        "api-directory"
+      ],
+      "url": "https://github.com/cporter202/agentic-ai-apis",
+      "score": 30,
+      "action": "MONITOR",
+      "window": "week",
+      "created": "2026-04-06"
+    },
+    {
+      "repo": "EthanYolo01/Awesome-OpenClaw",
+      "stars": 151,
+      "desc": "A carefully curated list of awesome OpenClaw resources \u2014 not everything, just the best.  Skills \u00b7 Pl",
+      "topics": [
+        "agent",
+        "awesome",
+        "awesome-list",
+        "awesome-lists",
+        "openclaw"
+      ],
+      "url": "https://github.com/EthanYolo01/Awesome-OpenClaw",
+      "score": 30,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-03-19"
+    }
+  ]
+}

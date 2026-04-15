@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ChevronRight, ExternalLink, BookOpen, Shield, Code, FileText, Info, Layers, Home } from 'lucide-react';
+import { Menu, X, ChevronRight, ExternalLink, BookOpen, Shield, Code, FileText, Info, Layers, Home, Rocket } from 'lucide-react';
 
 const sidebarLinks = [
   { href: '/docs', label: 'Overview', icon: BookOpen },
+  { href: '/docs/getting-started', label: 'Getting Started', icon: Rocket },
   { href: '/about', label: 'About', icon: Info },
   { href: '/#how-it-works', label: 'How it Works', icon: Layers, isAnchor: true },
   { href: '/security', label: 'Security', icon: Shield },

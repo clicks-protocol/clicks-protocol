@@ -23,8 +23,9 @@ Technical stack:
 
 Why I built this: I run a business where AI agents handle payments. The agents hold USDC between transactions. I wanted them to earn yield without me logging into anything.
 
-Code: [GitHub link]
+Code: github.com/clicks-protocol/clicks-protocol
 SDK: npm install @clicks-protocol/sdk
 Site: clicksprotocol.xyz
+Treasury Lab: api.clicksprotocol.xyz/lab
 
 Happy to answer questions about the architecture, the yield routing, or the contracts.

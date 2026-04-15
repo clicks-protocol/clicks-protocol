@@ -29,6 +29,7 @@ function log(msg) {
 function loadSeen() {
   if (!existsSync(SEEN_FILE)) return new Set();
   const data = JSON.parse(readFileSync(SEEN_FILE, 'utf-8'));
+  if (!Array.isArray(data)) return new Set();
   return new Set(data);
 }
 

@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clicks Protocol - Autonomous Yield for AI Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        body {
+            background: #0A0A0B;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Grid Background Pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Noise Texture */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+        
+        /* Gradient Orbs */
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+        
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, #00FF9B 0%, transparent 70%);
+            top: -200px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+        
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #61A229 0%, transparent 70%);
+            top: 300px;
+            left: -150px;
+            animation-delay: 7s;
+        }
+        
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #00FF9B 0%, transparent 70%);
+            top: 800px;
+            right: 10%;
+            animation-delay: 3s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        
+        /* Fade in on scroll */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .glassmorphism {
+            backdrop-filter: blur(24px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glassmorphism-strong {
+            backdrop-filter: blur(32px);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(to right, #FAFAFA 0%, #FAFAFA 50%, #71717A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hover-glow {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-glow:hover {
+            border-color: rgba(0, 255, 155, 0.3);
+            box-shadow: 0 0 30px rgba(0, 255, 155, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .code-block {
+            background: #0A0A0B;
+            border: 1px solid #1F1F23;
+        }
+        
+        /* Badge Glow */
+        .badge-glow {
+            box-shadow: 0 0 20px rgba(0, 255, 155, 0.2);
+            animation: pulse-glow 3s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 155, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(0, 255, 155, 0.4); }
+        }
+        
+        /* Counter Animation */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .count-up {
+            animation: countUp 0.5s ease-out;
+        }
+        
+        /* Green Glow for Yield */
+        .yield-glow {
+            color: #00FF9B;
+            text-shadow: 0 0 20px rgba(0, 255, 155, 0.3);
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            position: relative;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #61A229 0%, #00FF9B 100%);
+            border-radius: 999px;
+            transition: width 1s ease-out;
+            box-shadow: 0 0 10px rgba(0, 255, 155, 0.5);
+        }
+        
+        /* Timeline */
+        .timeline-dot {
+            width: 16px;
+            height: 16px;
+            background: #00FF9B;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(0, 255, 155, 0.2);
+            position: relative;
+        }
+        
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: #0A0A0B;
+            border-radius: 50%;
+        }
+        
+        .timeline-line {
+            width: 2px;
+            background: linear-gradient(to bottom, #00FF9B 0%, rgba(0, 255, 155, 0.2) 100%);
+            position: absolute;
+            left: 7px;
+            top: 24px;
+            height: calc(100% + 60px);
+        }
+        
+        /* Checkmark Animation */
+        .checkmark {
+            stroke-dasharray: 20;
+            stroke-dashoffset: 20;
+            animation: draw-check 0.5s ease-out forwards;
+        }
+        
+        @keyframes draw-check {
+            to { stroke-dashoffset: 0; }
+        }
+        
+        /* Cursor Glow */
+        .cursor-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 255, 155, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        /* Parallax */
+        .parallax {
+            transition: transform 0.1s ease-out;
+        }
+        
+        /* Icon Animations */
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .icon-float {
+            animation: iconFloat 2s ease-in-out infinite;
+        }
+        
+        /* Button Hover Effects */
+        .btn-primary {
+            background: #00FF9B;
+            color: #0A0A0B;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-secondary {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-secondary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 155, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-secondary:hover::before {
+            left: 100%;
+        }
+        
+        /* Logo Pulse */
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .logo-pulse {
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+    
+/* Copy Button */
+.code-wrapper {
+    position: relative;
+}
+.copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #71717A;
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    z-index: 10;
+}
+.copy-btn:hover {
+    background: rgba(255,255,255,0.15);
+    color: #FAFAFA;
+    border-color: rgba(0,255,155,0.3);
+}
+.copy-btn.copied {
+    color: #00FF9B;
+    border-color: #00FF9B;
+}
+
+</style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#0A0A0B',
+                        'surface': '#111113',
+                        'border': '#1F1F23',
+                        'accent': '#00FF9B',
+                        'secondary': '#61A229',
+                        'text-primary': '#FAFAFA',
+                        'text-secondary': '#71717A'
+                    },
+                    letterSpacing: {
+                        'wider': '0.05em',
+                        'widest': '0.1em',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bg-primary text-text-primary">
+    
+    <!-- Cursor Glow Effect -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+    
+    <!-- Gradient Orbs -->
+    <div class="gradient-orb orb-1"></div>
+    <div class="gradient-orb orb-2"></div>
+    <div class="gradient-orb orb-3"></div>
+    
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 border-b border-border glassmorphism">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center logo-pulse">
+                        <svg class="w-5 h-5 text-bg-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 11V9h4v2H8z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-semibold">Clicks Protocol</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#how-it-works" class="text-text-secondary hover:text-text-primary transition-colors">How it Works</a>
+                    <a href="#developers" class="text-text-secondary hover:text-text-primary transition-colors">Developers</a>
+                    <a href="https://github.com/clicks-protocol" target="_blank" class="text-text-secondary hover:text-text-primary transition-colors">GitHub</a>
+                    <a href="https://discord.gg/clicks-protocol" target="_blank" class="text-text-secondary hover:text-text-primary transition-colors">Discord</a>
+                    <button class="btn-primary px-4 py-2 rounded-lg font-medium transition-all relative z-10">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-40 pb-32 px-6 overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left: Message -->
+                <div class="parallax" data-speed="0.5">
+                    <div class="inline-flex items-center px-4 py-2 mb-8 border border-accent/30 rounded-full text-sm text-accent badge-glow">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        Built for x402 Economy
+                    </div>
+                    <h1 class="text-7xl md:text-8xl font-black mb-8 gradient-text leading-[0.95] tracking-tight">
+                        Autonomous Yield for AI Agents
+                    </h1>
+                    <p class="text-2xl text-text-secondary mb-12 leading-relaxed max-w-xl">
+                        Your agent holds USDC. Make it earn 4-8% APY while it sits idle. One SDK call. No lockup. Built on Base.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 mb-16">
+                        <button class="btn-primary px-8 py-4 rounded-lg font-semibold transition-all text-lg relative z-10">
+                            Get Started
+                        </button>
+                        <button class="btn-secondary px-8 py-4 rounded-lg font-semibold transition-all text-lg relative overflow-hidden">
+                            View Documentation
+                        </button>
+                    </div>
+                    
+                    <!-- Social Proof -->
+                    <div class="glassmorphism rounded-2xl p-6">
+                        <div class="text-text-secondary text-sm mb-4 tracking-wider uppercase">Integrates with</div>
+                        <div class="flex flex-wrap items-center gap-8">
+                            <div class="flex items-center space-x-2 opacity-70 hover:opacity-100 transition-opacity">
+                                <div class="w-6 h-6 bg-blue-500 rounded-full"></div>
+                                <span class="font-semibold text-lg">Base</span>
+                            </div>
+                            <div class="flex items-center space-x-2 opacity-70 hover:opacity-100 transition-opacity">
+                                <div class="w-6 h-6 bg-accent rounded-full"></div>
+                                <span class="font-semibold text-lg">Morpho</span>
+                            </div>
+                            <div class="flex items-center space-x-2 opacity-70 hover:opacity-100 transition-opacity">
+                                <div class="w-6 h-6 bg-blue-600 rounded-full"></div>
+                                <span class="font-semibold text-lg">USDC</span>
+                            </div>
+                            <div class="flex items-center space-x-2 opacity-70 hover:opacity-100 transition-opacity">
+                                <div class="w-6 h-6 bg-blue-700 rounded-full"></div>
+                                <span class="font-semibold text-lg">Coinbase</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right: Code -->
+                <div class="parallax" data-speed="0.8">
+                    <div class="glassmorphism-strong rounded-2xl p-8 hover-glow transition-all duration-300">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <span class="text-sm text-text-secondary font-mono">quickstart.js</span>
+                                <p class="text-xs text-text-secondary mt-1">Three lines. That's it.</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                        </div>
+                        <div style="position:relative"><pre class="code-block rounded-lg p-6 text-sm overflow-x-auto"><code class="text-accent">import</code> <code class="text-text-primary">{ ClicksClient }</code> <code class="text-accent">from</code> <code class="text-yellow-400">'@clicks-protocol/sdk'</code><code class="text-text-primary">;</code>
+
+<code class="text-accent">const</code> <code class="text-text-primary">clicks = </code><code class="text-accent">new</code> <code class="text-text-primary">ClicksClient(signer);</code>
+<code class="text-accent">await</code> <code class="text-text-primary">clicks.</code><code class="text-blue-400">quickStart</code><code class="text-text-primary">(</code><code class="text-yellow-400">'100'</code><code class="text-text-primary">, agentAddress);</code>
+
+<code class="text-green-400">// 80 USDC → agent wallet (instant)</code>
+<code class="text-green-400">// 20 USDC → DeFi yield (4-8% APY)</code></pre><button onclick="copyThis(this)" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#71717A;padding:6px;border-radius:6px;cursor:pointer;display:flex;align-items:center;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(0,255,155,0.3)';this.style.color='#FAFAFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='#71717A'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Yield Calculator -->
+    <section class="py-32 px-6 relative fade-in-section">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold mb-6">Calculate Your Yield</h2>
+                <p class="text-text-secondary text-xl">See how much your idle USDC could earn</p>
+            </div>
+            
+            <div class="glassmorphism-strong rounded-3xl p-10 hover-glow transition-all duration-300">
+                <div class="mb-10">
+                    <label class="text-sm text-text-secondary mb-3 block tracking-wider uppercase">USDC Amount</label>
+                    <input 
+                        type="number" 
+                        id="usdcAmount" 
+                        placeholder="10000" 
+                        value="10000"
+                        class="w-full bg-surface border border-border rounded-xl px-6 py-4 text-3xl font-bold focus:outline-none focus:border-accent transition-colors"
+                        oninput="calculateYield()"
+                    />
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="mb-10">
+                    <div class="flex justify-between text-sm text-text-secondary mb-3">
+                        <span>Liquid (80%)</span>
+                        <span>Earning (20%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar" style="width: 20%"></div>
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-surface border border-border rounded-2xl p-8 hover:border-accent/30 transition-all">
+                        <div class="text-text-secondary text-sm mb-3 tracking-wider uppercase">Liquid (80%)</div>
+                        <div class="text-4xl font-bold text-text-primary mb-3 count-up" id="liquidAmount">$8,000</div>
+                        <div class="text-text-secondary text-sm">Ready for operations</div>
+                    </div>
+                    <div class="bg-surface border border-border rounded-2xl p-8 hover:border-accent/30 transition-all">
+                        <div class="text-text-secondary text-sm mb-3 tracking-wider uppercase">Earning (20%)</div>
+                        <div class="text-4xl font-bold text-accent mb-3 count-up" id="earningAmount">$2,000</div>
+                        <div class="text-text-secondary text-sm">4-8% APY via Morpho</div>
+                    </div>
+                </div>
+                
+                <div class="bg-gradient-to-r from-accent/10 to-secondary/10 border border-accent/30 rounded-2xl p-8 text-center">
+                    <div class="text-text-secondary text-sm mb-2 tracking-wider uppercase">Estimated Daily Yield (6% APY)</div>
+                    <div class="text-5xl font-bold yield-glow count-up" id="dailyYield">$0.33</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section id="how-it-works" class="py-32 px-6 bg-surface/30 relative fade-in-section">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-bold mb-6">How it Works</h2>
+                <p class="text-text-secondary text-xl">Three simple steps to autonomous yield</p>
+            </div>
+            
+            <!-- Timeline -->
+            <div class="max-w-3xl mx-auto">
+                <div class="relative pl-12">
+                    <div class="timeline-line"></div>
+                    
+                    <!-- Step 1 -->
+                    <div class="relative mb-20">
+                        <div class="timeline-dot absolute left-[-41px] top-2"></div>
+                        <div class="glassmorphism-strong rounded-2xl p-8 hover-glow transition-all duration-300">
+                            <div class="flex items-start justify-between mb-6">
+                                <div>
+                                    <div class="text-accent text-sm font-semibold mb-2 tracking-widest uppercase">Step 1</div>
+                                    <h3 class="text-3xl font-bold mb-3">Register Your Agent</h3>
+                                    <p class="text-text-secondary text-lg">One line of code to get started. No complex setup.</p>
+                                </div>
+                                <div class="icon-float">
+                                    <svg class="w-12 h-12 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div style="position:relative" class="code-block rounded-xl p-5 text-sm font-mono overflow-x-auto"><button onclick="copyThis(this)" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#71717A;padding:6px;border-radius:6px;cursor:pointer;display:flex;align-items:center;transition:all 0.2s;z-index:5" onmouseover="this.style.borderColor='rgba(0,255,155,0.3)';this.style.color='#FAFAFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='#71717A'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+<code class="text-accent">await</code> <code class="text-text-primary">clicks.</code><code class="text-blue-400">register</code><code class="text-text-primary">();</code>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="relative mb-20">
+                        <div class="timeline-dot absolute left-[-41px] top-2"></div>
+                        <div class="glassmorphism-strong rounded-2xl p-8 hover-glow transition-all duration-300">
+                            <div class="flex items-start justify-between mb-6">
+                                <div>
+                                    <div class="text-accent text-sm font-semibold mb-2 tracking-widest uppercase">Step 2</div>
+                                    <h3 class="text-3xl font-bold mb-3">Receive Payment</h3>
+                                    <p class="text-text-secondary text-lg">USDC splits automatically: 80% liquid, 20% earning.</p>
+                                </div>
+                                <div class="icon-float" style="animation-delay: 0.5s;">
+                                    <svg class="w-12 h-12 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div style="position:relative" class="code-block rounded-xl p-5 text-sm font-mono overflow-x-auto"><button onclick="copyThis(this)" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#71717A;padding:6px;border-radius:6px;cursor:pointer;display:flex;align-items:center;transition:all 0.2s;z-index:5" onmouseover="this.style.borderColor='rgba(0,255,155,0.3)';this.style.color='#FAFAFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='#71717A'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+<code class="text-green-400">// Automatic 80/20 split on receive</code>
+<code class="text-text-primary">autoSplit: </code><code class="text-blue-400">true</code>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="relative">
+                        <div class="timeline-dot absolute left-[-41px] top-2"></div>
+                        <div class="glassmorphism-strong rounded-2xl p-8 hover-glow transition-all duration-300">
+                            <div class="flex items-start justify-between mb-6">
+                                <div>
+                                    <div class="text-accent text-sm font-semibold mb-2 tracking-widest uppercase">Step 3</div>
+                                    <h3 class="text-3xl font-bold mb-3">Earn Yield</h3>
+                                    <p class="text-text-secondary text-lg">20% works in DeFi earning 4-8% APY. Zero lockup.</p>
+                                </div>
+                                <div class="icon-float" style="animation-delay: 1s;">
+                                    <svg class="w-12 h-12 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div style="position:relative" class="code-block rounded-xl p-5 text-sm font-mono overflow-x-auto"><button onclick="copyThis(this)" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#71717A;padding:6px;border-radius:6px;cursor:pointer;display:flex;align-items:center;transition:all 0.2s;z-index:5" onmouseover="this.style.borderColor='rgba(0,255,155,0.3)';this.style.color='#FAFAFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='#71717A'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+<code class="text-green-400">// 4-8% APY, zero lockup</code>
+<code class="text-text-primary">yield: </code><code class="text-yellow-400">'morpho'</code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Developers Choose Clicks -->
+    <section class="py-32 px-6 relative fade-in-section">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-bold mb-6">Why Developers Choose Clicks</h2>
+                <p class="text-text-secondary text-xl">Built with security and developer experience in mind</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300 text-center">
+                    <div class="w-16 h-16 mx-auto mb-6 bg-accent/10 rounded-2xl flex items-center justify-center">
+                        <svg class="w-8 h-8 text-accent checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Audited Smart Contracts</h3>
+                    <p class="text-text-secondary text-lg">Independently audited by leading security firms. Your funds are safe.</p>
+                </div>
+                
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300 text-center">
+                    <div class="w-16 h-16 mx-auto mb-6 bg-accent/10 rounded-2xl flex items-center justify-center">
+                        <svg class="w-8 h-8 text-accent checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="animation-delay: 0.2s;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Open Source</h3>
+                    <p class="text-text-secondary text-lg">Fully open source. Review the code, contribute, and build with confidence.</p>
+                </div>
+                
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300 text-center">
+                    <div class="w-16 h-16 mx-auto mb-6 bg-accent/10 rounded-2xl flex items-center justify-center">
+                        <svg class="w-8 h-8 text-accent checkmark" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="animation-delay: 0.4s;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Base Native</h3>
+                    <p class="text-text-secondary text-lg">Built on Coinbase's L2 for instant, low-cost, and secure transactions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- x402 Section -->
+    <section class="py-32 px-6 bg-surface/30 relative fade-in-section">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-bold mb-6">Built for the x402 Economy</h2>
+                <p class="text-text-secondary text-xl">Native payment infrastructure for autonomous agents</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300">
+                    <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-8">
+                        <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Base Native</h3>
+                    <p class="text-text-secondary text-lg">Built on Coinbase's L2 for instant, low-cost transactions that scale with your agents.</p>
+                </div>
+                
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300">
+                    <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-8">
+                        <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">x402 Compatible</h3>
+                    <p class="text-text-secondary text-lg">Standards-compliant agent payment protocol. Works with any x402 agent.</p>
+                </div>
+                
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300">
+                    <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-8">
+                        <svg class="w-7 h-7 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">One SDK Call</h3>
+                    <p class="text-text-secondary text-lg">Simple integration, complex yield strategies handled. Focus on building.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Developers -->
+    <section id="developers" class="py-32 px-6 relative fade-in-section">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-5xl font-bold mb-6">For Developers</h2>
+                <p class="text-text-secondary text-xl">Everything you need to integrate Clicks Protocol</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300">
+                    <div class="text-accent font-bold mb-4 tracking-widest uppercase text-sm">SDK</div>
+                    <h3 class="text-2xl font-bold mb-4">TypeScript SDK</h3>
+                    <p class="text-text-secondary text-lg mb-8">Full-featured SDK with TypeScript support and complete type safety.</p>
+                    <div style="position:relative" class="code-block rounded-xl p-5 text-sm font-mono mb-6"><button onclick="copyThis(this)" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#71717A;padding:6px;border-radius:6px;cursor:pointer;display:flex;align-items:center;transition:all 0.2s;z-index:5" onmouseover="this.style.borderColor='rgba(0,255,155,0.3)';this.style.color='#FAFAFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='#71717A'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+npm install @clicks-protocol/sdk
+                    </div>
+                    <a href="#" class="text-accent hover:underline font-medium inline-flex items-center">
+                        View Documentation 
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300">
+                    <div class="text-accent font-bold mb-4 tracking-widest uppercase text-sm">MCP Server</div>
+                    <h3 class="text-2xl font-bold mb-4">Model Context Protocol</h3>
+                    <p class="text-text-secondary text-lg mb-8">Connect your LLM directly to Clicks for seamless integration.</p>
+                    <div style="position:relative" class="code-block rounded-xl p-5 text-sm font-mono mb-6"><button onclick="copyThis(this)" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#71717A;padding:6px;border-radius:6px;cursor:pointer;display:flex;align-items:center;transition:all 0.2s;z-index:5" onmouseover="this.style.borderColor='rgba(0,255,155,0.3)';this.style.color='#FAFAFA'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='#71717A'"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+npx @clicks-protocol/mcp-server
+                    </div>
+                    <a href="#" class="text-accent hover:underline font-medium inline-flex items-center">
+                        Get Started
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300">
+                    <div class="text-accent font-bold mb-4 tracking-widest uppercase text-sm">Smart Contracts</div>
+                    <h3 class="text-2xl font-bold mb-4">Verified on Basescan</h3>
+                    <p class="text-text-secondary text-lg mb-8">Open source, audited smart contracts. Review and verify.</p>
+                    <a href="#" class="text-accent hover:underline font-medium inline-flex items-center">
+                        View on Basescan
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="glassmorphism-strong rounded-2xl p-10 hover-glow transition-all duration-300">
+                    <div class="text-accent font-bold mb-4 tracking-widest uppercase text-sm">Documentation</div>
+                    <h3 class="text-2xl font-bold mb-4">Full API Reference</h3>
+                    <p class="text-text-secondary text-lg mb-8">Complete guides, examples, and API documentation.</p>
+                    <a href="#" class="text-accent hover:underline font-medium inline-flex items-center">
+                        Read the Docs
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-border py-20 px-6 relative">
+        <div class="max-w-6xl mx-auto">
+            <!-- Newsletter -->
+            <div class="glassmorphism-strong rounded-2xl p-10 mb-16 text-center max-w-2xl mx-auto">
+                <h3 class="text-2xl font-bold mb-3">Stay Updated</h3>
+                <p class="text-text-secondary mb-6">Get the latest updates on Clicks Protocol development.</p>
+                <form class="flex gap-3 max-w-md mx-auto">
+                    <input 
+                        type="email" 
+                        placeholder="your@email.com" 
+                        class="flex-1 bg-surface border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors"
+                    />
+                    <button type="submit" class="btn-primary px-6 py-3 rounded-lg font-semibold whitespace-nowrap relative z-10">
+                        Subscribe
+                    </button>
+                </form>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-10 mb-12">
+                <div>
+                    <h4 class="font-bold mb-5 text-lg">Protocol</h4>
+                    <ul class="space-y-3 text-text-secondary">
+                        <li><a href="#" class="hover:text-text-primary transition-colors">About</a></li>
+                        <li><a href="#how-it-works" class="hover:text-text-primary transition-colors">How it Works</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Security</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Whitepaper</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-5 text-lg">Developers</h4>
+                    <ul class="space-y-3 text-text-secondary">
+                        <li><a href="#developers" class="hover:text-text-primary transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">SDK</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">API Reference</a></li>
+                        <li><a href="https://github.com/clicks-protocol" target="_blank" class="hover:text-text-primary transition-colors">GitHub</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-5 text-lg">Community</h4>
+                    <ul class="space-y-3 text-text-secondary">
+                        <li><a href="https://discord.gg/clicks-protocol" target="_blank" class="hover:text-text-primary transition-colors">Discord</a></li>
+                        <li><a href="https://x.com/ClicksProtocol" target="_blank" class="hover:text-text-primary transition-colors">X / Twitter</a></li>
+                        <li><a href="https://clicksprotocol.medium.com" target="_blank" class="hover:text-text-primary transition-colors">Medium</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Forum</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-5 text-lg">Legal</h4>
+                    <ul class="space-y-3 text-text-secondary">
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Terms</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Privacy</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Cookies</a></li>
+                        <li><a href="#" class="hover:text-text-primary transition-colors">Licenses</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-bg-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 11V9h4v2H8z"/>
+                        </svg>
+                    </div>
+                    <span class="text-text-secondary">© 2026 Clicks Protocol</span>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <a href="https://x.com/ClicksProtocol" target="_blank" class="text-text-secondary hover:text-accent transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                    </a>
+                    <a href="https://discord.gg/clicks-protocol" target="_blank" class="text-text-secondary hover:text-accent transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/clicks-protocol" target="_blank" class="text-text-secondary hover:text-accent transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="https://clicksprotocol.medium.com" target="_blank" class="text-text-secondary hover:text-accent transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Yield Calculator
+        function calculateYield() {
+            const amount = parseFloat(document.getElementById('usdcAmount').value) || 0;
+            const earning = amount * 0.2;
+            const liquid = amount * 0.8;
+            const dailyYield = (earning * 0.06) / 365;
+            
+            document.getElementById('earningAmount').textContent = '$' + earning.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('liquidAmount').textContent = '$' + liquid.toLocaleString('en-US', {maximumFractionDigits: 0});
+            document.getElementById('dailyYield').textContent = '$' + dailyYield.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        }
+        
+        calculateYield();
+        
+        // Intersection Observer for Fade In
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.fade-in-section').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Parallax Effect
+        document.addEventListener('mousemove', (e) => {
+            const parallaxElements = document.querySelectorAll('.parallax');
+            const mouseX = e.clientX / window.innerWidth - 0.5;
+            const mouseY = e.clientY / window.innerHeight - 0.5;
+            
+            parallaxElements.forEach(element => {
+                const speed = element.dataset.speed || 0.5;
+                const x = mouseX * 20 * speed;
+                const y = mouseY * 20 * speed;
+                element.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        });
+        
+        // Cursor Glow Effect
+        const cursorGlow = document.getElementById('cursorGlow');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+            cursorGlow.style.opacity = '1';
+        });
+        
+        document.addEventListener('mouseleave', () => {
+            cursorGlow.style.opacity = '0';
+        });
+        
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+<script>
+// SVG icons
+const copyIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const checkIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF9B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+function copyCode(btn) {
+    const pre = btn.closest('.code-wrapper').querySelector('pre');
+    const text = pre.textContent || pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        btn.innerHTML = checkIcon;
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.innerHTML = copyIcon;
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+
+// Auto-wrap ALL pre elements (code-block and others) with copy button
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre').forEach(pre => {
+        if (!pre.parentElement.classList.contains('code-wrapper')) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'code-wrapper';
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+        }
+        const wrapper = pre.parentElement;
+        if (!wrapper.querySelector('.copy-btn')) {
+            const btn = document.createElement('button');
+            btn.className = 'copy-btn';
+            btn.innerHTML = copyIcon;
+            btn.onclick = function() { copyCode(this); };
+            wrapper.appendChild(btn);
+        }
+    });
+});
+</script>
+
+<script>
+function copyThis(btn) {
+    const pre = btn.parentElement.querySelector('pre');
+    const text = pre.textContent || pre.innerText;
+    navigator.clipboard.writeText(text.trim()).then(() => {
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF9B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+        btn.style.borderColor = '#00FF9B';
+        setTimeout(() => {
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+            btn.style.borderColor = 'rgba(255,255,255,0.12)';
+        }, 2000);
+    });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "clicks-protocol": {
+      "type": "url",
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}

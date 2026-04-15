@@ -10,7 +10,7 @@
 
 <br/>
 
-[![Base Mainnet](https://img.shields.io/badge/Base_Mainnet-live-00FF9B?style=flat-square&logo=ethereum&logoColor=white)](https://basescan.org/address/0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5)
+[![Base Mainnet](https://img.shields.io/badge/Base_Mainnet-live-00FF9B?style=flat-square&logo=ethereum&logoColor=white)](https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8)
 [![npm](https://img.shields.io/npm/v/@clicks-protocol/sdk?style=flat-square&color=00FF9B&label=sdk)](https://www.npmjs.com/package/@clicks-protocol/sdk)
 [![Tests](https://img.shields.io/badge/tests-58%20passing-00FF9B?style=flat-square)](https://github.com/clicks-protocol/clicks-protocol)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
@@ -81,9 +81,9 @@ That's it. No config. No dashboard. No human required.
 ```
 clicks-protocol/
 ├── contracts/           5 Solidity contracts (^0.8.20)
-│   ├── ClicksSplitterV3    Payment splitting + yield % management
+│   ├── ClicksSplitterV4    Payment splitting + yield % management
 │   ├── ClicksYieldRouter   Auto-routes to best APY (Aave V3 / Morpho)
-│   ├── ClicksFee           2% fee collection on yield only
+│   ├── ClicksFeeV2           2% fee collection on yield only
 │   ├── ClicksRegistry      Agent ↔ Operator mapping
 │   └── ClicksReferral      Multi-level referral system
 ├── sdk/                 TypeScript SDK (@clicks-protocol/sdk)
@@ -316,10 +316,10 @@ Hit TVL milestones, earn bonus yield:
 
 | Contract | Address | Basescan |
 |----------|---------|----------|
-| ClicksRegistry | `0x898d8a3B04e5E333E88f798372129C6a622fF48d` | [View ↗](https://basescan.org/address/0x898d8a3B04e5E333E88f798372129C6a622fF48d) |
-| ClicksSplitterV3 | `0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5` | [View ↗](https://basescan.org/address/0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5) |
-| ClicksYieldRouter | `0x47d6Add0a3bdFe856b39a0311D8c055481F76f29` | [View ↗](https://basescan.org/address/0x47d6Add0a3bdFe856b39a0311D8c055481F76f29) |
-| ClicksFee | `0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12` | [View ↗](https://basescan.org/address/0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12) |
+| ClicksRegistry | `0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3` | [View ↗](https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3) |
+| ClicksSplitterV4 | `0xB7E0016d543bD443ED2A6f23d5008400255bf3C8` | [View ↗](https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8) |
+| ClicksYieldRouter | `0x053167a233d18E05Bc65a8d5F3F8808782a3EECD` | [View ↗](https://basescan.org/address/0x053167a233d18E05Bc65a8d5F3F8808782a3EECD) |
+| ClicksFeeV2 | `0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5` | [View ↗](https://basescan.org/address/0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5) |
 | USDC (Base) | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` | [View ↗](https://basescan.org/address/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
 
 > 📄 Full security details: [content/security.md](./content/security.md)

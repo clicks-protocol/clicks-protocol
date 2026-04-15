@@ -214,9 +214,9 @@ Form squads, hit TVL milestones, earn bonus yield:
 | Contract | Address |
 |----------|---------|
 | ClicksRegistry | [`0x23bb...0C0a3`](https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3) |
-| ClicksFee | [`0xc47B...E6bE`](https://basescan.org/address/0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE) |
+| ClicksFeeV2 | [`0xc47B...E6bE`](https://basescan.org/address/0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5) |
 | ClicksYieldRouter | [`0x4E29...849F`](https://basescan.org/address/0x053167a233d18E05Bc65a8d5F3F8808782a3EECD) |
-| ClicksSplitterV3 | [`0x2432...FcB4`](https://basescan.org/address/0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D) |
+| ClicksSplitterV4 | [`0x2432...FcB4`](https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8) |
 | USDC | [`0x8335...913`](https://basescan.org/address/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
 
 All contracts verified on Basescan.
@@ -228,9 +228,9 @@ All contracts verified on Basescan.
 ```
 clicks-protocol/
 ├── contracts/           Solidity (^0.8.20)
-│   ├── ClicksSplitterV3    Splits payments, manages yield %
+│   ├── ClicksSplitterV4    Splits payments, manages yield %
 │   ├── ClicksYieldRouter   Routes to best APY (Aave/Morpho)
-│   ├── ClicksFee           2% fee collection on yield
+│   ├── ClicksFeeV2           2% fee collection on yield
 │   ├── ClicksRegistry      Agent ↔ Operator mapping
 │   └── ClicksReferral      Multi-level referral system
 ├── sdk/                 TypeScript SDK

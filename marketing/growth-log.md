@@ -64,7 +64,7 @@ Gestern Nachmittag war produktiv (nicht im Growth Log erfasst, aus Tagesnotiz 19
 - 30 X-Posts + Launch Thread gegen Humanizer laufen lassen.
 
 **4. .well-known Placeholder fixen (Emma autonom, 5 Min)**
-- Contract-Adresse ist 0x000... Placeholder. Echte Adresse: 0x898d8a3B04e5E333E88f798372129C6a622fF48d
+- Contract-Adresse ist 0x000... Placeholder. Echte Adresse: 0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3
 - Seit Tag 3 offen. 5 Minuten Fix.
 
 **5. awesome-x402 PR (nach Repo public)**

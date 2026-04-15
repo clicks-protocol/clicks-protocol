@@ -1,0 +1,25 @@
+{
+  "date": "2026-04-13 19:01",
+  "api_calls": 24,
+  "scanned": 8,
+  "relevant": 1,
+  "results": [
+    {
+      "repo": "cporter202/agentic-ai-apis",
+      "stars": 276,
+      "desc": "The ultimate collection of APIs for building autonomous AI agents \u2014 2,036 production-ready APIs acro",
+      "topics": [
+        "agentic-ai",
+        "ai-agents",
+        "ai-tools",
+        "api-collection",
+        "api-directory"
+      ],
+      "url": "https://github.com/cporter202/agentic-ai-apis",
+      "score": 30,
+      "action": "MONITOR",
+      "window": "week",
+      "created": "2026-04-06"
+    }
+  ]
+}

@@ -1,200 +1,45 @@
 {
-  "schema_version": "1.0",
-  "name": "clicks-protocol",
-  "version": "1.0.0",
-  "description": "MCP tool server for Clicks Protocol - autonomous yield for AI agents. Earn 4-8% APY on idle USDC with zero lockup on Base L2.",
-  "author": "Clicks Protocol",
-  "homepage": "https://clicksprotocol.xyz",
-  "repository": "https://github.com/clicks-protocol/mcp-server",
-  "license": "MIT",
-  "capabilities": {
-    "tools": true,
-    "resources": false,
-    "prompts": false
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.clicksprotocol/mcp-server",
+  "description": "Autonomous DeFi yield for AI agents on Base. Query APY, simulate splits, manage treasury.",
+  "repository": {
+    "url": "https://github.com/clicks-protocol/clicks-protocol",
+    "source": "github",
+    "subfolder": "mcp-server"
   },
-  "tools": [
+  "version": "1.0.0",
+  "packages": [
     {
-      "name": "clicks_deposit",
-      "description": "Deposit USDC into Clicks Protocol to earn 4-8% APY. 80% stays liquid (instant withdrawal), 20% generates yield in DeFi strategies. No lockup period.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "string",
-            "description": "Amount of USDC to deposit (in USDC units, e.g., '1000' for 1000 USDC)"
-          },
-          "wallet_address": {
-            "type": "string",
-            "description": "Ethereum address (agent wallet) that will receive the deposit receipt"
-          }
-        },
-        "required": ["amount", "wallet_address"]
+      "registryType": "npm",
+      "identifier": "@clicks-protocol/mcp-server",
+      "version": "0.1.4",
+      "transport": {
+        "type": "stdio"
       },
-      "returns": {
-        "type": "object",
-        "properties": {
-          "tx_hash": {
-            "type": "string",
-            "description": "Transaction hash on Base L2"
-          },
-          "deposit_amount": {
-            "type": "string",
-            "description": "Amount deposited in USDC"
-          },
-          "instant_liquidity": {
-            "type": "string",
-            "description": "Amount available for instant withdrawal (80%)"
-          },
-          "yield_generating": {
-            "type": "string",
-            "description": "Amount deployed in yield strategies (20%)"
-          },
-          "estimated_apy": {
-            "type": "number",
-            "description": "Current estimated APY (%)"
-          }
-        }
-      }
-    },
-    {
-      "name": "clicks_withdraw",
-      "description": "Withdraw USDC from Clicks Protocol. Up to 80% of your deposit is available instantly. Full withdrawal requires claiming yield from DeFi strategies (may take 1-2 blocks).",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "string",
-            "description": "Amount of USDC to withdraw (in USDC units)"
-          },
-          "wallet_address": {
-            "type": "string",
-            "description": "Ethereum address to receive the withdrawn USDC"
-          }
+      "environmentVariables": [
+        {
+          "description": "Private key for write operations (register, deposit, withdraw). Not needed for read-only tools.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "CLICKS_PRIVATE_KEY"
         },
-        "required": ["amount", "wallet_address"]
-      },
-      "returns": {
-        "type": "object",
-        "properties": {
-          "tx_hash": {
-            "type": "string",
-            "description": "Transaction hash on Base L2"
-          },
-          "withdrawn_amount": {
-            "type": "string",
-            "description": "Amount withdrawn in USDC"
-          },
-          "remaining_balance": {
-            "type": "string",
-            "description": "Remaining deposit balance"
-          },
-          "accrued_yield": {
-            "type": "string",
-            "description": "Total yield earned to date"
-          }
+        {
+          "description": "Base RPC URL. Defaults to https://mainnet.base.org",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "CLICKS_RPC_URL"
         }
-      }
-    },
-    {
-      "name": "clicks_get_balance",
-      "description": "Check current balance, accrued yield, and APY for an agent's Clicks Protocol deposit.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "wallet_address": {
-            "type": "string",
-            "description": "Ethereum address to query"
-          }
-        },
-        "required": ["wallet_address"]
-      },
-      "returns": {
-        "type": "object",
-        "properties": {
-          "total_deposited": {
-            "type": "string",
-            "description": "Original deposit amount (principal)"
-          },
-          "accrued_yield": {
-            "type": "string",
-            "description": "Yield earned since deposit"
-          },
-          "current_balance": {
-            "type": "string",
-            "description": "Total balance (principal + yield)"
-          },
-          "current_apy": {
-            "type": "number",
-            "description": "Current APY (%)"
-          },
-          "instant_withdrawal_available": {
-            "type": "string",
-            "description": "Amount available for instant withdrawal (80% of balance)"
-          },
-          "deposit_duration_days": {
-            "type": "number",
-            "description": "Days since deposit"
-          }
-        }
-      }
-    },
-    {
-      "name": "clicks_estimate_yield",
-      "description": "Calculate expected yield for a given deposit amount and duration. Helps agents decide if depositing is worthwhile after gas costs.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "amount": {
-            "type": "string",
-            "description": "Hypothetical deposit amount in USDC"
-          },
-          "duration_days": {
-            "type": "number",
-            "description": "Expected deposit duration in days"
-          }
-        },
-        "required": ["amount", "duration_days"]
-      },
-      "returns": {
-        "type": "object",
-        "properties": {
-          "deposit_amount": {
-            "type": "string"
-          },
-          "duration_days": {
-            "type": "number"
-          },
-          "estimated_yield": {
-            "type": "string",
-            "description": "Expected yield in USDC"
-          },
-          "estimated_gas_cost": {
-            "type": "string",
-            "description": "Estimated gas cost for deposit + withdrawal (in USD)"
-          },
-          "net_profit": {
-            "type": "string",
-            "description": "Yield minus gas costs"
-          },
-          "break_even_days": {
-            "type": "number",
-            "description": "Days needed to break even on gas costs"
-          },
-          "recommendation": {
-            "type": "string",
-            "description": "Worthwhile or not, based on net profit"
-          }
-        }
-      }
+      ]
     }
   ],
-  "metadata": {
-    "chain": "Base L2 (Chain ID: 8453)",
-    "contract_address": "0x0000000000000000000000000000000000000000",
-    "contract_status": "not_deployed",
-    "comment": "Contract will be deployed before MCP server goes live",
-    "audit_url": "https://clicksprotocol.xyz/audits/trail-of-bits-2026.pdf",
-    "docs_url": "https://docs.clicksprotocol.xyz",
-    "api_spec_url": "https://clicksprotocol.xyz/.well-known/clicks-protocol.json"
-  }
+  "remoteEndpoints": [
+    {
+      "url": "https://mcp.clicksprotocol.xyz/mcp",
+      "transport": {
+        "type": "streamable-http"
+      }
+    }
+  ]
 }

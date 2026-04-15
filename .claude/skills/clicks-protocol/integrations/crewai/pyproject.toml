@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clicks-crewai"
+version = "0.1.0"
+description = "Clicks Protocol yield management tools for CrewAI agent crews on Base"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Clicks Protocol", email = "dev@clicksprotocol.xyz"},
+]
+keywords = ["crewai", "defi", "yield", "base", "usdc", "ai-agents", "clicks-protocol"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "crewai>=0.28.0",
+    "crewai-tools>=0.4.0",
+    "pydantic>=2.0",
+]
+
+[project.urls]
+Homepage = "https://clicksprotocol.xyz"
+Repository = "https://github.com/clicks-protocol/clicks-crewai"
+Documentation = "https://docs.clicksprotocol.xyz/integrations/crewai"
+
+[tool.setuptools]
+py-modules = ["clicks_tool"]

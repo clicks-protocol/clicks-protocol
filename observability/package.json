@@ -1,0 +1,25 @@
+{
+  "name": "clicks-protocol-observability",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal observability spine for Clicks Protocol v1",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "backfill-chain": "npm run build && node dist/jobs/backfill-chain.js",
+    "collect-state": "npm run build && node dist/jobs/collect-state.js",
+    "usage-monitor": "npm run build && node dist/jobs/usage-monitor.js",
+    "collect-mcp-logs": "npm run build && node dist/jobs/collect-mcp-logs.js",
+    "daily-report": "npm run build && node dist/jobs/daily-report.js",
+    "dashboard": "npm run build && node dist/api/internal-dashboard.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "ethers": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

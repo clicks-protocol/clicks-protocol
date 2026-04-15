@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 2: The Compound Lock -->
+  <!-- Hexagon with three arc segments forming implicit "C" -->
+  
+  <!-- Hexagon (flat top) -->
+  <polygon points="256,76 412,120 412,312 256,436 100,312 100,120" 
+           stroke="#00FF9B" stroke-width="10" fill="none" stroke-linejoin="round"/>
+  
+  <!-- Three arc segments inside, each 110° with 10° gaps -->
+  <!-- Segment 1: top-right (30° to 140°) -->
+  <path d="M 339.4 196.8 A 96 96 0 0 1 265.6 351.2" 
+        stroke="#00FF9B" stroke-width="20" stroke-linecap="round" fill="none"/>
+  
+  <!-- Segment 2: bottom (150° to 260°) -->
+  <path d="M 249.3 351.6 A 96 96 0 0 1 172.8 210.4" 
+        stroke="#00FF9B" stroke-width="20" stroke-linecap="round" fill="none"/>
+  
+  <!-- Segment 3: top-left (270° to 20°) -->
+  <path d="M 160 256 A 96 96 0 0 1 346.2 213.6" 
+        stroke="#00FF9B" stroke-width="20" stroke-linecap="round" fill="none"/>
+</svg>

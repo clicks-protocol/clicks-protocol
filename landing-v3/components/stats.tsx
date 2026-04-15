@@ -1,29 +1,39 @@
-'use client';
+"use client";
 
-import { Card } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
+import { Card } from '@/components/ui/card';
 
-interface Metrics {
+interface PublicMetrics {
   totalAgents: number;
   tvlUsdc: number;
   currentApyPct: number;
-  activeProtocol: string;
 }
 
-const FALLBACK: Metrics = {
-  totalAgents: 0,
+const DEFAULTS: PublicMetrics = {
+  totalAgents: 1,
   tvlUsdc: 0,
-  currentApyPct: 8,
-  activeProtocol: 'morpho',
+  currentApyPct: 6,
 };
 
+function fmtTvl(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'K';
+  if (n >= 1) return n.toFixed(2);
+  if (n > 0) return n.toFixed(2);
+  return '0';
+}
+
 export function Stats() {
-  const [metrics, setMetrics] = useState<Metrics>(FALLBACK);
+  const [metrics, setMetrics] = useState<PublicMetrics>(DEFAULTS);
 
   useEffect(() => {
     fetch('https://api.clicksprotocol.xyz/api/public/metrics')
       .then((r) => r.json())
-      .then((data) => setMetrics(data))
+      .then((data: PublicMetrics) => {
+        if (data && typeof data.totalAgents === 'number') {
+          setMetrics(data);
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -32,24 +42,16 @@ export function Stats() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
           <Card className="text-center p-4 sm:p-6">
-            <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-accent mb-2 sm:mb-3">
-              {metrics.totalAgents}
-            </div>
-            <div className="text-text-secondary text-xs sm:text-sm lg:text-base">Agents Registered</div>
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-accent mb-2 sm:mb-3">{metrics.totalAgents}</div>
+            <div className="text-text-secondary text-xs sm:text-sm lg:text-base">Registered Agents</div>
           </Card>
           <Card className="text-center p-4 sm:p-6">
-            <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-accent mb-2 sm:mb-3">
-              {metrics.currentApyPct.toFixed(1)}%
-            </div>
-            <div className="text-text-secondary text-xs sm:text-sm lg:text-base">
-              APY ({metrics.activeProtocol === 'morpho' ? 'Morpho' : 'Aave V3'})
-            </div>
-          </Card>
-          <Card className="text-center p-4 sm:p-6">
-            <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-accent mb-2 sm:mb-3">
-              ${metrics.tvlUsdc < 1000 ? metrics.tvlUsdc.toFixed(2) : (metrics.tvlUsdc / 1000).toFixed(1) + 'k'}
-            </div>
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-accent mb-2 sm:mb-3">{fmtTvl(metrics.tvlUsdc)}</div>
             <div className="text-text-secondary text-xs sm:text-sm lg:text-base">TVL (USDC)</div>
+          </Card>
+          <Card className="text-center p-4 sm:p-6">
+            <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-accent mb-2 sm:mb-3">{metrics.currentApyPct.toFixed(1)}%</div>
+            <div className="text-text-secondary text-xs sm:text-sm lg:text-base">Current APY</div>
           </Card>
           <Card className="text-center p-4 sm:p-6">
             <div className="text-3xl sm:text-4xl lg:text-5xl font-bold text-accent mb-2 sm:mb-3">0</div>

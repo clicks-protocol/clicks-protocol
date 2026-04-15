@@ -1,0 +1,132 @@
+# Clicks Protocol
+> Autonomous yield for AI agents on Base L2
+
+## What This Is
+
+Clicks Protocol is an on-chain yield layer that makes idle agent USDC earn 4-8% APY automatically. When an AI agent receives a USDC payment, Clicks splits it: 80% stays liquid for instant use, 20% goes to DeFi yield via Aave V3 or Morpho on Base. No lockup. Withdraw anytime. One SDK call to start.
+
+## The Problem It Solves
+
+AI agents hold USDC between transactions. That USDC sits idle earning nothing. Stablecoin issuers (Circle, Tether) earn $12B+ annually from this float. Clicks gives that yield back to the agents.
+
+## Quick Start
+
+Install the SDK:
+```
+npm install @clicks-protocol/sdk
+```
+
+Activate yield in 3 lines:
+```typescript
+import { ClicksClient } from '@clicks-protocol/sdk';
+const clicks = new ClicksClient(signer);
+await clicks.quickStart('1000', agentAddress);
+// Result: 800 USDC liquid, 200 USDC earning 4-8% APY
+```
+
+## SDK Methods
+
+| Method | Description | Type |
+|--------|-------------|------|
+| quickStart(amount, agentAddress, referrer?) | Register + approve + first payment split | Write |
+| registerAgent(agentAddress) | Register an AI agent, caller becomes operator | Write |
+| receivePayment(amount, agentAddress) | Split USDC payment 80/20 | Write |
+| withdrawYield(agentAddress, amount?) | Withdraw principal + earned yield | Write |
+| approveUSDC(amount) | Approve splitter to spend USDC | Write |
+| setOperatorYieldPct(pct) | Set custom yield split 5-50% | Write |
+| simulateSplit(amount, agentAddress) | Preview payment split without executing | Read |
+| getAgentInfo(agentAddress) | Get registration status, operator, deposited amount | Read |
+| getYieldInfo() | Get protocol-wide yield data (APY, total deposited) | Read |
+| getCurrentAPY() | Get current APY from active yield protocol | Read |
+
+## MCP Server (9 Tools)
+
+AI agents using Claude, Cursor, LangChain, or any MCP-compatible client:
+```
+npx @clicks-protocol/mcp-server
+```
+
+Tools: clicks_quick_start, clicks_receive_payment, clicks_withdraw_yield, clicks_register_agent, clicks_set_yield_pct, clicks_get_agent_info, clicks_simulate_split, clicks_get_yield_info, clicks_get_referral_stats
+
+## Treasury Utilities
+
+For balance tracking and idle detection (works without Clicks):
+```
+npm install agent-treasury
+```
+
+Features: Multi-chain USDC balance tracking (Base, Ethereum, Arbitrum, Optimism), idle balance detection with configurable thresholds, live APY comparison across Aave V3 and Compound, optional Clicks Protocol yield activation.
+
+## Framework Integrations
+
+### LangChain (Python)
+```python
+from clicks_langchain import get_clicks_tools
+tools = get_clicks_tools(rpc_url="https://mainnet.base.org", private_key=os.environ["KEY"])
+agent = initialize_agent(tools, llm, agent=AgentType.OPENAI_FUNCTIONS)
+```
+
+### CrewAI (Python)
+```python
+from clicks_crewai import get_all_tools, configure_sdk
+configure_sdk(rpc_url="https://mainnet.base.org", private_key=os.environ["KEY"])
+treasury_agent = Agent(role="Treasury Manager", tools=get_all_tools())
+```
+
+### Eliza (TypeScript, ai16z)
+```typescript
+import { clicksPlugin } from '@clicks-protocol/eliza-plugin';
+const agent = new AgentRuntime({ plugins: [clicksPlugin] });
+```
+
+## Smart Contracts (Base Mainnet, Chain ID 8453)
+
+| Contract | Address | Purpose |
+|----------|---------|---------|
+| ClicksRegistry | 0x898d8a3B04e5E333E88f798372129C6a622fF48d | Agent registration |
+| ClicksSplitterV3 | 0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5 | Payment splitting |
+| ClicksYieldRouter | 0x47d6Add0a3bdFe856b39a0311D8c055481F76f29 | DeFi yield routing |
+| ClicksFee | 0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12 | Protocol fee (2% on yield) |
+| USDC | 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 | Base USDC |
+
+## Key Parameters
+
+- Default split: 80% liquid / 20% yield
+- Configurable range: 5% to 50% yield allocation
+- APY: 4-8% (variable, via Aave V3 or Morpho on Base)
+- Protocol fee: 2% on yield earned (never on principal)
+- Lockup: None. Withdraw anytime.
+- Chain: Base L2 (Coinbase)
+
+## Discovery Endpoints
+
+- OpenAPI Spec: https://clicksprotocol.xyz/api/openapi.json
+- Agent Discovery: https://clicksprotocol.xyz/.well-known/agent.json
+- ChatGPT Plugin: https://clicksprotocol.xyz/.well-known/ai-plugin.json
+- x402 Discovery: https://clicksprotocol.xyz/.well-known/x402.json
+- Protocol Spec: https://clicksprotocol.xyz/.well-known/clicks-protocol.json
+- MCP Schema: https://clicksprotocol.xyz/mcp/server.json
+- Sitemap: https://clicksprotocol.xyz/sitemap.xml
+
+## npm Packages
+
+- SDK: https://www.npmjs.com/package/@clicks-protocol/sdk
+- MCP Server: https://www.npmjs.com/package/@clicks-protocol/mcp-server
+- Treasury Utilities: https://www.npmjs.com/package/agent-treasury
+
+## Links
+
+- Website: https://clicksprotocol.xyz
+- Docs: https://clicksprotocol.xyz/docs
+- API Reference: https://clicksprotocol.xyz/docs/api
+- Security: https://clicksprotocol.xyz/security
+- Whitepaper: https://clicksprotocol.xyz/whitepaper
+- Whitepaper PDF: https://clicksprotocol.xyz/whitepaper.pdf
+- X / Twitter: https://x.com/ClicksProtocol
+- Discord: https://discord.gg/clicks-protocol
+- Medium: https://clicksprotocol.medium.com
+
+## Contact
+
+hello@clicksprotocol.xyz
+security@clicksprotocol.xyz (security issues)

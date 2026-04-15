@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- "The Click" v2: Two semicircular hooks interlocking -->
+  <!-- Left hook grabs right, right hook grabs left -->
+  <!-- Like two carabiners linked together -->
+  
+  <!-- Left hook: arc opening right, with inward tooth at bottom -->
+  <path d="M 200 116
+           A 120 120 0 0 0 200 396
+           L 200 336
+           L 256 306
+           L 256 206
+           L 200 176
+           Z"
+        stroke="#00FF9B" stroke-width="18" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Right hook: arc opening left, with inward tooth at top -->
+  <path d="M 312 396
+           A 120 120 0 0 0 312 116
+           L 312 176
+           L 256 206
+           L 256 306
+           L 312 336
+           Z"
+        stroke="#00FF9B" stroke-width="18" stroke-linejoin="round" fill="none" opacity="0.6"/>
+  
+  <!-- Connection point emphasis: small diamond where they meet -->
+  <rect x="244" y="244" width="24" height="24" rx="2"
+        transform="rotate(45 256 256)"
+        fill="#00FF9B"/>
+</svg>

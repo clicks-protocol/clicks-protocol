@@ -1,0 +1,59 @@
+{
+  "date": "2026-03-26 22:42",
+  "api_calls": 24,
+  "scanned": 23,
+  "relevant": 3,
+  "results": [
+    {
+      "repo": "open-gitagent/gitagent",
+      "stars": 1689,
+      "desc": "A framework-agnostic, git-native standard for defining AI agents",
+      "topics": [
+        "agent",
+        "agent-framework",
+        "agent-skills",
+        "agents",
+        "assistant"
+      ],
+      "url": "https://github.com/open-gitagent/gitagent",
+      "score": 32,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-02-24"
+    },
+    {
+      "repo": "EthanYolo01/Awesome-OpenClaw",
+      "stars": 141,
+      "desc": "A carefully curated list of awesome OpenClaw resources \u2014 not everything, just the best.  Skills \u00b7 Pl",
+      "topics": [
+        "agent",
+        "awesome",
+        "awesome-list",
+        "awesome-lists",
+        "openclaw"
+      ],
+      "url": "https://github.com/EthanYolo01/Awesome-OpenClaw",
+      "score": 30,
+      "action": "MONITOR",
+      "window": "week",
+      "created": "2026-03-19"
+    },
+    {
+      "repo": "freddy-schuetz/n8n-claw",
+      "stars": 309,
+      "desc": "OpenClaw-inspired autonomous AI agent built entirely in n8n. Adaptive RAG-powered memory, Skills via",
+      "topics": [
+        "agent",
+        "ai",
+        "ai-agent",
+        "ai-agent-framework",
+        "ai-agents"
+      ],
+      "url": "https://github.com/freddy-schuetz/n8n-claw",
+      "score": 30,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-02-28"
+    }
+  ]
+}

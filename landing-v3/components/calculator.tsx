@@ -1,33 +1,107 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
+
+const API_BASE = 'https://api.clicksprotocol.xyz';
+const FALLBACK_APY = 6;
+const PERIODS = [
+  { label: '1M', days: 30 },
+  { label: '3M', days: 90 },
+  { label: '6M', days: 180 },
+  { label: '1Y', days: 365 },
+  { label: '3Y', days: 1095 },
+];
+
+interface SimResult {
+  split: { liquid: number; toYield: number };
+  projection: {
+    dailyYield: number;
+    totalYield: number;
+    protocolFee: number;
+    netYield: number;
+    totalReturn: number;
+    effectiveApyPct: number;
+  };
+  protocol: { activeProtocol: string; currentApyPct: number };
+}
+
+function localFallback(amount: number, days: number, yieldPct: number): SimResult {
+  const toYield = amount * (yieldPct / 100);
+  const liquid = amount - toYield;
+  const dailyYield = toYield * (FALLBACK_APY / 100 / 365);
+  const totalYield = dailyYield * days;
+  const protocolFee = totalYield * 0.02;
+  const netYield = totalYield - protocolFee;
+  const totalReturn = liquid + toYield + netYield;
+  const effectiveApyPct = amount > 0 && days > 0 ? (netYield / amount) * (365 / days) * 100 : 0;
+  return {
+    split: { liquid, toYield },
+    projection: { dailyYield, totalYield, protocolFee, netYield, totalReturn, effectiveApyPct },
+    protocol: { activeProtocol: 'morpho', currentApyPct: FALLBACK_APY },
+  };
+}
+
+function fmtNum(n: number): string {
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
 export function Calculator() {
   const [amount, setAmount] = useState(10000);
+  const [days, setDays] = useState(365);
+  const [yieldPct, setYieldPct] = useState(20);
+  const [result, setResult] = useState<SimResult>(() => localFallback(10000, 365, 20));
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const fetchSim = useCallback(async (a: number, d: number, y: number) => {
+    if (a < 1 || a > 100000000) {
+      setResult(localFallback(a, d, y));
+      return;
+    }
+    try {
+      const res = await fetch(`${API_BASE}/api/public/simulate?amount=${a}&days=${d}&yieldPct=${y}`);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setResult(data);
+    } catch {
+      setResult(localFallback(a, d, y));
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchSim(amount, days, yieldPct);
+  }, [days, yieldPct, fetchSim]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9]/g, '');
     const numValue = value === '' ? 0 : Math.min(parseInt(value, 10), 100000000);
-    setAmount(Math.max(0, numValue));
+    const clamped = Math.max(0, numValue);
+    setAmount(clamped);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchSim(clamped, days, yieldPct), 300);
   };
 
-  const earning = amount * 0.2;
-  const liquid = amount * 0.8;
-  const dailyYield = (earning * 0.06) / 365;
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value, 10);
+    setYieldPct(val);
+  };
+
+  const liquidPct = 100 - yieldPct;
+  const { split, projection, protocol } = result;
 
   return (
     <section className="py-8 sm:py-12 lg:py-20 px-4 sm:px-6 lg:px-8 relative fade-in-section">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">Calculate Your Yield</h2>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">Treasury Lab</h2>
           <p className="text-text-secondary text-base sm:text-lg lg:text-xl">
-            See how much your idle USDC could earn
+            See what idle USDC could earn through Clicks Protocol
           </p>
         </div>
 
         <div className="glassmorphism-strong rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-10 hover-glow transition-all duration-300">
-          <div className="mb-10">
+          {/* Amount Input */}
+          <div className="mb-8">
             <label className="text-sm text-text-secondary mb-3 block tracking-wider uppercase">
               USDC Amount
             </label>
@@ -41,52 +115,97 @@ export function Calculator() {
             />
           </div>
 
+          {/* Period Buttons */}
+          <div className="mb-8">
+            <label className="text-sm text-text-secondary mb-3 block tracking-wider uppercase">
+              Period
+            </label>
+            <div className="flex gap-2 flex-wrap">
+              {PERIODS.map((p) => (
+                <button
+                  key={p.days}
+                  onClick={() => setDays(p.days)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                    days === p.days
+                      ? 'bg-accent text-bg-primary font-bold border-accent'
+                      : 'bg-surface border-border text-text-secondary hover:border-accent'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Yield Split Slider */}
+          <div className="mb-8">
+            <label className="text-sm text-text-secondary mb-3 block tracking-wider uppercase">
+              Yield Split
+            </label>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                min={5}
+                max={50}
+                value={yieldPct}
+                onChange={handleSliderChange}
+                className="flex-1 accent-accent"
+              />
+              <span className="text-lg font-bold tabular-nums min-w-[48px] text-right">{yieldPct}%</span>
+            </div>
+          </div>
+
           {/* Progress Bar */}
           <div className="mb-10">
             <div className="flex justify-between text-sm text-text-secondary mb-3">
-              <span className="text-accent">Liquid (80%)</span>
-              <span className="text-secondary">Earning (20%)</span>
+              <span className="text-accent">Liquid ({liquidPct}%)</span>
+              <span className="text-secondary">Earning ({yieldPct}%)</span>
             </div>
             <div className="relative h-3 md:h-4 bg-white/5 rounded-full overflow-hidden">
               <div
                 className="absolute left-0 h-full bg-accent rounded-full transition-all duration-500"
-                style={{ width: '80%', boxShadow: '0 0 10px rgba(0, 255, 155, 0.5)' }}
+                style={{ width: `${liquidPct}%`, boxShadow: '0 0 10px rgba(0, 255, 155, 0.5)' }}
               />
               <div
                 className="absolute right-0 h-full bg-secondary rounded-full transition-all duration-500"
-                style={{ width: '20%', boxShadow: '0 0 10px rgba(97, 162, 41, 0.5)' }}
+                style={{ width: `${yieldPct}%`, boxShadow: '0 0 10px rgba(97, 162, 41, 0.5)' }}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          {/* KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6">
             <Card className="!bg-surface">
-              <div className="text-text-secondary text-sm mb-3 tracking-wider uppercase">
-                Liquid (80%)
+              <div className="text-text-secondary text-sm mb-3 tracking-wider uppercase">Liquid</div>
+              <div className="text-3xl sm:text-4xl font-bold text-text-primary">
+                ${fmtNum(split.liquid)}
               </div>
-              <div className="text-4xl font-bold text-text-primary mb-3">
-                ${liquid.toLocaleString('en-US', { maximumFractionDigits: 0 })}
-              </div>
-              <div className="text-text-secondary text-sm">Ready for operations</div>
             </Card>
             <Card className="!bg-surface">
-              <div className="text-text-secondary text-sm mb-3 tracking-wider uppercase">
-                Earning (20%)
+              <div className="text-text-secondary text-sm mb-3 tracking-wider uppercase">To Yield</div>
+              <div className="text-3xl sm:text-4xl font-bold text-text-primary">
+                ${fmtNum(split.toYield)}
               </div>
-              <div className="text-4xl font-bold text-accent mb-3">
-                ${earning.toLocaleString('en-US', { maximumFractionDigits: 0 })}
+            </Card>
+            <Card className="!bg-surface">
+              <div className="text-text-secondary text-sm mb-3 tracking-wider uppercase">Net Earnings</div>
+              <div className="text-3xl sm:text-4xl font-bold text-accent">
+                ${fmtNum(projection.netYield)}
               </div>
-              <div className="text-text-secondary text-sm">4-8% APY via Morpho</div>
             </Card>
           </div>
 
-          <div className="bg-gradient-to-r from-accent/10 to-secondary/10 border border-accent/30 rounded-2xl p-8 text-center">
-            <div className="text-text-secondary text-sm mb-2 tracking-wider uppercase">
-              Estimated Daily Yield (6% APY)
-            </div>
-            <div className="text-5xl font-bold yield-glow">
-              ${dailyYield.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </div>
+          {/* Detail Row */}
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-text-secondary mb-4">
+            <span>Total Return: <span className="font-semibold text-text-primary tabular-nums">${fmtNum(projection.totalReturn)} USDC</span></span>
+            <span>Effective APY: <span className="font-semibold text-text-primary tabular-nums">{projection.effectiveApyPct.toFixed(2)}%</span></span>
+            <span>Protocol Fee: <span className="font-semibold text-text-primary tabular-nums">${fmtNum(projection.protocolFee)} USDC</span> (2% on yield)</span>
+          </div>
+
+          {/* Footer */}
+          <div className="text-xs text-text-secondary mt-4 space-y-1">
+            <div>Based on current {protocol.activeProtocol} APY: {protocol.currentApyPct.toFixed(2)}%</div>
+            <div>Rates fluctuate. Not financial advice.</div>
           </div>
         </div>
       </div>

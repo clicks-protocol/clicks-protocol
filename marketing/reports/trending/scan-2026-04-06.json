@@ -1,0 +1,59 @@
+{
+  "date": "2026-04-06 19:00",
+  "api_calls": 24,
+  "scanned": 24,
+  "relevant": 3,
+  "results": [
+    {
+      "repo": "swapperfinance/swapper-toolkit",
+      "stars": 505,
+      "desc": "DeFi toolkit for AI agents and coding assistants \u2014 deposit funds, execute trades, and manage crypto ",
+      "topics": [
+        "ai-agent",
+        "ai-agent-tools",
+        "ai-coding-assistant",
+        "autogpt",
+        "autonomous-agents"
+      ],
+      "url": "https://github.com/swapperfinance/swapper-toolkit",
+      "score": 42,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-03-23"
+    },
+    {
+      "repo": "ghostwright/phantom",
+      "stars": 1213,
+      "desc": "An AI co-worker with its own computer. Self-evolving, persistent memory, MCP server, secure credenti",
+      "topics": [
+        "ai-agents",
+        "ai-coworker",
+        "anthropic",
+        "autonomous-agents",
+        "bun"
+      ],
+      "url": "https://github.com/ghostwright/phantom",
+      "score": 36,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-03-26"
+    },
+    {
+      "repo": "EthanYolo01/Awesome-OpenClaw",
+      "stars": 148,
+      "desc": "A carefully curated list of awesome OpenClaw resources \u2014 not everything, just the best.  Skills \u00b7 Pl",
+      "topics": [
+        "agent",
+        "awesome",
+        "awesome-list",
+        "awesome-lists",
+        "openclaw"
+      ],
+      "url": "https://github.com/EthanYolo01/Awesome-OpenClaw",
+      "score": 30,
+      "action": "MONITOR",
+      "window": "month",
+      "created": "2026-03-19"
+    }
+  ]
+}

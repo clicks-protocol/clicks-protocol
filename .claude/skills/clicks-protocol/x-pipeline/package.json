@@ -1,0 +1,13 @@
+{
+  "name": "clicks-x-pipeline",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "post": "node post.js next",
+    "post:all": "node post.js all",
+    "status": "node post.js status"
+  },
+  "dependencies": {
+    "@xdevplatform/xdk": "^0.5.0"
+  }
+}

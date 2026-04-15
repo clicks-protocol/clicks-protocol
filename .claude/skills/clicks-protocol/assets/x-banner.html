@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  width: 1500px;
+  height: 500px;
+  background: #0F0814;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Subtle gradient overlay */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at center, rgba(0,255,155,0.03) 0%, transparent 70%);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.logo-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.logo-row img {
+  height: 58px;
+  width: 58px;
+}
+
+.logo-row h1 {
+  font-size: 58px;
+  font-weight: 900;
+  color: #00FF9B;
+  letter-spacing: 8px;
+  line-height: 1;
+}
+
+.tagline {
+  font-size: 22px;
+  color: #ffffff;
+  font-weight: 400;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #666;
+  letter-spacing: 1px;
+}
+
+.subtitle span {
+  color: #555;
+  margin: 0 8px;
+}
+</style>
+</head>
+<body>
+<div class="content">
+  <div class="logo-row">
+    <img src="icon.png" alt="Clicks" />
+    <h1>CLICKS</h1>
+  </div>
+  <p class="tagline">Autonomous Yield for AI Agents</p>
+  <p class="subtitle">80% liquid <span>·</span> 20% earning <span>·</span> No lockup <span>·</span> Built on Base</p>
+</div>
+</body>
+</html>

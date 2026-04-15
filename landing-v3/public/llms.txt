@@ -83,10 +83,11 @@ const agent = new AgentRuntime({ plugins: [clicksPlugin] });
 
 | Contract | Address | Purpose |
 |----------|---------|---------|
-| ClicksRegistry | 0x898d8a3B04e5E333E88f798372129C6a622fF48d | Agent registration |
-| ClicksSplitterV3 | 0xA1D0c1D6EaE051a2d01319562828b297Be96Bac5 | Payment splitting |
-| ClicksYieldRouter | 0x47d6Add0a3bdFe856b39a0311D8c055481F76f29 | DeFi yield routing |
-| ClicksFee | 0xb90cd287d30587dAF40B2E1ce32cefA99FD10E12 | Protocol fee (2% on yield) |
+| ClicksRegistry | 0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3 | Agent registration |
+| ClicksSplitterV4 | 0xB7E0016d543bD443ED2A6f23d5008400255bf3C8 | Payment splitting (V2, with referral) |
+| ClicksYieldRouter | 0x053167a233d18E05Bc65a8d5F3F8808782a3EECD | DeFi yield routing |
+| ClicksFeeV2 | 0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5 | Protocol fee (2% on yield) + referral distribution |
+| ClicksReferral | 0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC | Referral rewards (3 levels: L1=40%, L2=20%, L3=10% of protocol fee) |
 | USDC | 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 | Base USDC |
 
 ## Key Parameters

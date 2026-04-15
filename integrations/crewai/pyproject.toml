@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "clicks-crewai"
-version = "0.1.0"
+version = "0.2.0"
 description = "Clicks Protocol yield management tools for CrewAI agent crews on Base"
 readme = "README.md"
 license = {text = "MIT"}
@@ -36,4 +36,4 @@ Repository = "https://github.com/clicks-protocol/clicks-crewai"
 Documentation = "https://docs.clicksprotocol.xyz/integrations/crewai"
 
 [tool.setuptools]
-py-modules = ["clicks_tool"]
+py-modules = ["clicks_crewai"]

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 5: The Click -->
+  <!-- Two forms interlocking — the moment of "click" -->
+  <!-- Left half-circle reaching right, right half-circle reaching left -->
+  <!-- They mesh together like a mechanical lock engaging -->
+  
+  <!-- Left element: open arc facing right with a tooth/notch -->
+  <path d="M 216 136 
+           A 120 120 0 0 0 216 376
+           L 216 316
+           A 60 60 0 0 1 216 196
+           Z" 
+        fill="#00FF9B"/>
+  
+  <!-- Right element: open arc facing left with a tooth/notch -->
+  <path d="M 296 376 
+           A 120 120 0 0 0 296 136
+           L 296 196
+           A 60 60 0 0 1 296 316
+           Z" 
+        fill="#00FF9B" opacity="0.6"/>
+</svg>

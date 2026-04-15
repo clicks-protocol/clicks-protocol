@@ -1,0 +1,45 @@
+{
+  "name": "@clicks-protocol/eliza-plugin",
+  "version": "0.1.0",
+  "description": "Clicks Protocol yield management plugin for Eliza (ai16z) agents on Base",
+  "main": "dist/clicks-plugin.js",
+  "types": "dist/clicks-plugin.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "eliza",
+    "ai16z",
+    "defi",
+    "yield",
+    "base",
+    "usdc",
+    "ai-agents",
+    "clicks-protocol"
+  ],
+  "author": {
+    "name": "Clicks Protocol",
+    "email": "dev@clicksprotocol.xyz",
+    "url": "https://clicksprotocol.xyz"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@clicks-protocol/sdk": "^0.1.0",
+    "ethers": "^6.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "@types/node": "^20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clicks-protocol/eliza-plugin"
+  },
+  "homepage": "https://clicksprotocol.xyz"
+}

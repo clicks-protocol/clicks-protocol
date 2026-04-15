@@ -25,6 +25,14 @@
 <link rel="manifest" href="/site.webmanifest">
 <link rel="agent" href="/agent.json" type="application/json">
 <link rel="llms" href="/llms.txt" type="text/plain">
+<!-- X conversion tracking base code -->
+<script>
+!function(e,t,n,s,u,a){e.twq||(s=e.twq=function(){s.exe?s.exe.apply(s,arguments):s.queue.push(arguments);
+},s.version='1.1',s.queue=[],u=t.createElement(n),u.async=!0,u.src='https://static.ads-twitter.com/uwt.js',
+a=t.getElementsByTagName(n)[0],a.parentNode.insertBefore(u,a))}(window,document,'script');
+twq('config','rbppe');
+</script>
+<!-- End X conversion tracking base code -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -684,12 +692,30 @@ const obs = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
+/* X Pixel: Track Install Section View */
+const installSection = document.getElementById('install');
+if (installSection && typeof IntersectionObserver !== 'undefined') {
+  const installObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        if (typeof twq !== 'undefined') twq('event', 'tw-rbppe-137mh5', {});
+        installObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  installObs.observe(installSection);
+}
+
 /* Copy functions */
 function copyText(text, btn) {
   navigator.clipboard.writeText(text).then(() => {
     btn.textContent = 'Copied!';
     btn.classList.add('copied');
     setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    /* X Pixel: Track SDK install copy as Lead conversion */
+    if (typeof twq !== 'undefined' && text.includes('@clicks-protocol/sdk')) {
+      twq('event', 'tw-rbppe-137mgq', {});
+    }
   });
 }
 function copyCode(id, btn) {
