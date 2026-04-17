@@ -1,6 +1,6 @@
 {
   "name": "@clicks-protocol/eliza-plugin",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Clicks Protocol yield management plugin for Eliza (ai16z) agents on Base",
   "main": "dist/clicks-plugin.js",
   "types": "dist/clicks-plugin.d.ts",
@@ -30,7 +30,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@clicks-protocol/sdk": "^0.1.0",
+    "@clicks-protocol/sdk": "^0.2.0",
     "ethers": "^6.0.0"
   },
   "devDependencies": {

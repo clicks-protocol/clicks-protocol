@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clicks Protocol</title>
+
+  <!-- Farcaster Mini App Meta Tags -->
+  <meta property="fc:frame" content='{"version":"1","name":"Clicks Protocol","iconUrl":"https://clicksprotocol.xyz/icon-1024.png","homeUrl":"https://clicksprotocol.xyz/miniapp","imageUrl":"https://clicksprotocol.xyz/icon-1024.png","splashImageUrl":"https://clicksprotocol.xyz/icon-1024.png","splashBackgroundColor":"#0a0a0f","button":{"title":"Check Yield","action":{"type":"launch_miniapp","url":"https://clicksprotocol.xyz/miniapp"}}}'>
+  <meta property="og:title" content="Clicks Protocol — Yield for AI Agents">
+  <meta property="og:description" content="Earn 4-8% APY on idle USDC. 80% liquid, 20% yield. No lockup.">
+  <meta property="og:image" content="https://clicksprotocol.xyz/og-image.png">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0f;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .header {
+      text-align: center;
+      padding: 20px 0 16px;
+    }
+    .header h1 {
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .header p {
+      font-size: 13px;
+      color: #888;
+    }
+    .card {
+      background: #14141f;
+      border: 1px solid #1e1e2e;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 12px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .apy-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .apy-label {
+      font-size: 14px;
+      color: #aaa;
+    }
+    .apy-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #4ade80;
+    }
+    .apy-value.active {
+      color: #22c55e;
+    }
+    .apy-value.inactive {
+      color: #666;
+      font-size: 14px;
+    }
+    .active-badge {
+      display: inline-block;
+      background: #22c55e20;
+      color: #22c55e;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .stat-item {
+      background: #1a1a2a;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+      margin-top: 2px;
+    }
+    .split-visual {
+      display: flex;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 0 8px;
+    }
+    .split-liquid {
+      width: 80%;
+      background: #3b82f6;
+    }
+    .split-yield {
+      width: 20%;
+      background: #22c55e;
+    }
+    .split-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #888;
+    }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .btn-primary {
+      background: #22c55e;
+      color: #000;
+    }
+    .btn-secondary {
+      background: #1e1e2e;
+      color: #e0e0e0;
+      border: 1px solid #2e2e3e;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .referral-box {
+      background: #1a1a2a;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+    }
+    .referral-box strong {
+      color: #4ade80;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+    }
+    .error {
+      color: #ef4444;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px;
+    }
+    .footer {
+      text-align: center;
+      padding: 16px 0;
+      font-size: 11px;
+      color: #444;
+    }
+    .footer a {
+      color: #666;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Clicks Protocol</h1>
+    <p>Autonomous yield for AI agents on Base</p>
+  </div>
+
+  <div id="app">
+    <div class="loading">Loading yield data...</div>
+  </div>
+
+  <script type="module">
+    // Initialize Farcaster SDK IMMEDIATELY (required before any rendering)
+    try {
+      const { sdk: farcasterSdk } = await import('https://esm.sh/@farcaster/miniapp-sdk');
+      await farcasterSdk.actions.ready();
+    } catch (e) {
+      // Not in Farcaster context — app works standalone too
+    }
+
+    // MCP Endpoint for live data
+    const MCP_URL = 'https://mcp.clicksprotocol.xyz/mcp';
+
+    async function fetchYieldInfo() {
+      const res = await fetch(MCP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'tools/call',
+          params: { name: 'clicks_get_yield_info', arguments: {} }
+        })
+      });
+      const data = await res.json();
+      return JSON.parse(data.result.content[0].text);
+    }
+
+    function formatAPY(bps) {
+      if (bps === 'unavailable' || bps === null) return 'N/A';
+      return (Number(bps) / 100).toFixed(2) + '%';
+    }
+
+    function formatUSDC(amount) {
+      const num = parseFloat(amount);
+      if (num >= 1000000) return '$' + (num / 1000000).toFixed(2) + 'M';
+      if (num >= 1000) return '$' + (num / 1000).toFixed(1) + 'K';
+      return '$' + num.toFixed(2);
+    }
+
+    async function render() {
+      const app = document.getElementById('app');
+
+      try {
+        const yield_info = await fetchYieldInfo();
+
+        const activeProtocol = yield_info.active_protocol || 'None';
+        const aaveAPY = formatAPY(yield_info.aave_apy_bps);
+        const morphoAPY = formatAPY(yield_info.morpho_apy_bps);
+        const tvl = formatUSDC(yield_info.total_balance_usdc || '0');
+        const fees = formatUSDC(yield_info.pending_fees_usdc || '0');
+        const bestAPY = activeProtocol === 'Morpho' ? morphoAPY : aaveAPY;
+
+        app.innerHTML = `
+          <!-- Live APY Card -->
+          <div class="card">
+            <div class="card-title">Live Yield Rates</div>
+            <div class="apy-row">
+              <span class="apy-label">Morpho${activeProtocol === 'Morpho' ? '<span class="active-badge">ACTIVE</span>' : ''}</span>
+              <span class="apy-value ${activeProtocol === 'Morpho' ? 'active' : 'inactive'}">${morphoAPY}</span>
+            </div>
+            <div class="apy-row">
+              <span class="apy-label">Aave V3${activeProtocol === 'Aave V3' ? '<span class="active-badge">ACTIVE</span>' : ''}</span>
+              <span class="apy-value ${activeProtocol === 'Aave V3' ? 'active' : 'inactive'}">${aaveAPY}</span>
+            </div>
+          </div>
+
+          <!-- How It Works Card -->
+          <div class="card">
+            <div class="card-title">How It Works</div>
+            <div class="split-visual">
+              <div class="split-liquid"></div>
+              <div class="split-yield"></div>
+            </div>
+            <div class="split-labels">
+              <span>80% Liquid (instant)</span>
+              <span>20% Yield (${bestAPY} APY)</span>
+            </div>
+          </div>
+
+          <!-- Protocol Stats -->
+          <div class="card">
+            <div class="card-title">Protocol Stats</div>
+            <div class="stat-grid">
+              <div class="stat-item">
+                <div class="stat-value">${tvl}</div>
+                <div class="stat-label">Total Deposited</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${bestAPY}</div>
+                <div class="stat-label">Current APY</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">${fees}</div>
+                <div class="stat-label">Pending Fees</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">2%</div>
+                <div class="stat-label">Protocol Fee</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Referral -->
+          <div class="card">
+            <div class="card-title">Referral Rewards</div>
+            <div class="referral-box">
+              Refer agents and earn <strong>40%</strong> of their protocol fee.<br>
+              3 levels: L1=40%, L2=20%, L3=10%
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <a href="https://clicksprotocol.xyz" target="_blank" style="text-decoration: none;">
+            <button class="btn btn-primary">Get Started</button>
+          </a>
+          <a href="https://github.com/clicks-protocol/clicks-protocol" target="_blank" style="text-decoration: none;">
+            <button class="btn btn-secondary">View on GitHub</button>
+          </a>
+
+          <div class="footer">
+            <a href="https://clicksprotocol.xyz">clicksprotocol.xyz</a>
+            &middot; Base Mainnet &middot; Non-custodial &middot; No lockup
+          </div>
+        `;
+
+      } catch (err) {
+        app.innerHTML = `<div class="error">Failed to load yield data. Please try again.</div>`;
+        console.error(err);
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>

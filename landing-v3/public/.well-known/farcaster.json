@@ -1,0 +1,21 @@
+{
+  "accountAssociation": {
+    "header": "eyJmaWQiOjMzMTgxMDAsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHhjMjU2YTU5YmREMjFGOEYxNUVhQWFDZDFiNDA5ODg1ODQwYWZBYkZCIn0",
+    "payload": "eyJkb21haW4iOiJjbGlja3Nwcm90b2NvbC54eXoifQ",
+    "signature": "QiKIN+vWxzBYYZvT17f6EWIeKFuvIHTFjEboFIFQemoM6EtYUBGW+sB/+jA5LCgDTyn5xmbFybJYc6NCb/IKJhs="
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "Clicks Protocol",
+    "homeUrl": "https://clicksprotocol.xyz/miniapp",
+    "iconUrl": "https://clicksprotocol.xyz/icon-1024.png",
+    "splashImageUrl": "https://clicksprotocol.xyz/icon-1024.png",
+    "splashBackgroundColor": "#0a0a0f",
+    "subtitle": "Yield for AI agents",
+    "description": "Earn yield on idle USDC. Auto-split 80 liquid, 20 earning APY via Aave and Morpho on Base.",
+    "primaryCategory": "finance",
+    "tags": ["defi", "yield", "usdc", "base", "ai-agents"],
+    "ogTitle": "Clicks Protocol",
+    "ogDescription": "Autonomous yield for AI agent treasuries on Base. 80 percent liquid, 20 percent earning."
+  }
+}

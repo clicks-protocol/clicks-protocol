@@ -1,0 +1,62 @@
+{
+  "type": "https://eips.ethereum.org/EIPS/eip-8004",
+  "name": "Clicks Protocol",
+  "description": "Agent Commerce Settlement Router on Base. x402-native payment router that auto-splits USDC into liquid operations and yield-earning treasury via Aave V3 and Morpho. 80/20 default split, configurable, no lockup.",
+  "image": "https://clicksprotocol.xyz/icon-1024.png",
+  "services": [
+    {
+      "type": "A2A",
+      "url": "https://clicksprotocol.xyz/.well-known/agent.json"
+    },
+    {
+      "type": "MCP",
+      "url": "https://clicksprotocol.xyz/mcp/server.json"
+    },
+    {
+      "type": "x402",
+      "url": "https://clicksprotocol.xyz/.well-known/x402.json"
+    },
+    {
+      "type": "ACP",
+      "protocol": "@virtuals-protocol/acp-node-v2",
+      "offering": "auto_yield_treasury",
+      "wallet": "0x06ef9de072d09906945747da6b99f1d2c2c23ed4"
+    },
+    {
+      "type": "website",
+      "url": "https://clicksprotocol.xyz"
+    },
+    {
+      "type": "email",
+      "url": "mailto:hello@clicksprotocol.xyz"
+    },
+    {
+      "type": "github",
+      "url": "https://github.com/clicks-protocol"
+    }
+  ],
+  "registrations": [],
+  "supportedTrust": ["reputation", "crypto-economic"],
+  "endpoints": {
+    "sdk": "npm:@clicks-protocol/sdk",
+    "mcp": "npm:@clicks-protocol/mcp-server",
+    "eliza": "npm:@clicks-protocol/eliza-plugin"
+  },
+  "contracts": {
+    "chain": "base",
+    "chainId": 8453,
+    "ClicksRegistry": "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3",
+    "ClicksSplitterV4": "0xB7E0016d543bD443ED2A6f23d5008400255bf3C8",
+    "ClicksYieldRouter": "0x053167a233d18E05Bc65a8d5F3F8808782a3EECD",
+    "ClicksFeeV2": "0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5",
+    "ClicksReferral": "0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC",
+    "Safe": "0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9"
+  },
+  "capabilities": [
+    "yield-routing",
+    "payment-splitting",
+    "x402-compatible",
+    "erc4626-router",
+    "treasury-automation"
+  ]
+}
