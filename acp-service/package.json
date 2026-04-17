@@ -1,0 +1,22 @@
+{
+  "name": "clicks-acp-service",
+  "version": "0.1.0",
+  "description": "Clicks Protocol as ACP Service Provider on Virtuals",
+  "main": "service.ts",
+  "scripts": {
+    "start": "tsx service.ts",
+    "start:mainnet": "ACP_CHAIN=mainnet tsx service.ts"
+  },
+  "dependencies": {
+    "@virtuals-protocol/acp-node-v2": "^0.0.5",
+    "@clicks-protocol/sdk": "^0.2.0",
+    "@account-kit/infra": "^4.84.1",
+    "ethers": "^6.16.0",
+    "viem": "^2.48.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0",
+    "@types/node": "^22.0.0"
+  }
+}
