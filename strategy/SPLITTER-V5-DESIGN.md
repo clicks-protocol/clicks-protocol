@@ -65,6 +65,24 @@ Fee never touches principal. Referral distribution via `ClicksFeeV2` works uncha
 
 V5 is immutable, like V4. Tier-table changes require V6. The multiplier reference is set at construction and cannot be changed. That is the explicit trade-off: no surprise fee changes, no governance surface, no upgrade proxies.
 
+## Market readiness — DO NOT deploy V5 yet
+
+Live simulation against Base mainnet (17.04.2026, `scripts/simulate-multiplier-live.ts`):
+
+- Our own agent 45074 has 0 feedback → COLD tier (as expected for a fresh mint)
+- Agent #1 (the registry seed) has 12 attestors, but most individual `getSummary` calls only return 1 entry each, values are integers (e.g. 100) with `decimals=0` — nobody follows a normalized 0..1 rating convention
+- A broader probe across mid/high agentIds found **zero** agents with both an Identity NFT and attestor feedback
+- Conclusion: ERC-8004 reputation traffic on Base mainnet is essentially empty as of mid-April 2026
+
+**If we shipped V5 today, nearly every agent would land in `COLD` = 3.0% fee.** That is a fee **increase** over V4's flat 2.0%, not a decrease. V5 is a net negative at launch without seed liquidity in the reputation graph.
+
+### Ship prerequisites
+
+1. **Whitelist design finalised.** Open question: do we accept non-normalized values from whitelisted attestors, or require them to respect a 0..1 schema? Leaning toward the latter: publish a Clicks feedback schema, whitelist only attestors who attest that schema.
+2. **Seed attestation program.** Clicks itself (via the operator wallet) should give feedback to a cohort of known-good agents to bootstrap the graph. This is cheap (on-chain cost only) and creates the signal.
+3. **Partnership attestors.** Virtuals, Eliza, or Coinbase Agentic Wallet as trusted attestors once they start emitting feedback at volume.
+4. **Countdown trigger.** Switch from V4 to V5 only when ≥ 50% of active Clicks agents have ≥ COUNT_LOW (10) entries from the whitelist. Anything earlier punishes our own users.
+
 ## Verification plan
 
 1. Unit tests mirroring V4 test coverage + new tests for:
