@@ -4,7 +4,7 @@ import { loadFixture } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 
 describe("ClicksReputationMultiplierV1", function () {
   async function deployFixture() {
-    const [owner, agent, stranger] = await ethers.getSigners();
+    const [owner, agent, stranger, attestor1, attestor2] = await ethers.getSigners();
 
     const Identity = await ethers.getContractFactory("MockIdentityRegistry");
     const identity = await Identity.deploy();
@@ -21,7 +21,10 @@ describe("ClicksReputationMultiplierV1", function () {
     const AGENT_ID = 45074n;
     await identity.setOwner(AGENT_ID, agent.address);
 
-    return { mul, identity, reputation, owner, agent, stranger, AGENT_ID };
+    // Seed at least one trusted attestor so tier lookups return something.
+    await mul.addAttestor(attestor1.address);
+
+    return { mul, identity, reputation, owner, agent, stranger, attestor1, attestor2, AGENT_ID };
   }
 
   // Helper: each feedback entry is a rating in [0, 10^decimals].
@@ -165,6 +168,70 @@ describe("ClicksReputationMultiplierV1", function () {
       const s = summary(120n, 0.95, 2);
       await reputation.setSummary(AGENT_ID, s.count, s.value, s.decimals);
       expect(await mul.feeBpsForAgentId(AGENT_ID)).to.equal(100n);
+    });
+  });
+
+  describe("attestor management", function () {
+    it("starts with exactly the fixture's seed attestor", async function () {
+      const { mul, attestor1 } = await loadFixture(deployFixture);
+      expect(await mul.trustedAttestorCount()).to.equal(1n);
+      expect(await mul.isTrustedAttestor(attestor1.address)).to.equal(true);
+      expect(await mul.trustedAttestors()).to.deep.equal([attestor1.address]);
+    });
+
+    it("only owner can add or remove attestors", async function () {
+      const { mul, agent, attestor2 } = await loadFixture(deployFixture);
+      await expect(mul.connect(agent).addAttestor(attestor2.address))
+        .to.be.revertedWithCustomError(mul, "OwnableUnauthorizedAccount");
+      await expect(mul.connect(agent).removeAttestor(attestor2.address))
+        .to.be.revertedWithCustomError(mul, "OwnableUnauthorizedAccount");
+    });
+
+    it("rejects zero-address attestors and duplicates", async function () {
+      const { mul, attestor1 } = await loadFixture(deployFixture);
+      await expect(mul.addAttestor(ethers.ZeroAddress))
+        .to.be.revertedWithCustomError(mul, "ZeroAddress");
+      await expect(mul.addAttestor(attestor1.address))
+        .to.be.revertedWithCustomError(mul, "AlreadyTrusted");
+    });
+
+    it("remove drops the attestor and shrinks the list", async function () {
+      const { mul, attestor1, attestor2 } = await loadFixture(deployFixture);
+      await mul.addAttestor(attestor2.address);
+      expect(await mul.trustedAttestorCount()).to.equal(2n);
+
+      await mul.removeAttestor(attestor1.address);
+      expect(await mul.isTrustedAttestor(attestor1.address)).to.equal(false);
+      expect(await mul.trustedAttestorCount()).to.equal(1n);
+      expect(await mul.trustedAttestors()).to.deep.equal([attestor2.address]);
+    });
+
+    it("removing an unknown attestor reverts", async function () {
+      const { mul, attestor2 } = await loadFixture(deployFixture);
+      await expect(mul.removeAttestor(attestor2.address))
+        .to.be.revertedWithCustomError(mul, "NotTrusted");
+    });
+  });
+
+  describe("empty attestor set", function () {
+    async function noAttestorFixture() {
+      const base = await deployFixture();
+      await base.mul.removeAttestor(base.attestor1.address);
+      return base;
+    }
+
+    it("forces FEE_COLD across every lookup when no attestors exist", async function () {
+      const { mul, reputation, agent, AGENT_ID } = await loadFixture(noAttestorFixture);
+      const s = summary(120n, 0.95, 2);
+      await reputation.setSummary(AGENT_ID, s.count, s.value, s.decimals);
+
+      expect(await mul.feeBpsFor(agent.address, AGENT_ID)).to.equal(300n);
+      expect(await mul.feeBpsForAgentId(AGENT_ID)).to.equal(300n);
+
+      const [count, avgBps, feeBps] = await mul.quote(AGENT_ID);
+      expect(count).to.equal(0n);
+      expect(avgBps).to.equal(0n);
+      expect(feeBps).to.equal(300n);
     });
   });
 });
