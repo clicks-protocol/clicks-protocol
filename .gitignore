@@ -47,3 +47,8 @@ x-pipeline/post-log.json
 x-pipeline/queue.json
 x-pipeline/replied-mentions.json
 x-pipeline/seen-mentions.json
+
+# Generated scanner reports
+marketing/reports/tier-distribution/
+marketing/reports/reddit/
+marketing/reports/trending/

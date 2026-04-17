@@ -1,0 +1,23 @@
+{
+  "attestations": [],
+  "completed": [
+    {
+      "agentId": 1,
+      "value": 5000,
+      "tag1": "custom",
+      "tag2": "custom",
+      "endpoint": "https://clicksprotocol.xyz/.well-known/agent-registration.json",
+      "feedbackURI": "https://clicksprotocol.xyz/strategy/ATTESTOR-SCHEMA-V1.md",
+      "txHash": "0x5aec2067384c68421c4964682fec5e5c8e987a44e69b22460eaabdaa213f9578",
+      "block": 44836647,
+      "timestamp": "2026-04-17",
+      "feedbackIndex": 1,
+      "note": "Bootstrap attestation — first Schema V1 giveFeedback() from Clicks operator. Neutral rating to Agent #1, verified readable via getSummary."
+    }
+  ],
+  "notes": [
+    "Populate `attestations` with new entries; the script writes them through.",
+    "Move executed entries into `completed` manually after confirmation.",
+    "Schema V1: value in [0, 10000], decimals fixed at 4, tag1/tag2 enum, one per (agentId, endpoint, 24h)."
+  ]
+}
