@@ -35,7 +35,15 @@
       "url": "https://github.com/clicks-protocol"
     }
   ],
-  "registrations": [],
+  "registrations": [
+    {
+      "agentRegistry": "0x8004A169FB4a3325136EB29fA0ceB6D2e539a432",
+      "agentId": "45074",
+      "chain": "base",
+      "chainId": 8453,
+      "txHash": "0x76123d72379d35251c35747cbb8f43e09893d57501d9f4ba0f4e75d4aec296d6"
+    }
+  ],
   "supportedTrust": ["reputation", "crypto-economic"],
   "endpoints": {
     "sdk": "npm:@clicks-protocol/sdk",
