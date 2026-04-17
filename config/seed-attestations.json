@@ -1,0 +1,13 @@
+{
+  "attestations": [],
+  "notes": [
+    "Add Attestation objects here. Schema V1 requires:",
+    "  value in [0, 10000] (decimals fixed at 4 → 1.0000 = perfect, 0.5000 = neutral)",
+    "  tag1 in {ingest, route, split, withdraw, liquidate, custom, ''}",
+    "  tag2 in {virtuals-acp, x402, direct-sdk, mcp-tool, custom, ''}",
+    "  One entry per (agentId, endpoint, 24h)",
+    "Example:",
+    "  { \"agentId\": 1, \"value\": 8500, \"tag1\": \"route\", \"tag2\": \"x402\", ",
+    "    \"endpoint\": \"https://example.com/job/1\", \"note\": \"first seed attestation\" }"
+  ]
+}

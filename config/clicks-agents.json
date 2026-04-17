@@ -1,0 +1,14 @@
+{
+  "agents": [
+    {
+      "wallet": "0xf873BB73e10D24cD3CF9bBed917F5E2d07dA8B80",
+      "agentId": 45074,
+      "label": "Clicks Protocol operator"
+    }
+  ],
+  "notes": [
+    "List Clicks-adopted agents with (wallet, agentId, label).",
+    "Populate this with agents that have registered via SplitterV5.registerAgentId() once V5 is live.",
+    "Before V5: anyone using Clicks V4 who also minted an ERC-8004 agent."
+  ]
+}

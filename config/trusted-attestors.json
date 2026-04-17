@@ -1,0 +1,6 @@
+{
+  "attestors": [],
+  "notes": [
+    "List of wallet addresses that will be registered as trusted attestors in ClicksReputationMultiplierV1.addAttestor(). Example: ['0xabc...']"
+  ]
+}
