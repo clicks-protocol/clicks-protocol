@@ -1,8 +1,8 @@
 # Reputation-Yield Multiplier — V3 Design
 
-**Status:** Design sketch, not implemented
-**Prerequisite:** ERC-8004 mint complete (depends on Block 3)
-**Target contract:** `ClicksReputationMultiplierV1.sol`
+**Status:** V1 shipped 2026-04-17 — contract + 18 unit tests passing
+**Contract:** [`contracts/ClicksReputationMultiplierV1.sol`](../contracts/ClicksReputationMultiplierV1.sol)
+**Tests:** [`test/ClicksReputationMultiplierV1.test.ts`](../test/ClicksReputationMultiplierV1.test.ts)
 
 ---
 
@@ -69,12 +69,19 @@ contract ClicksReputationMultiplierV1 {
 - Cache score per block to avoid double-lookup per tx
 - Emit `FeeBpsApplied(address agent, uint16 bps)` event for indexers
 
-## Open questions
+## Resolved in V1
 
-1. **Score source** — does ERC-8004 Reputation Registry expose a clean `scoreOf` view, or do we need to compute from feedback events? **Action:** read Reputation Registry ABI before implementing.
-2. **Agents without ERC-8004 ID** — they get cold-start fee (3%). Alternative: fall back to referral-depth as a proxy signal.
-3. **Upgrade path** — deploy as immutable standalone, or make `ClicksFeeV2` upgradable to swap multiplier? **Preference:** standalone immutable, wire via `ClicksFeeV2.setMultiplier()` (add setter if not present).
-4. **Gaming risk** — can an agent inflate their score cheaply? ERC-8004 score is driven by paid validations and ACP job completions, so it costs real USDC to move. Acceptable surface.
+1. **Score source** — Reputation Registry exposes `getSummary(agentId, clients[], tag1, tag2) → (count, int128 value, uint8 decimals)`; no simple `scoreOf`. We aggregate across all clients with no tag filter and translate into bps.
+2. **Agents without ERC-8004 ID** — cold-start 3%. Ownership mismatch also → cold.
+3. **Registry revert** — caught with try/catch → cold. Safe for caller contracts.
+4. **int128 edge cases** — negative summary = cold, decimals clamped to 18, avg capped at 10_000 bps.
+
+## Still open
+
+1. **SplitterV5 integration** — V4 has hardcoded `FEE_BPS = 200`. V5 would read `feeBpsFor(agent, agentId)` per deposit. Requires: agentId resolution path (self-registered map? setter?).
+2. **Fork test against live Reputation Registry** — mocks cover logic, but the exact int128 decimal convention on Base mainnet is assumption-driven. Before wiring to V5, run a fork test pulling `getSummary(45074, [], "", "")` and verify decoded shape.
+3. **Upgrade path for the tier table** — immutable for now. V2 bumps tiers.
+4. **Gaming risk** — ERC-8004 feedback costs real USDC to emit, so the surface is acceptable. Monitor for Sybil attestation rings after launch.
 
 ## Verification plan
 
