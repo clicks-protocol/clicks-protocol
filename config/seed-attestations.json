@@ -1,5 +1,6 @@
 {
-  "attestations": [
+  "attestations": [],
+  "completed": [
     {
       "agentId": 1,
       "value": 5000,
@@ -7,14 +8,16 @@
       "tag2": "custom",
       "endpoint": "https://clicksprotocol.xyz/.well-known/agent-registration.json",
       "feedbackURI": "https://clicksprotocol.xyz/strategy/ATTESTOR-SCHEMA-V1.md",
-      "note": "Bootstrap attestation — Clicks operator's first ERC-8004 feedback call. Neutral rating (0.5) because we have no evidence on Agent #1; this entry exists only to validate the Schema V1 pipeline end-to-end on Base mainnet."
+      "txHash": "0x5aec2067384c68421c4964682fec5e5c8e987a44e69b22460eaabdaa213f9578",
+      "block": 44836647,
+      "timestamp": "2026-04-17",
+      "feedbackIndex": 1,
+      "note": "Bootstrap attestation — first Schema V1 giveFeedback() from Clicks operator. Neutral rating to Agent #1, verified readable via getSummary."
     }
   ],
   "notes": [
-    "Add Attestation objects here. Schema V1 requires:",
-    "  value in [0, 10000] (decimals fixed at 4 → 1.0000 = perfect, 0.5000 = neutral)",
-    "  tag1 in {ingest, route, split, withdraw, liquidate, custom, ''}",
-    "  tag2 in {virtuals-acp, x402, direct-sdk, mcp-tool, custom, ''}",
-    "  One entry per (agentId, endpoint, 24h)"
+    "Populate `attestations` with new entries; the script writes them through.",
+    "Move executed entries into `completed` manually after confirmation.",
+    "Schema V1: value in [0, 10000], decimals fixed at 4, tag1/tag2 enum, one per (agentId, endpoint, 24h)."
   ]
 }
