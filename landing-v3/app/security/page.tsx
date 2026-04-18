@@ -4,9 +4,11 @@ import { ExternalLink } from 'lucide-react';
 
 const contracts = [
   { name: 'ClicksRegistry', address: '0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3' },
-  { name: 'ClicksSplitterV3', address: '0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D' },
+  { name: 'ClicksSplitterV4', address: '0xB7E0016d543bD443ED2A6f23d5008400255bf3C8' },
   { name: 'ClicksYieldRouter', address: '0x053167a233d18E05Bc65a8d5F3F8808782a3EECD' },
-  { name: 'ClicksFee', address: '0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE' },
+  { name: 'ClicksFeeV2', address: '0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5' },
+  { name: 'ClicksReferral', address: '0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC' },
+  { name: 'Safe Multisig (Owner)', address: '0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9' },
   { name: 'USDC (Base)', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' },
 ];
 
@@ -100,6 +102,25 @@ export default function SecurityPage() {
         </p>
       </section>
 
+      {/* Ownership and Governance */}
+      <section className="mb-10">
+        <h2 className="text-2xl font-bold mb-4 text-text-primary">Ownership and Governance</h2>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          All production contracts are owned by a Gnosis Safe multisig at{' '}
+          <a
+            href="https://basescan.org/address/0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:underline"
+          >
+            <code className="text-accent bg-accent/10 px-1 py-0.5 rounded text-xs">0xaD8228fE...5B1D6A9</code>
+          </a>. No single key can change ownership, upgrade contracts, or move treasury funds. The deployer wallet was retired after the ownership transfer.
+        </p>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          In April 2026 we shipped a V2 upgrade that addressed two audit findings from the internal review: referral distribution is now wired into the fee collection flow (via ClicksFeeV2, previously the referral hook was present but unreachable), and all ownership transitioned from the deployer EOA to the Safe multisig. Existing agents were migrated without data loss. The V2 contracts inherit the same immutability, non-custody, and ReentrancyGuard properties as the originals.
+        </p>
+      </section>
+
       {/* Battle-Tested */}
       <section className="mb-10">
         <h2 className="text-2xl font-bold mb-4 text-text-primary">Battle-Tested</h2>
@@ -156,7 +177,7 @@ export default function SecurityPage() {
             { title: 'ReentrancyGuard on all state-changing functions', desc: "OpenZeppelin's battle-tested nonReentrant modifier prevents reentrant calls across all deposit, withdrawal, and payment functions." },
             { title: 'Slither-analyzed', desc: 'All contracts are continuously checked with Slither, the industry-standard static analysis tool for Solidity, catching common vulnerability patterns before deployment.' },
             { title: 'Solidity 0.8.20+ with built-in overflow protection', desc: 'Integer overflow and underflow are impossible in standard operations. Assembly blocks use manual safety checks.' },
-            { title: 'Verified on Basescan', desc: 'All five production contracts are source-verified. Anyone can read the code and confirm it matches what\'s deployed.' },
+            { title: 'Verified on Basescan', desc: 'All six production contracts are source-verified. Anyone can read the code and confirm it matches what\'s deployed.' },
           ].map((feature) => (
             <div key={feature.title} className="flex items-start space-x-3">
               <div className="w-1.5 h-1.5 rounded-full bg-accent mt-2 flex-shrink-0" />
@@ -167,6 +188,30 @@ export default function SecurityPage() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* ERC-8004 Identity */}
+      <section className="mb-10">
+        <h2 className="text-2xl font-bold mb-4 text-text-primary">ERC-8004 Identity</h2>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          Clicks Protocol is registered on the ERC-8004 Identity Registry on Base as{' '}
+          <a
+            href="https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:underline"
+          >
+            agentId <code className="text-accent bg-accent/10 px-1 py-0.5 rounded text-xs">45074</code>
+          </a>. The Identity NFT points at our agent-registration manifest and accumulates on-chain reputation as Clicks processes agent jobs. Attestors who want their feedback to count toward our future reputation-aware fee tiers commit to{' '}
+          <a
+            href="/strategy/ATTESTOR-SCHEMA-V1.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:underline"
+          >
+            Clicks Attestor Schema V1
+          </a>.
+        </p>
       </section>
 
       {/* Contract Addresses */}
