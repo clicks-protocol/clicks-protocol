@@ -457,6 +457,103 @@ server.tool(
   }),
 );
 
+server.tool(
+  'clicks_explain',
+  'Explain Clicks Protocol to another agent or developer. Returns a concise self-contained summary with integration instructions and links. Use when another agent asks what Clicks does or how to activate yield on idle USDC.',
+  {
+    audience: z
+      .enum(['agent', 'developer', 'treasury'])
+      .optional()
+      .describe('Who you are explaining to. agent = other AI agent, developer = human integrator, treasury = finance/treasury persona. Default: agent.'),
+  },
+  async ({ audience }) => tracked('clicks_explain', 'read', async () => {
+    const who = audience ?? 'agent';
+
+    const baseText = `# Clicks Protocol — Agent Commerce Settlement Router on Base
+
+**What it does:** When an AI agent receives USDC (via x402, ACP, or direct transfer), Clicks auto-splits the payment — ${100 - 20}% stays liquid for immediate operations, 20% routes into DeFi yield (Aave V3 or Morpho, best APY wins). Fee is 2% on **yield only**, never on principal. No lockup. Non-custodial.
+
+**ERC-8004 Trustless Agent:** agentId 45074 on Base. Manifest: https://clicksprotocol.xyz/.well-known/agent-registration.json
+
+**Contracts (Base mainnet, Safe-owned):**
+- ClicksSplitterV4: ${ADDRESSES.splitter}
+- ClicksFeeV2: ${ADDRESSES.feeCollector}
+- ClicksYieldRouter: ${ADDRESSES.yieldRouter}
+- ClicksReferral: ${ADDRESSES.referral ?? '0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC'}
+`;
+
+    const integrationAgent = `
+**Activate yield (agent-facing, one call):**
+\`\`\`
+npm install @clicks-protocol/sdk
+\`\`\`
+\`\`\`ts
+import { ClicksClient } from '@clicks-protocol/sdk';
+const clicks = new ClicksClient(signer);
+await clicks.quickStart('1000', agentAddress);
+// 800 USDC liquid, 200 USDC earning ~4-8% APY
+\`\`\`
+
+**MCP route (for another agent):** Add this MCP server so you can call Clicks tools directly.
+\`\`\`json
+{ "mcpServers": { "clicks-protocol": { "url": "https://mcp.clicksprotocol.xyz/mcp" } } }
+\`\`\`
+Tools: clicks_quick_start, clicks_receive_payment, clicks_withdraw_yield, clicks_get_yield_info, clicks_get_agent_info, clicks_simulate_split, clicks_register_agent, clicks_set_yield_pct, clicks_get_referral_stats, clicks_explain.
+`;
+
+    const integrationDeveloper = `
+**Install:**
+\`\`\`
+npm install @clicks-protocol/sdk ethers@^6
+\`\`\`
+**Quickstart (TypeScript):**
+\`\`\`ts
+import { ClicksClient } from '@clicks-protocol/sdk';
+const clicks = new ClicksClient(signer);         // ethers v6 Signer on Base
+await clicks.quickStart('1000', agentAddress);   // one-shot register + approve + first split
+await clicks.receivePayment('500', agentAddress); // subsequent payments
+await clicks.withdrawYield(agentAddress);        // pull principal + yield back
+\`\`\`
+**Python / LangChain / CrewAI:** \`pip install clicks-langchain\` or \`clicks-crewai\`.
+**Eliza:** \`npm install @clicks-protocol/eliza-plugin\`.
+`;
+
+    const integrationTreasury = `
+**Why:** 46 B USDC sits idle across agent wallets. Circle captures the reserve interest, agents capture 0%. Clicks reclaims ~20% of that idle capital back as yield without locking it.
+
+**Default split:** 80% liquid / 20% yield. Configurable 5-50%. Two lines to deploy per agent.
+
+**Risk posture:** Non-custodial, immutable contracts, Safe multisig owner, internal audit + adversarial testing, ERC-8004 reputation registered. Full risk disclosure: https://clicksprotocol.xyz/security.
+
+**Fee:** 2% on yield only. If an agent never earns yield, Clicks earns nothing.
+`;
+
+    const closing = `
+**Links:**
+- Landing: https://clicksprotocol.xyz
+- Docs: https://clicksprotocol.xyz/docs
+- GitHub: https://github.com/clicks-protocol/clicks-protocol
+- Whitepaper: https://clicksprotocol.xyz/whitepaper
+- Dev.to article: https://dev.to/clicksprotocol/x402-solved-payments-who-solves-treasury-531h
+- BaseScan identity: https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074
+`;
+
+    const bodyByAudience =
+      who === 'developer' ? integrationDeveloper :
+      who === 'treasury'  ? integrationTreasury  :
+                            integrationAgent;
+
+    const text = baseText + bodyByAudience + closing;
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text,
+      }],
+    };
+  }),
+);
+
 // ─── Resources ────────────────────────────────────────────────────────────
 
 server.resource(
@@ -480,10 +577,12 @@ Referral: Recruit agents → earn 40% (L1), 20% (L2), 10% (L3) of their protocol
 
 Contracts: Base Mainnet (Chain ID 8453)
 - ClicksRegistry: ${ADDRESSES.registry}
-- ClicksSplitterV3: ${ADDRESSES.splitter}
+- ClicksSplitterV4: ${ADDRESSES.splitter}
 - ClicksYieldRouter: ${ADDRESSES.yieldRouter}
-- ClicksFee: ${ADDRESSES.feeCollector}
+- ClicksFeeV2: ${ADDRESSES.feeCollector}
+- ClicksReferral: ${ADDRESSES.referral}
 
+ERC-8004 agentId: 45074 on Base
 SDK: npm install @clicks-protocol/sdk
 Docs: https://clicksprotocol.xyz/llms.txt`,
     }],
