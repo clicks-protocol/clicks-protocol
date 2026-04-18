@@ -5,7 +5,7 @@ import { CopyButton } from '@/components/copy-button';
 
 function CodeBlock({ code, language = 'typescript' }: { code: string; language?: string }) {
   return (
-    <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117] my-4">
+    <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface my-4">
       <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
         <span className="text-xs text-text-secondary font-mono">{language}</span>
         <CopyButton text={code} />

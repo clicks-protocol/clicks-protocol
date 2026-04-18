@@ -95,7 +95,7 @@ export default function DocsOverview() {
         <p className="text-text-secondary mb-4">
           Install the SDK and start earning yield in under a minute:
         </p>
-        <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+        <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
           <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
             <span className="text-xs text-text-secondary font-mono">typescript</span>
             <CopyButton text={quickStartCode} />
@@ -120,7 +120,7 @@ export default function DocsOverview() {
             <p className="text-text-secondary text-sm mb-3">
               Add to your <code className="text-accent">claude_desktop_config.json</code>:
             </p>
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
                 <span className="text-xs text-text-secondary font-mono">json</span>
                 <CopyButton text={`{
@@ -146,7 +146,7 @@ export default function DocsOverview() {
           {/* OpenClaw */}
           <div>
             <h3 className="font-semibold text-lg mb-2">OpenClaw</h3>
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
                 <span className="text-xs text-text-secondary font-mono">bash</span>
                 <CopyButton text="openclaw mcp set clicks-protocol --url https://mcp.clicksprotocol.xyz/mcp" />
@@ -163,7 +163,7 @@ export default function DocsOverview() {
             <p className="text-text-secondary text-sm mb-3">
               Add to <code className="text-accent">.codex/config.json</code>:
             </p>
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
                 <span className="text-xs text-text-secondary font-mono">json</span>
                 <CopyButton text={`{
@@ -191,7 +191,7 @@ export default function DocsOverview() {
           {/* Gemini CLI */}
           <div>
             <h3 className="font-semibold text-lg mb-2">Gemini CLI</h3>
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-[#0d1117]">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
                 <span className="text-xs text-text-secondary font-mono">json</span>
                 <CopyButton text={`{
