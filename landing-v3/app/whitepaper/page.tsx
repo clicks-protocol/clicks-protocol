@@ -70,9 +70,9 @@ export default function WhitepaperPage() {
             <div><a href="#3-architecture" className="text-accent hover:underline text-sm">3. Protocol Architecture</a></div>
             <div className="pl-4"><a href="#3-1-overview" className="text-text-secondary hover:text-accent text-sm">3.1 System Overview</a></div>
             <div className="pl-4"><a href="#3-2-registry" className="text-text-secondary hover:text-accent text-sm">3.2 ClicksRegistry</a></div>
-            <div className="pl-4"><a href="#3-3-splitter" className="text-text-secondary hover:text-accent text-sm">3.3 ClicksSplitterV3</a></div>
+            <div className="pl-4"><a href="#3-3-splitter" className="text-text-secondary hover:text-accent text-sm">3.3 ClicksSplitterV4</a></div>
             <div className="pl-4"><a href="#3-4-yield-router" className="text-text-secondary hover:text-accent text-sm">3.4 ClicksYieldRouter</a></div>
-            <div className="pl-4"><a href="#3-5-fee" className="text-text-secondary hover:text-accent text-sm">3.5 ClicksFee</a></div>
+            <div className="pl-4"><a href="#3-5-fee" className="text-text-secondary hover:text-accent text-sm">3.5 ClicksFeeV2</a></div>
             <div className="pl-4"><a href="#3-6-interaction-flow" className="text-text-secondary hover:text-accent text-sm">3.6 Interaction Flow</a></div>
             <div className="pl-4"><a href="#3-7-contract-addresses" className="text-text-secondary hover:text-accent text-sm">3.7 Contract Addresses</a></div>
             <div><a href="#4-economic-model" className="text-accent hover:underline text-sm">4. Economic Model</a></div>
@@ -103,6 +103,7 @@ export default function WhitepaperPage() {
             <div><a href="#9-roadmap" className="text-accent hover:underline text-sm">9. Roadmap</a></div>
             <div><a href="#10-conclusion" className="text-accent hover:underline text-sm">10. Conclusion</a></div>
             <div><a href="#references" className="text-accent hover:underline text-sm">References</a></div>
+            <div><a href="#appendix-evolution" className="text-accent hover:underline text-sm">Appendix: Protocol Evolution (April 2026)</a></div>
           </nav>
         </div>
       </section>
@@ -240,16 +241,16 @@ export default function WhitepaperPage() {
         </div>
 
         <div id="3-3-splitter" className="mb-8">
-          <h3 className="text-xl font-bold mb-3 text-text-primary">3.3 ClicksSplitterV3</h3>
+          <h3 className="text-xl font-bold mb-3 text-text-primary">3.3 ClicksSplitterV4</h3>
           <p className="text-text-secondary leading-relaxed mb-4">
-            The ClicksSplitterV3 contract is the entry point for all USDC payments. When an agent receives a payment through Clicks, the Splitter divides the USDC according to the agent&apos;s configured yield percentage. The default split is 80/20: 80% goes directly to the agent&apos;s wallet as liquid funds, and 20% is forwarded to the YieldRouter for deposit into DeFi protocols.
+            The ClicksSplitterV4 contract is the entry point for all USDC payments. When an agent receives a payment through Clicks, the Splitter divides the USDC according to the agent&apos;s configured yield percentage. The default split is 80/20: 80% goes directly to the agent&apos;s wallet as liquid funds, and 20% is forwarded to the YieldRouter for deposit into DeFi protocols.
           </p>
           <p className="text-text-secondary leading-relaxed mb-4">
             The yield percentage is configurable by the agent&apos;s operator within a range of 5% to 50%. An agent with high transaction frequency might choose a lower yield allocation (say 10%) to keep more capital liquid. An agent with infrequent transactions might allocate up to 50% to yield. The Splitter enforces these bounds on-chain.
           </p>
           <p className="text-text-secondary leading-relaxed">
             <span className="text-text-primary font-semibold">Contract Address:</span>{' '}
-            <BasescanLink address="0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D" />
+            <BasescanLink address="0xB7E0016d543bD443ED2A6f23d5008400255bf3C8" />
           </p>
         </div>
 
@@ -271,23 +272,26 @@ export default function WhitepaperPage() {
         </div>
 
         <div id="3-5-fee" className="mb-8">
-          <h3 className="text-xl font-bold mb-3 text-text-primary">3.5 ClicksFee</h3>
+          <h3 className="text-xl font-bold mb-3 text-text-primary">3.5 ClicksFeeV2</h3>
           <p className="text-text-secondary leading-relaxed mb-4">
-            The ClicksFee contract collects the protocol&apos;s 2% fee on yield. When an agent withdraws, the YieldRouter calculates the yield earned (withdrawal amount minus deposited principal), takes 2% of that yield, and sends it to the ClicksFee contract. The fee is never applied to principal. If an agent deposits 1,000 USDC and earns 80 USDC in yield over a year, the protocol takes 1.60 USDC. The agent receives 1,078.40 USDC.
+            The ClicksFeeV2 contract collects the protocol&apos;s 2% fee on yield and routes referral rewards to on-chain attributed referrers. When an agent withdraws, the YieldRouter calculates the yield earned (withdrawal amount minus deposited principal), takes 2% of that yield, and sends it to ClicksFeeV2. The fee is never applied to principal. If an agent deposits 1,000 USDC and earns 80 USDC in yield over a year, the protocol takes 1.60 USDC. The agent receives 1,078.40 USDC.
+          </p>
+          <p className="text-text-secondary leading-relaxed mb-4">
+            ClicksFeeV2 integrates directly with the ClicksReferral contract. Up to 70% of the collected fee is redistributed to attributed referrers (40% to level 1, 20% to level 2, 10% to level 3). The remainder is swept to the Safe multisig treasury. This distribution is enforced on-chain — no off-chain bookkeeping is involved.
           </p>
           <p className="text-text-secondary leading-relaxed mb-4">
             This fee structure aligns the protocol&apos;s revenue with agent outcomes. If agents do not earn yield, the protocol earns nothing. There is no subscription fee, no deposit fee, and no withdrawal fee on principal.
           </p>
           <p className="text-text-secondary leading-relaxed">
             <span className="text-text-primary font-semibold">Contract Address:</span>{' '}
-            <BasescanLink address="0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE" />
+            <BasescanLink address="0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5" />
           </p>
         </div>
 
         <div id="3-6-interaction-flow" className="mb-8">
           <h3 className="text-xl font-bold mb-3 text-text-primary">3.6 Interaction Flow</h3>
           <p className="text-text-secondary leading-relaxed mb-4">
-            A typical interaction proceeds as follows. An operator registers their agent through the ClicksRegistry. The operator approves the ClicksSplitterV3 to spend USDC on the agent&apos;s behalf. When the agent receives a USDC payment, it calls <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">receivePayment</code> on the Splitter. The Splitter sends 80% of the USDC directly to the agent&apos;s wallet and forwards 20% to the ClicksYieldRouter. The YieldRouter deposits the 20% into Aave V3 or Morpho, recording the deposit against the agent&apos;s address. Over time, the lending protocol generates yield on the deposit. When the agent or operator calls <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">withdrawYield</code>, the YieldRouter redeems the position from the lending protocol, calculates the yield earned, sends 2% of that yield to ClicksFee, and returns the remaining principal plus yield to the agent.
+            A typical interaction proceeds as follows. An operator registers their agent through the ClicksRegistry. The operator approves the ClicksSplitterV4 to spend USDC on the agent&apos;s behalf. When the agent receives a USDC payment, it calls <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">receivePayment</code> on the Splitter. The Splitter sends 80% of the USDC directly to the agent&apos;s wallet and forwards 20% to the ClicksYieldRouter. The YieldRouter deposits the 20% into Aave V3 or Morpho, recording the deposit against the agent&apos;s address. Over time, the lending protocol generates yield on the deposit. When the agent or operator calls <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">withdrawYield</code>, the YieldRouter redeems the position from the lending protocol, calculates the yield earned, sends 2% of that yield to ClicksFeeV2, and returns the remaining principal plus yield to the agent.
           </p>
           <p className="text-text-secondary leading-relaxed">
             The SDK&apos;s <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">quickStart</code> function wraps the entire flow (registration, approval, first payment) into a single call, reducing integration to one line of code.
@@ -311,16 +315,24 @@ export default function WhitepaperPage() {
                     <td className="px-4 py-3"><BasescanLink address="0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3" /></td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="px-4 py-3 text-text-secondary">ClicksSplitterV3</td>
-                    <td className="px-4 py-3"><BasescanLink address="0xc96C1a566a8ed7A39040a34927fEe952bAB8Ad1D" /></td>
+                    <td className="px-4 py-3 text-text-secondary">ClicksSplitterV4</td>
+                    <td className="px-4 py-3"><BasescanLink address="0xB7E0016d543bD443ED2A6f23d5008400255bf3C8" /></td>
                   </tr>
                   <tr className="border-b border-white/5">
                     <td className="px-4 py-3 text-text-secondary">ClicksYieldRouter</td>
                     <td className="px-4 py-3"><BasescanLink address="0x053167a233d18E05Bc65a8d5F3F8808782a3EECD" /></td>
                   </tr>
                   <tr className="border-b border-white/5">
-                    <td className="px-4 py-3 text-text-secondary">ClicksFee</td>
-                    <td className="px-4 py-3"><BasescanLink address="0xc47B162D3c456B6C56a3cE6EE89A828CFd34E6bE" /></td>
+                    <td className="px-4 py-3 text-text-secondary">ClicksFeeV2</td>
+                    <td className="px-4 py-3"><BasescanLink address="0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5" /></td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="px-4 py-3 text-text-secondary">ClicksReferral</td>
+                    <td className="px-4 py-3"><BasescanLink address="0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC" /></td>
+                  </tr>
+                  <tr className="border-b border-white/5">
+                    <td className="px-4 py-3 text-text-secondary">Safe Multisig (Owner)</td>
+                    <td className="px-4 py-3"><BasescanLink address="0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9" /></td>
                   </tr>
                   <tr>
                     <td className="px-4 py-3 text-text-secondary">USDC (Base)</td>
@@ -686,7 +698,7 @@ await clicks.quickStart('100', agentAddress);
           <div className="glassmorphism rounded-xl p-5">
             <h3 className="text-lg font-bold mb-2 text-accent">Phase 1: Core Contracts (Complete)</h3>
             <p className="text-text-secondary leading-relaxed">
-              Five smart contracts deployed to Base mainnet: ClicksRegistry, ClicksSplitterV3, ClicksYieldRouter, ClicksFee, and ClicksReferral. All contracts compiled, tested (58 tests passing), and verified on Basescan. CEI pattern violation identified and fixed. Internal security audit completed with zero critical vulnerabilities.
+              Six smart contracts deployed to Base mainnet: ClicksRegistry, ClicksSplitterV4, ClicksYieldRouter, ClicksFeeV2, ClicksReferral, and Safe multisig ownership. All contracts compiled, tested (227 tests passing), and verified on Basescan. CEI pattern violation identified and fixed. Internal security audit completed with zero critical vulnerabilities. V2 upgrade in April 2026 wired referral distribution into the fee flow and transferred ownership from the deployer EOA to the Safe multisig.
             </p>
           </div>
 
@@ -764,11 +776,63 @@ await clicks.quickStart('100', agentAddress);
 
       <hr className="border-white/10 my-10" />
 
+      {/* Appendix: Protocol Evolution (April 2026) */}
+      <section id="appendix-evolution" className="mb-10">
+        <h2 className="text-2xl font-bold mb-4 gradient-text">Appendix: Protocol Evolution (April 2026)</h2>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          The core contract set documented in Section 3 shipped in March 2026. In April 2026 we deployed a V2 upgrade and extended the protocol&apos;s position in the agent-commerce stack. This appendix summarises the changes that are not yet reflected in the body of this whitepaper.
+        </p>
+
+        <h3 className="text-xl font-bold mb-3 text-text-primary">A.1 V2 Contract Upgrade</h3>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          The V2 upgrade addressed two critical findings from the internal audit. The first was that the referral distribution hook existed in the ClicksReferral contract but was never called by the V1 fee collector — a dead code path. ClicksFeeV2 wires the distribution directly into the fee collection flow, so every collected fee is split between the Safe treasury and the on-chain attributed referrer chain before being swept. The second finding was that contract ownership rested on a single deployer EOA. That ownership was transferred to a Gnosis Safe multisig at{' '}
+          <BasescanLink address="0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9" />
+          , eliminating single-key-compromise risk.
+        </p>
+
+        <h3 className="text-xl font-bold mb-3 text-text-primary">A.2 ERC-8004 Integration</h3>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          Clicks Protocol is now registered on the ERC-8004 Identity Registry on Base as{' '}
+          <a
+            href="https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:underline"
+          >
+            <code className="text-accent bg-accent/10 px-1 py-0.5 rounded text-xs">agentId 45074</code>
+          </a>. The Identity NFT points to an agent-registration manifest that declares our services (ACP, x402, MCP, A2A), contract set, and attestor schema. The Reputation Registry accrues feedback from trusted attestors as Clicks processes agent jobs. A future SplitterV5 will use this reputation to offer variable protocol fees — lower fees for high-reputation agents.
+        </p>
+
+        <h3 className="text-xl font-bold mb-3 text-text-primary">A.3 Attestor Schema V1</h3>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          Because ERC-8004 is transport-only (no value-scale convention), we published{' '}
+          <a
+            href="/strategy/ATTESTOR-SCHEMA-V1.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-accent hover:underline"
+          >
+            Clicks Attestor Schema V1
+          </a>: ratings encoded in [0, 10000] with four decimals, typed job-kind and venue tags, and a 24-hour cadence limit per (agent, endpoint). Attestors who commit to this schema become eligible for whitelisting in the reputation multiplier. The Clicks operator wallet is explicitly excluded from the whitelist to prevent self-attestation.
+        </p>
+
+        <h3 className="text-xl font-bold mb-3 text-text-primary">A.4 Positioning: Agent Commerce Settlement Router</h3>
+        <p className="text-text-secondary leading-relaxed mb-4">
+          The original whitepaper describes Clicks as a yield protocol. A more accurate description in the April 2026 stack is an agent-commerce settlement router: the connective tissue between x402 / ACP payments on the ingress side and DeFi vaults (Aave, Morpho, future ERC-4626 backends) on the yield side. We do not operate our own vaults. We route. This is defensively positioned — competitors cannot displace us by building a better yield product — and complementary to partner protocols who want agent-originated inflow without building their own payment rails.
+        </p>
+
+        <p className="text-text-secondary leading-relaxed text-sm mt-6">
+          A full v2 whitepaper reflecting these changes is planned. The present document is preserved to maintain historical record of the protocol&apos;s launch state.
+        </p>
+      </section>
+
+      <hr className="border-white/10 my-10" />
+
       {/* Disclaimer */}
       <section className="mb-10">
         <div className="glassmorphism rounded-xl p-5">
           <p className="text-text-secondary text-sm leading-relaxed italic">
-            Clicks Protocol is open source software under the MIT license. This whitepaper describes the protocol as deployed on Base mainnet in March 2026. DeFi yield rates are variable and past performance does not guarantee future returns. Users should review the Known Risks section and conduct their own due diligence before depositing funds.
+            Clicks Protocol is open source software under the MIT license. This whitepaper describes the protocol as deployed on Base mainnet in March 2026, with an appendix covering the V2 upgrade and ERC-8004 integration from April 2026. DeFi yield rates are variable and past performance does not guarantee future returns. Users should review the Known Risks section and conduct their own due diligence before depositing funds.
           </p>
         </div>
       </section>
