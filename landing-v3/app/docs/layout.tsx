@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronRight, ExternalLink, BookOpen, Shield, Code, FileText, Info, Layers, Home, Rocket } from 'lucide-react';
+import { Footer } from '@/components/footer';
 
 const sidebarLinks = [
   { href: '/docs', label: 'Overview', icon: BookOpen },
@@ -207,6 +208,8 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
           {children}
         </main>
       </div>
+
+      <Footer />
     </div>
   );
 }
