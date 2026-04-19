@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@clicks-protocol/sdk"><img src="https://img.shields.io/npm/v/@clicks-protocol/sdk?color=00FF9B&label=sdk" alt="npm"></a>
   <a href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"><img src="https://img.shields.io/badge/Base%20Mainnet-live-00FF9B" alt="Base Mainnet"></a>
-  <a href="#"><img src="https://img.shields.io/badge/tests-58%20passing-00FF9B" alt="Tests"></a>
+  <a href="#"><img src="https://img.shields.io/badge/tests-227%20passing-00FF9B" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
   <a href="https://registry.modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP%20Registry-published-00FF9B" alt="MCP Registry"></a>
   <a href="https://discord.gg/vkczMC8g3J"><img src="https://img.shields.io/badge/Discord-join-5865F2" alt="Discord"></a>
@@ -45,7 +45,7 @@ import { ClicksClient } from '@clicks-protocol/sdk';
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('100', agentAddress);
 // 80 USDC → agent wallet (instant)
-// 20 USDC → DeFi yield (7-10% APY, automatic)
+// 20 USDC → DeFi yield (4-8% APY, automatic)
 ```
 
 That's it. No config. No dashboard. No human required.
@@ -166,7 +166,7 @@ npm install @clicks-protocol/mcp-server
 CLICKS_PRIVATE_KEY=0x... clicks-mcp
 ```
 
-9 tools available: `clicks_quick_start`, `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`, `clicks_get_referral_stats`
+10 tools available: `clicks_quick_start`, `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`, `clicks_get_referral_stats`, `clicks_explain`
 
 Works with Claude, Cursor, LangChain, and any MCP-compatible client.
 
@@ -214,12 +214,21 @@ Form squads, hit TVL milestones, earn bonus yield:
 | Contract | Address |
 |----------|---------|
 | ClicksRegistry | [`0x23bb...0C0a3`](https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3) |
-| ClicksFeeV2 | [`0xc47B...E6bE`](https://basescan.org/address/0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5) |
-| ClicksYieldRouter | [`0x4E29...849F`](https://basescan.org/address/0x053167a233d18E05Bc65a8d5F3F8808782a3EECD) |
-| ClicksSplitterV4 | [`0x2432...FcB4`](https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8) |
+| ClicksSplitterV4 | [`0xB7E0...f3C8`](https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8) |
+| ClicksYieldRouter | [`0x0531...EECD`](https://basescan.org/address/0x053167a233d18E05Bc65a8d5F3F8808782a3EECD) |
+| ClicksFeeV2 | [`0x8C4E...0fb5`](https://basescan.org/address/0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5) |
+| ClicksReferral | [`0x1E5A...4ccC`](https://basescan.org/address/0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC) |
+| Safe Multisig (Owner) | [`0xaD82...D6A9`](https://basescan.org/address/0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9) |
 | USDC | [`0x8335...913`](https://basescan.org/address/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
 
-All contracts verified on Basescan.
+All contracts verified on Basescan. Owned by Gnosis Safe multisig — single-key compromise is not possible.
+
+## ERC-8004 Trustless Agent
+
+Clicks is registered on the [ERC-8004 Identity Registry on Base](https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074) as **agentId 45074**. On-chain reputation accrues per completed agent job. Attestors who follow the [Clicks Attestor Schema V1](https://clicksprotocol.xyz/strategy/ATTESTOR-SCHEMA-V1.md) become eligible for the reputation-aware fee multiplier (shipping in V5).
+
+- Manifest: [`/.well-known/agent-registration.json`](https://clicksprotocol.xyz/.well-known/agent-registration.json)
+- Schema V1: [clicksprotocol.xyz/strategy/ATTESTOR-SCHEMA-V1.md](https://clicksprotocol.xyz/strategy/ATTESTOR-SCHEMA-V1.md)
 
 ---
 
@@ -234,9 +243,9 @@ clicks-protocol/
 │   ├── ClicksRegistry      Agent ↔ Operator mapping
 │   └── ClicksReferral      Multi-level referral system
 ├── sdk/                 TypeScript SDK
-├── mcp-server/          MCP Server (9 tools)
+├── mcp-server/          MCP Server (10 tools)
 ├── site/                Landing page + llms.txt + agent.json
-└── test/                58 tests (Hardhat)
+└── test/                227 tests (Hardhat)
 ```
 
 ---
@@ -327,7 +336,7 @@ x402 · LangChain · CrewAI · AutoGen · Eliza · OpenClaw · Claude · Cursor 
 ```bash
 npm install
 npx hardhat compile
-npx hardhat test          # 58 tests
+npx hardhat test          # 227 tests
 ```
 
 ---

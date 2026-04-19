@@ -11,8 +11,11 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/@clicks-protocol/sdk"><img src="https://img.shields.io/npm/v/@clicks-protocol/sdk?color=00FF9B&label=sdk" alt="npm"></a>
   <a href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"><img src="https://img.shields.io/badge/Base%20Mainnet-live-00FF9B" alt="Base Mainnet"></a>
-  <a href="#"><img src="https://img.shields.io/badge/tests-58%20passing-00FF9B" alt="Tests"></a>
+  <a href="#"><img src="https://img.shields.io/badge/tests-227%20passing-00FF9B" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
+  <a href="https://registry.modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP%20Registry-published-00FF9B" alt="MCP Registry"></a>
+  <a href="https://discord.gg/vkczMC8g3J"><img src="https://img.shields.io/badge/Discord-join-5865F2" alt="Discord"></a>
+  <a href="https://clawhub.ai/protogenosone/clicks-protocol"><img src="https://img.shields.io/badge/ClawHub-40%2B%20downloads-00FF9B" alt="ClawHub"></a>
 </p>
 
 <p align="center">
@@ -21,7 +24,9 @@
   <a href="https://discord.gg/clicks-protocol">Discord</a> ·
   <a href="https://clicksprotocol.medium.com">Medium</a> ·
   <a href="https://substack.com/@clicksprotocol">Substack</a> ·
-  <a href="https://reddit.com/user/clicksprotocol/">Reddit</a>
+  <a href="https://reddit.com/user/clicksprotocol/">Reddit</a> ·
+  <a href="https://api.clicksprotocol.xyz/lab">Treasury Lab</a> ·
+  <a href="https://mcpservers.org">mcpservers.org</a>
 </p>
 
 ---
@@ -40,7 +45,7 @@ import { ClicksClient } from '@clicks-protocol/sdk';
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('100', agentAddress);
 // 80 USDC → agent 钱包(即时到账)
-// 20 USDC → DeFi 收益(7-10% APY,自动)
+// 20 USDC → DeFi 收益(4-8% APY,自动)
 ```
 
 就这么简单。无需配置,无需看板,无需人工介入。
@@ -161,7 +166,7 @@ npm install @clicks-protocol/mcp-server
 CLICKS_PRIVATE_KEY=0x... clicks-mcp
 ```
 
-提供 9 个工具:`clicks_quick_start`、`clicks_get_agent_info`、`clicks_simulate_split`、`clicks_get_yield_info`、`clicks_receive_payment`、`clicks_withdraw_yield`、`clicks_register_agent`、`clicks_set_yield_pct`、`clicks_get_referral_stats`
+提供 10 个工具:`clicks_quick_start`、`clicks_get_agent_info`、`clicks_simulate_split`、`clicks_get_yield_info`、`clicks_receive_payment`、`clicks_withdraw_yield`、`clicks_register_agent`、`clicks_set_yield_pct`、`clicks_get_referral_stats`、`clicks_explain`
 
 兼容 Claude、Cursor、LangChain 及所有支持 MCP 的客户端。
 
@@ -209,12 +214,23 @@ Agent 推荐 agent。三级深度。链上记录。
 | 合约 | 地址 |
 |------|------|
 | ClicksRegistry | [`0x23bb...0C0a3`](https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3) |
-| ClicksFeeV2 | [`0xc47B...E6bE`](https://basescan.org/address/0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5) |
-| ClicksYieldRouter | [`0x4E29...849F`](https://basescan.org/address/0x053167a233d18E05Bc65a8d5F3F8808782a3EECD) |
-| ClicksSplitterV4 | [`0x2432...FcB4`](https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8) |
+| ClicksSplitterV4 | [`0xB7E0...f3C8`](https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8) |
+| ClicksYieldRouter | [`0x0531...EECD`](https://basescan.org/address/0x053167a233d18E05Bc65a8d5F3F8808782a3EECD) |
+| ClicksFeeV2 | [`0x8C4E...0fb5`](https://basescan.org/address/0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5) |
+| ClicksReferral | [`0x1E5A...4ccC`](https://basescan.org/address/0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC) |
+| Safe Multisig (Owner) | [`0xaD82...D6A9`](https://basescan.org/address/0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9) |
 | USDC | [`0x8335...913`](https://basescan.org/address/0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913) |
 
-所有合约已在 Basescan 上验证。
+所有合约已在 Basescan 上验证。全部由 Gnosis Safe 多签持有 — 单一密钥泄露无法危及协议。
+
+---
+
+## ERC-8004 可信代理
+
+Clicks 已在 Base 的 [ERC-8004 身份注册表](https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074) 注册为 **agentId 45074**。每完成一笔 agent 任务,链上声誉即刻累积。遵循 [Clicks 认证方 Schema V1](https://clicksprotocol.xyz/strategy/ATTESTOR-SCHEMA-V1.md) 的 attestor 将获得 V5 声誉感知费率乘数的白名单资格。
+
+- Manifest: [`/.well-known/agent-registration.json`](https://clicksprotocol.xyz/.well-known/agent-registration.json)
+- Schema V1: [clicksprotocol.xyz/strategy/ATTESTOR-SCHEMA-V1.md](https://clicksprotocol.xyz/strategy/ATTESTOR-SCHEMA-V1.md)
 
 ---
 
@@ -229,9 +245,9 @@ clicks-protocol/
 │   ├── ClicksRegistry      Agent ↔ Operator 映射
 │   └── ClicksReferral      多级推荐系统
 ├── sdk/                 TypeScript SDK
-├── mcp-server/          MCP Server(9 个工具)
+├── mcp-server/          MCP Server(10 个工具)
 ├── site/                落地页 + llms.txt + agent.json
-└── test/                58 个测试(Hardhat)
+└── test/                227 个测试(Hardhat)
 ```
 
 ---
@@ -244,11 +260,76 @@ clicks-protocol/
 
 ---
 
+## 连接你的 AI Agent
+
+Clicks MCP 服务器已上线,地址为 `https://mcp.clicksprotocol.xyz/mcp` — 任何 MCP 兼容客户端数秒内即可连接。
+
+### Claude Desktop
+
+添加到 `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}
+```
+
+### OpenClaw
+
+```bash
+openclaw mcp set clicks-protocol --url https://mcp.clicksprotocol.xyz/mcp
+```
+
+### Codex CLI
+
+添加到 `.codex/config.json`:
+
+```json
+{
+  "mcpServers": {
+    "clicks-protocol": {
+      "type": "url",
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}
+```
+
+### Gemini CLI
+
+```json
+{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}
+```
+
+### 可用的 MCP 工具
+
+| 工具 | 说明 |
+|------|------|
+| `get_protocol_stats` | TVL、APY、agent 数量 |
+| `get_agent_info` | 检查 agent 是否已注册 |
+| `get_yield_info` | agent 的收益余额 |
+| `simulate_yield` | 预测长期收益 |
+| `clicks://protocol/overview` | 资源:协议概览 |
+
+查看 [`examples/integrations/`](examples/integrations/) 获取可直接使用的配置文件。
+
+---
+
 ## 兼容框架
 
 任何在 Base 上处理 USDC 的 agent 框架:
 
-x402 · LangChain · CrewAI · AutoGen · Eliza · OpenClaw · Claude · Cursor · Phidata
+x402 · LangChain · CrewAI · AutoGen · Eliza · OpenClaw · Claude · Cursor · Codex · Gemini · Hummingbot · Phidata
 
 ---
 
@@ -257,7 +338,7 @@ x402 · LangChain · CrewAI · AutoGen · Eliza · OpenClaw · Claude · Cursor 
 ```bash
 npm install
 npx hardhat compile
-npx hardhat test          # 58 个测试
+npx hardhat test          # 227 个测试
 ```
 
 ---
