@@ -15,7 +15,7 @@
     --secondary: 78 59% 40%;
     --secondary-foreground: 0 0% 98%;
     --muted: 220 10% 15%;
-    --muted-foreground: 240 5% 45%;
+    --muted-foreground: 240 5% 58%;
     --accent: 160 100% 50%;
     --accent-foreground: 220 10% 4%;
     --destructive: 0 62.8% 30.6%;
@@ -33,7 +33,7 @@
     font-family: 'Inter', sans-serif;
   }
   body {
-    @apply bg-bg-primary text-text-primary;
+    @apply bg-background text-foreground;
     position: relative;
     overflow-x: hidden;
   }

@@ -15,7 +15,7 @@ export function ERC8004Section() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
             Identity + Reputation, on-chain
           </h2>
-          <p className="text-text-secondary text-base sm:text-lg lg:text-xl max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-base sm:text-lg lg:text-xl max-w-2xl mx-auto">
             Clicks is a registered ERC-8004 agent on Base. Our protocol fee scales with reputation — high-trust agents pay less.
           </p>
         </div>
@@ -27,8 +27,8 @@ export function ERC8004Section() {
                 <Shield className="w-5 h-5 text-accent" />
                 <h3 className="text-lg font-semibold">Identity NFT</h3>
               </div>
-              <p className="text-text-secondary text-sm mb-4">
-                agentId <span className="font-mono text-text-primary">45074</span>, minted on Base mainnet.
+              <p className="text-muted-foreground text-sm mb-4">
+                agentId <span className="font-mono text-foreground">45074</span>, minted on Base mainnet.
               </p>
               <a
                 href="https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074"
@@ -48,8 +48,8 @@ export function ERC8004Section() {
                 <CheckCircle2 className="w-5 h-5 text-accent" />
                 <h3 className="text-lg font-semibold">Live Feedback</h3>
               </div>
-              <p className="text-text-secondary text-sm mb-4">
-                First Schema-V1-compliant <span className="font-mono text-text-primary">giveFeedback()</span> call confirmed on-chain.
+              <p className="text-muted-foreground text-sm mb-4">
+                First Schema-V1-compliant <span className="font-mono text-foreground">giveFeedback()</span> call confirmed on-chain.
               </p>
               <a
                 href="https://basescan.org/tx/0x5aec2067384c68421c4964682fec5e5c8e987a44e69b22460eaabdaa213f9578"
@@ -70,7 +70,7 @@ export function ERC8004Section() {
               <FileText className="w-6 h-6 text-accent shrink-0 mt-0.5" />
               <div className="flex-1">
                 <h3 className="text-lg font-semibold mb-2">Attestor Schema V1</h3>
-                <p className="text-text-secondary text-sm mb-4">
+                <p className="text-muted-foreground text-sm mb-4">
                   Public specification for ERC-8004 feedback that Clicks accepts as signal. Value in [0, 10000] with 4 decimals, typed tags, 24h cadence. Attestors who follow it become eligible for the multiplier whitelist.
                 </p>
                 <div className="flex flex-wrap gap-3">

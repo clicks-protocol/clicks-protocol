@@ -8,7 +8,7 @@ export function Developers() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8 sm:mb-10 lg:mb-14">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">For Developers</h2>
-          <p className="text-text-secondary text-base sm:text-lg lg:text-xl">
+          <p className="text-muted-foreground text-base sm:text-lg lg:text-xl">
             Everything you need to integrate Clicks Protocol
           </p>
         </div>
@@ -24,7 +24,7 @@ export function Developers() {
                 Full-featured SDK with TypeScript support and complete type safety.
               </CardDescription>
               <div className="relative mb-6">
-                <pre className="bg-bg-primary border border-border rounded-xl p-3 sm:p-4 lg:p-5 text-[10px] sm:text-xs lg:text-sm font-mono overflow-x-auto whitespace-pre max-w-full">
+                <pre className="bg-background border border-border rounded-xl p-3 sm:p-4 lg:p-5 text-[10px] sm:text-xs lg:text-sm font-mono overflow-x-auto whitespace-pre max-w-full">
                   npm install @clicks-protocol/sdk
                 </pre>
                 <CopyButton text="npm install @clicks-protocol/sdk" />
@@ -51,7 +51,7 @@ export function Developers() {
                 Connect your LLM directly to Clicks for seamless integration.
               </CardDescription>
               <div className="relative mb-6">
-                <pre className="bg-bg-primary border border-border rounded-xl p-3 sm:p-4 lg:p-5 text-[10px] sm:text-xs lg:text-sm font-mono overflow-x-auto whitespace-pre max-w-full">
+                <pre className="bg-background border border-border rounded-xl p-3 sm:p-4 lg:p-5 text-[10px] sm:text-xs lg:text-sm font-mono overflow-x-auto whitespace-pre max-w-full">
                   npx @clicks-protocol/mcp-server
                 </pre>
                 <CopyButton text="npx @clicks-protocol/mcp-server" />

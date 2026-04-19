@@ -10,13 +10,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'bg-primary': '#0A0A0B',
-        surface: '#111113',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: 'hsl(var(--primary-foreground))',
+        },
         accent: {
           DEFAULT: '#00FF9B',
           foreground: '#0A0A0B',
@@ -25,8 +27,6 @@ const config: Config = {
           DEFAULT: '#61A229',
           foreground: 'hsl(var(--secondary-foreground))',
         },
-        'text-primary': '#FAFAFA',
-        'text-secondary': '#71717A',
         destructive: {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',

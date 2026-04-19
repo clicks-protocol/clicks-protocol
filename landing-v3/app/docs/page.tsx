@@ -47,7 +47,7 @@ export default function DocsOverview() {
         <h1 className="text-3xl sm:text-4xl font-bold mb-4 gradient-text">
           Clicks Protocol Documentation
         </h1>
-        <p className="text-text-secondary text-lg max-w-2xl">
+        <p className="text-muted-foreground text-lg max-w-2xl">
           Everything you need to integrate autonomous yield for AI agents. One SDK call. No lockup. Built on Base.
         </p>
       </div>
@@ -65,9 +65,9 @@ export default function DocsOverview() {
                 <div>
                   <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
                     {card.title}
-                    {card.external && <ExternalLink className="w-3.5 h-3.5 text-text-secondary" />}
+                    {card.external && <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />}
                   </h3>
-                  <p className="text-text-secondary text-sm">{card.description}</p>
+                  <p className="text-muted-foreground text-sm">{card.description}</p>
                 </div>
               </div>
             </div>
@@ -92,15 +92,15 @@ export default function DocsOverview() {
       {/* Quick Start */}
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-4">Quick Start</h2>
-        <p className="text-text-secondary mb-4">
+        <p className="text-muted-foreground mb-4">
           Install the SDK and start earning yield in under a minute:
         </p>
-        <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
+        <div className="relative rounded-xl overflow-hidden border border-white/10 bg-card">
           <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
-            <span className="text-xs text-text-secondary font-mono">typescript</span>
+            <span className="text-xs text-muted-foreground font-mono">typescript</span>
             <CopyButton text={quickStartCode} />
           </div>
-          <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+          <pre className="p-4 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
             <code>{quickStartCode}</code>
           </pre>
         </div>
@@ -109,7 +109,7 @@ export default function DocsOverview() {
       {/* MCP Integration */}
       <div id="mcp-integration" className="mb-12">
         <h2 className="text-2xl font-bold mb-4">MCP Integration</h2>
-        <p className="text-text-secondary mb-6">
+        <p className="text-muted-foreground mb-6">
           Connect your AI agent to Clicks Protocol via the public MCP server. Copy the config for your client:
         </p>
 
@@ -117,12 +117,12 @@ export default function DocsOverview() {
           {/* Claude Desktop */}
           <div>
             <h3 className="font-semibold text-lg mb-2">Claude Desktop</h3>
-            <p className="text-text-secondary text-sm mb-3">
+            <p className="text-muted-foreground text-sm mb-3">
               Add to your <code className="text-accent">claude_desktop_config.json</code>:
             </p>
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-card">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
-                <span className="text-xs text-text-secondary font-mono">json</span>
+                <span className="text-xs text-muted-foreground font-mono">json</span>
                 <CopyButton text={`{
   "mcpServers": {
     "clicks-protocol": {
@@ -131,7 +131,7 @@ export default function DocsOverview() {
   }
 }`} />
               </div>
-              <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
                 <code>{`{
   "mcpServers": {
     "clicks-protocol": {
@@ -146,12 +146,12 @@ export default function DocsOverview() {
           {/* OpenClaw */}
           <div>
             <h3 className="font-semibold text-lg mb-2">OpenClaw</h3>
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-card">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
-                <span className="text-xs text-text-secondary font-mono">bash</span>
+                <span className="text-xs text-muted-foreground font-mono">bash</span>
                 <CopyButton text="openclaw mcp set clicks-protocol --url https://mcp.clicksprotocol.xyz/mcp" />
               </div>
-              <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
                 <code>openclaw mcp set clicks-protocol --url https://mcp.clicksprotocol.xyz/mcp</code>
               </pre>
             </div>
@@ -160,12 +160,12 @@ export default function DocsOverview() {
           {/* Codex CLI */}
           <div>
             <h3 className="font-semibold text-lg mb-2">Codex CLI</h3>
-            <p className="text-text-secondary text-sm mb-3">
+            <p className="text-muted-foreground text-sm mb-3">
               Add to <code className="text-accent">.codex/config.json</code>:
             </p>
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-card">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
-                <span className="text-xs text-text-secondary font-mono">json</span>
+                <span className="text-xs text-muted-foreground font-mono">json</span>
                 <CopyButton text={`{
   "mcpServers": {
     "clicks-protocol": {
@@ -175,7 +175,7 @@ export default function DocsOverview() {
   }
 }`} />
               </div>
-              <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
                 <code>{`{
   "mcpServers": {
     "clicks-protocol": {
@@ -191,9 +191,9 @@ export default function DocsOverview() {
           {/* Gemini CLI */}
           <div>
             <h3 className="font-semibold text-lg mb-2">Gemini CLI</h3>
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-card">
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
-                <span className="text-xs text-text-secondary font-mono">json</span>
+                <span className="text-xs text-muted-foreground font-mono">json</span>
                 <CopyButton text={`{
   "mcpServers": {
     "clicks-protocol": {
@@ -202,7 +202,7 @@ export default function DocsOverview() {
   }
 }`} />
               </div>
-              <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
                 <code>{`{
   "mcpServers": {
     "clicks-protocol": {
@@ -221,19 +221,19 @@ export default function DocsOverview() {
           <div className="space-y-2 text-sm">
             <div className="flex items-start gap-3">
               <code className="text-accent font-mono whitespace-nowrap">get_protocol_stats</code>
-              <span className="text-text-secondary">TVL, APY, agent count</span>
+              <span className="text-muted-foreground">TVL, APY, agent count</span>
             </div>
             <div className="flex items-start gap-3">
               <code className="text-accent font-mono whitespace-nowrap">get_agent_info</code>
-              <span className="text-text-secondary">Check if an agent is registered</span>
+              <span className="text-muted-foreground">Check if an agent is registered</span>
             </div>
             <div className="flex items-start gap-3">
               <code className="text-accent font-mono whitespace-nowrap">get_yield_info</code>
-              <span className="text-text-secondary">Yield balance for an agent</span>
+              <span className="text-muted-foreground">Yield balance for an agent</span>
             </div>
             <div className="flex items-start gap-3">
               <code className="text-accent font-mono whitespace-nowrap">simulate_yield</code>
-              <span className="text-text-secondary">Project earnings over time</span>
+              <span className="text-muted-foreground">Project earnings over time</span>
             </div>
           </div>
         </div>
@@ -247,14 +247,14 @@ export default function DocsOverview() {
             href="https://discord.gg/clicks-protocol"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors"
+            className="flex items-center space-x-2 text-muted-foreground hover:text-accent transition-colors"
           >
             <MessageCircle className="w-4 h-4" />
             <span>Join our Discord</span>
           </a>
           <a
             href="mailto:hello@clicksprotocol.xyz"
-            className="flex items-center space-x-2 text-text-secondary hover:text-accent transition-colors"
+            className="flex items-center space-x-2 text-muted-foreground hover:text-accent transition-colors"
           >
             <Mail className="w-4 h-4" />
             <span>hello@clicksprotocol.xyz</span>
