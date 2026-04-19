@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
-import { ExternalLink } from 'lucide-react';
+import { TextLink } from '@/components/ui/text-link';
 import { CopyButton } from './copy-button';
 
 export function Developers() {
@@ -29,15 +29,13 @@ export function Developers() {
                 </pre>
                 <CopyButton text="npm install @clicks-protocol/sdk" />
               </div>
-              <a
+              <TextLink
                 href="https://www.npmjs.com/package/@clicks-protocol/sdk"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent hover:underline font-medium inline-flex items-center gap-2"
+                external
+                size="md"
               >
                 View on npm
-                <ExternalLink className="w-4 h-4" />
-              </a>
+              </TextLink>
             </CardContent>
           </Card>
 
@@ -56,13 +54,9 @@ export function Developers() {
                 </pre>
                 <CopyButton text="npx @clicks-protocol/mcp-server" />
               </div>
-              <a
-                href="/docs"
-                className="text-accent hover:underline font-medium inline-flex items-center gap-2"
-              >
-                Get Started
-                <ExternalLink className="w-4 h-4" />
-              </a>
+              <TextLink href="/docs/mcp" size="md">
+                Connect LLM
+              </TextLink>
             </CardContent>
           </Card>
 
@@ -75,15 +69,13 @@ export function Developers() {
               <CardDescription className="mb-8">
                 Open source, audited smart contracts. Review and verify.
               </CardDescription>
-              <a
+              <TextLink
                 href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent hover:underline font-medium inline-flex items-center gap-2"
+                external
+                size="md"
               >
                 View on Basescan
-                <ExternalLink className="w-4 h-4" />
-              </a>
+              </TextLink>
             </CardContent>
           </Card>
 
@@ -96,13 +88,9 @@ export function Developers() {
               <CardDescription className="mb-8">
                 Complete guides, examples, and API documentation.
               </CardDescription>
-              <a
-                href="/docs"
-                className="text-accent hover:underline font-medium inline-flex items-center gap-2"
-              >
+              <TextLink href="/docs" size="md">
                 Read the Docs
-                <ExternalLink className="w-4 h-4" />
-              </a>
+              </TextLink>
             </CardContent>
           </Card>
         </div>

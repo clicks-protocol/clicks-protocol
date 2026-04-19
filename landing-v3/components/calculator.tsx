@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const API_BASE = 'https://api.clicksprotocol.xyz';
 const FALLBACK_APY = 6;
@@ -122,17 +123,15 @@ export function Calculator() {
             </label>
             <div className="flex gap-2 flex-wrap">
               {PERIODS.map((p) => (
-                <button
+                <Button
                   key={p.days}
+                  variant="toggle"
+                  size="sm"
+                  data-state={days === p.days ? 'on' : 'off'}
                   onClick={() => setDays(p.days)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
-                    days === p.days
-                      ? 'bg-accent text-accent-foreground font-bold border-accent'
-                      : 'bg-card border-border text-muted-foreground hover:border-accent'
-                  }`}
                 >
                   {p.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

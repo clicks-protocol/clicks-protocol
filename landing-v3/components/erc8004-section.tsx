@@ -1,7 +1,8 @@
 "use client";
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Shield, ExternalLink, CheckCircle2, FileText } from 'lucide-react';
+import { Shield, CheckCircle2, FileText } from 'lucide-react';
+import { TextLink } from '@/components/ui/text-link';
 
 export function ERC8004Section() {
   return (
@@ -30,15 +31,12 @@ export function ERC8004Section() {
               <p className="text-muted-foreground text-sm mb-4">
                 agentId <span className="font-mono text-foreground">45074</span>, minted on Base mainnet.
               </p>
-              <a
+              <TextLink
                 href="https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-accent text-sm font-medium hover:underline"
+                external
               >
                 View on BaseScan
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+              </TextLink>
             </CardContent>
           </Card>
 
@@ -51,15 +49,12 @@ export function ERC8004Section() {
               <p className="text-muted-foreground text-sm mb-4">
                 First Schema-V1-compliant <span className="font-mono text-foreground">giveFeedback()</span> call confirmed on-chain.
               </p>
-              <a
+              <TextLink
                 href="https://basescan.org/tx/0x5aec2067384c68421c4964682fec5e5c8e987a44e69b22460eaabdaa213f9578"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-accent text-sm font-medium hover:underline"
+                external
               >
                 View tx
-                <ExternalLink className="w-3.5 h-3.5" />
-              </a>
+              </TextLink>
             </CardContent>
           </Card>
         </div>
@@ -74,33 +69,15 @@ export function ERC8004Section() {
                   Public specification for ERC-8004 feedback that Clicks accepts as signal. Value in [0, 10000] with 4 decimals, typed tags, 24h cadence. Attestors who follow it become eligible for the multiplier whitelist.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <a
-                    href="/strategy/ATTESTOR-SCHEMA-V1.md"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-accent text-sm font-medium hover:underline"
-                  >
+                  <TextLink href="/strategy/ATTESTOR-SCHEMA-V1.md" external>
                     Read Schema V1
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                  <a
-                    href="/strategy/TRUSTED-ATTESTORS-SEEDING.md"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-accent text-sm font-medium hover:underline"
-                  >
+                  </TextLink>
+                  <TextLink href="/strategy/TRUSTED-ATTESTORS-SEEDING.md" external>
                     Seeding Strategy
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                  <a
-                    href="/.well-known/agent-registration.json"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-accent text-sm font-medium hover:underline"
-                  >
+                  </TextLink>
+                  <TextLink href="/.well-known/agent-registration.json" external>
                     agent-registration.json
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                  </TextLink>
                 </div>
               </div>
             </div>
