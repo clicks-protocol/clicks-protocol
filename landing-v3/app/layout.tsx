@@ -5,9 +5,13 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://clicksprotocol.xyz'),
   title: 'Clicks Protocol — Autonomous Yield for AI Agents',
   description:
-    'Your agent holds USDC. Make it earn 4-8% APY while it sits idle. One SDK call. No lockup. Built on Base.',
+    "Your AI agent's USDC shouldn't sit idle. Earn 4–8% APY in one SDK call. No lockup. Built on Base.",
+  alternates: {
+    canonical: '/',
+  },
   keywords: [
     'AI agents',
     'yield',
@@ -21,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Clicks Protocol — Autonomous Yield for AI Agents',
     description:
-      'Your agent holds USDC. Make it earn 4-8% APY while it sits idle. One SDK call. No lockup. Built on Base.',
+      "Your AI agent's USDC shouldn't sit idle. Earn 4–8% APY in one SDK call. No lockup. Built on Base.",
     url: 'https://clicksprotocol.xyz',
     type: 'website',
     images: [
@@ -88,7 +92,7 @@ export default function RootLayout({
               '@type': 'FinancialProduct',
               name: 'Clicks Protocol',
               description:
-                'Autonomous yield protocol for AI agents. Earn 4-8% APY on idle USDC with zero lockup on Base L2.',
+                'Agent Commerce Settlement Router on Base. Earn 4–8% APY on the yield portion of USDC deposits with zero lockup and a configurable 80/20 split. ERC-8004 Trustless Agent.',
               url: 'https://clicksprotocol.xyz',
               provider: {
                 '@type': 'Organization',
@@ -134,9 +138,45 @@ export default function RootLayout({
                 {
                   '@type': 'PropertyValue',
                   name: 'referral_program',
-                  value: 'planned for V1.1',
+                  value: 'live — 3-level on-chain attribution (40/20/10 %)',
+                },
+                {
+                  '@type': 'PropertyValue',
+                  name: 'erc8004_agent_id',
+                  value: '45074',
+                },
+                {
+                  '@type': 'PropertyValue',
+                  name: 'ownership',
+                  value: 'Gnosis Safe multisig 0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9',
                 },
               ],
+            }),
+          }}
+        />
+        {/* Organization Schema (standalone for entity recognition) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'Clicks Protocol',
+              url: 'https://clicksprotocol.xyz',
+              logo: 'https://clicksprotocol.xyz/icon-1024.png',
+              description:
+                'Agent Commerce Settlement Router on Base. Autonomous USDC yield infrastructure for AI agents. ERC-8004 Trustless Agent agentId 45074.',
+              sameAs: [
+                'https://github.com/clicks-protocol',
+                'https://x.com/ClicksProtocol',
+                'https://dev.to/clicksprotocol',
+                'https://clicksprotocol.medium.com',
+              ],
+              contactPoint: {
+                '@type': 'ContactPoint',
+                email: 'hello@clicksprotocol.xyz',
+                contactType: 'general',
+              },
             }),
           }}
         />
@@ -153,7 +193,7 @@ export default function RootLayout({
                   name: 'What is Clicks Protocol?',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'Clicks Protocol is an autonomous yield protocol for AI agents on Base. It splits USDC deposits 80/20: 80% stays liquid for payments, 20% earns 7-13% APY via Morpho. Non-custodial, no lockup, withdraw anytime.',
+                    text: 'Clicks Protocol is an agent commerce settlement router on Base. It splits USDC deposits 80/20 by default: 80% stays liquid for payments, 20% earns 4–8% APY (market-dependent) via Aave V3 or Morpho. Non-custodial, no lockup, withdraw anytime. Registered as ERC-8004 agentId 45074.',
                   },
                 },
                 {
@@ -161,7 +201,7 @@ export default function RootLayout({
                   name: 'How do I integrate Clicks Protocol?',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'Install the SDK with npm install @clicks-protocol/sdk, then call clicks.quickStart(amount, agentAddress). For MCP-compatible agents, use npx @clicks-protocol/mcp-server with 9 built-in tools.',
+                    text: 'Install the SDK with npm install @clicks-protocol/sdk, then call clicks.quickStart(amount, agentAddress). For MCP-compatible agents, use npx @clicks-protocol/mcp-server with 10 built-in tools (including clicks_explain for agent-to-agent discovery).',
                   },
                 },
                 {
@@ -177,7 +217,7 @@ export default function RootLayout({
                   name: 'Is Clicks Protocol safe?',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: '5 contracts verified on Basescan. 58/58 tests passing. Non-custodial (your keys, your funds). Immutable contracts (no proxy, no admin keys). ReentrancyGuard on all functions. MIT licensed and open source.',
+                    text: '6 contracts verified on Basescan (Registry, SplitterV4, FeeV2, YieldRouter, Referral, plus Safe multisig owner). 227/227 tests passing. Non-custodial (your keys, your funds). Immutable contracts (no proxy, no admin keys). ReentrancyGuard on all functions. MIT licensed and open source. V2 upgrade (April 2026) wired referral distribution and transferred ownership to Safe multisig 0xaD8228fE...',
                   },
                 },
                 {
