@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 
 export function Footer() {
@@ -235,9 +236,11 @@ export function Footer() {
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center space-x-3">
-            <img
+            <Image
               src="/icon.svg"
-              alt="Clicks"
+              alt=""
+              width={32}
+              height={32}
               className="h-8 w-8"
             />
             <span className="text-muted-foreground">© 2026 Clicks Protocol</span>
