@@ -37,13 +37,19 @@ export function Footer() {
               }
             }}
           >
+            <label htmlFor="subscribe-email" className="sr-only">Email address</label>
             <input
+              id="subscribe-email"
               name="email"
               type="email"
               required
               placeholder="your@email.com"
+              aria-describedby="subscribe-help"
               className="flex-1 bg-card border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors w-full"
             />
+            <span id="subscribe-help" className="sr-only">
+              Protocol updates and new integrations. Unsubscribe anytime.
+            </span>
             <Button type="submit" size="sm" className="whitespace-nowrap w-full sm:w-auto">
               Subscribe
             </Button>
