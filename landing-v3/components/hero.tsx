@@ -26,7 +26,7 @@ export function Hero() {
                 <Button size="lg" className="w-full">Get Started</Button>
               </a>
               <a href="/docs" className="w-full sm:w-auto">
-                <Button size="lg" variant="secondary" className="w-full">
+                <Button size="lg" variant="outline" className="w-full">
                   View Documentation
                 </Button>
               </a>
