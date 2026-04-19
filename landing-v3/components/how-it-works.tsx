@@ -21,7 +21,7 @@ export function HowItWorks() {
         </div>
 
         <div className="max-w-3xl mx-auto">
-          <Accordion type="multiple" defaultValue={["step-1", "step-2", "step-3"]}>
+          <Accordion type="single" collapsible defaultValue="step-1">
             <AccordionItem value="step-1">
               <AccordionTrigger>
                 <div className="flex items-center gap-6">
@@ -39,7 +39,7 @@ export function HowItWorks() {
               <AccordionContent>
                 <div className="pt-4">
                   <p className="text-muted-foreground text-lg mb-6">
-                    One line of code to get started. No complex setup.
+                    One line. No config. No keys to manage.
                   </p>
                   <div className="relative">
                     <pre className="bg-background border border-border rounded-xl p-5 text-[10px] sm:text-xs lg:text-sm font-mono overflow-x-auto whitespace-pre max-w-full">
@@ -73,7 +73,7 @@ export function HowItWorks() {
               <AccordionContent>
                 <div className="pt-4">
                   <p className="text-muted-foreground text-lg mb-6">
-                    USDC splits automatically: 80% liquid, 20% earning.
+                    Every payment auto-splits — liquid for ops, yield on the rest.
                   </p>
                   <div className="relative">
                     <pre className="bg-background border border-border rounded-xl p-5 text-[10px] sm:text-xs lg:text-sm font-mono overflow-x-auto whitespace-pre max-w-full">
@@ -109,7 +109,7 @@ export function HowItWorks() {
               <AccordionContent>
                 <div className="pt-4">
                   <p className="text-muted-foreground text-lg mb-6">
-                    20% works in DeFi earning 4-8% APY. Zero lockup.
+                    Earning starts instantly. Pull funds any time.
                   </p>
                   <div className="relative">
                     <pre className="bg-background border border-border rounded-xl p-5 text-[10px] sm:text-xs lg:text-sm font-mono overflow-x-auto whitespace-pre max-w-full">

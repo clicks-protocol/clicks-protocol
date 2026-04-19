@@ -96,7 +96,7 @@ export function Calculator() {
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">Treasury Lab</h2>
           <p className="text-muted-foreground text-base sm:text-lg lg:text-xl">
-            See what idle USDC could earn through Clicks Protocol
+            See what $10K of idle USDC could earn
           </p>
         </div>
 
@@ -212,7 +212,10 @@ export function Calculator() {
           {/* Footer */}
           <div className="text-xs text-muted-foreground mt-4 space-y-1">
             <div>Based on current {protocol.activeProtocol} APY: {protocol.currentApyPct.toFixed(2)}%</div>
-            <div>Rates fluctuate. Not financial advice.</div>
+            <div>
+              Effective APY is blended across liquid + yield portion. The yield portion itself earns the full {protocol.currentApyPct.toFixed(2)}% — adjust the Yield Split slider up to 50% to allocate more.
+            </div>
+            <div>APY varies with market. This is a simulator, not financial advice.</div>
           </div>
         </div>
       </div>
