@@ -57,3 +57,4 @@ marketing/reports/trending/
 observability/data/*.sqlite
 observability/data/*.sqlite-*
 observability/data/*.db
+treasury-benchmark/
