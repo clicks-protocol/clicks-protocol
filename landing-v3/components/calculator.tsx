@@ -94,7 +94,7 @@ export function Calculator() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">Treasury Lab</h2>
-          <p className="text-text-secondary text-base sm:text-lg lg:text-xl">
+          <p className="text-muted-foreground text-base sm:text-lg lg:text-xl">
             See what idle USDC could earn through Clicks Protocol
           </p>
         </div>
@@ -102,7 +102,7 @@ export function Calculator() {
         <div className="glassmorphism-strong rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-10 hover-glow transition-all duration-300">
           {/* Amount Input */}
           <div className="mb-8">
-            <label className="text-sm text-text-secondary mb-3 block tracking-wider uppercase">
+            <label className="text-sm text-muted-foreground mb-3 block tracking-wider uppercase">
               USDC Amount
             </label>
             <input
@@ -111,13 +111,13 @@ export function Calculator() {
               value={amount}
               onChange={handleAmountChange}
               placeholder="10000"
-              className="w-full bg-surface border border-border rounded-xl px-4 sm:px-6 py-3 sm:py-4 text-2xl sm:text-3xl font-bold focus:outline-none focus:border-accent transition-colors"
+              className="w-full bg-card border border-border rounded-xl px-4 sm:px-6 py-3 sm:py-4 text-2xl sm:text-3xl font-bold focus:outline-none focus:border-accent transition-colors"
             />
           </div>
 
           {/* Period Buttons */}
           <div className="mb-8">
-            <label className="text-sm text-text-secondary mb-3 block tracking-wider uppercase">
+            <label className="text-sm text-muted-foreground mb-3 block tracking-wider uppercase">
               Period
             </label>
             <div className="flex gap-2 flex-wrap">
@@ -127,8 +127,8 @@ export function Calculator() {
                   onClick={() => setDays(p.days)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
                     days === p.days
-                      ? 'bg-accent text-bg-primary font-bold border-accent'
-                      : 'bg-surface border-border text-text-secondary hover:border-accent'
+                      ? 'bg-accent text-accent-foreground font-bold border-accent'
+                      : 'bg-card border-border text-muted-foreground hover:border-accent'
                   }`}
                 >
                   {p.label}
@@ -139,7 +139,7 @@ export function Calculator() {
 
           {/* Yield Split Slider */}
           <div className="mb-8">
-            <label className="text-sm text-text-secondary mb-3 block tracking-wider uppercase">
+            <label className="text-sm text-muted-foreground mb-3 block tracking-wider uppercase">
               Yield Split
             </label>
             <div className="flex items-center gap-4">
@@ -157,9 +157,9 @@ export function Calculator() {
 
           {/* Progress Bar */}
           <div className="mb-10">
-            <div className="flex justify-between text-sm text-text-secondary mb-3">
+            <div className="flex justify-between text-sm text-muted-foreground mb-3">
               <span className="text-accent">Liquid ({liquidPct}%)</span>
-              <span className="text-secondary">Earning ({yieldPct}%)</span>
+              <span className="text-muted-foreground">Earning ({yieldPct}%)</span>
             </div>
             <div className="relative h-3 md:h-4 bg-white/5 rounded-full overflow-hidden">
               <div
@@ -175,20 +175,20 @@ export function Calculator() {
 
           {/* KPI Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6">
-            <Card className="!bg-surface">
-              <div className="text-text-secondary text-sm mb-3 tracking-wider uppercase">Liquid</div>
-              <div className="text-3xl sm:text-4xl font-bold text-text-primary">
+            <Card className="!bg-card">
+              <div className="text-muted-foreground text-sm mb-3 tracking-wider uppercase">Liquid</div>
+              <div className="text-3xl sm:text-4xl font-bold text-foreground">
                 ${fmtNum(split.liquid)}
               </div>
             </Card>
-            <Card className="!bg-surface">
-              <div className="text-text-secondary text-sm mb-3 tracking-wider uppercase">To Yield</div>
-              <div className="text-3xl sm:text-4xl font-bold text-text-primary">
+            <Card className="!bg-card">
+              <div className="text-muted-foreground text-sm mb-3 tracking-wider uppercase">To Yield</div>
+              <div className="text-3xl sm:text-4xl font-bold text-foreground">
                 ${fmtNum(split.toYield)}
               </div>
             </Card>
-            <Card className="!bg-surface">
-              <div className="text-text-secondary text-sm mb-3 tracking-wider uppercase">Net Earnings</div>
+            <Card className="!bg-card">
+              <div className="text-muted-foreground text-sm mb-3 tracking-wider uppercase">Net Earnings</div>
               <div className="text-3xl sm:text-4xl font-bold text-accent">
                 ${fmtNum(projection.netYield)}
               </div>
@@ -196,14 +196,14 @@ export function Calculator() {
           </div>
 
           {/* Detail Row */}
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-text-secondary mb-4">
-            <span>Total Return: <span className="font-semibold text-text-primary tabular-nums">${fmtNum(projection.totalReturn)} USDC</span></span>
-            <span>Effective APY: <span className="font-semibold text-text-primary tabular-nums">{projection.effectiveApyPct.toFixed(2)}%</span></span>
-            <span>Protocol Fee: <span className="font-semibold text-text-primary tabular-nums">${fmtNum(projection.protocolFee)} USDC</span> (2% on yield)</span>
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground mb-4">
+            <span>Total Return: <span className="font-semibold text-foreground tabular-nums">${fmtNum(projection.totalReturn)} USDC</span></span>
+            <span>Effective APY: <span className="font-semibold text-foreground tabular-nums">{projection.effectiveApyPct.toFixed(2)}%</span></span>
+            <span>Protocol Fee: <span className="font-semibold text-foreground tabular-nums">${fmtNum(projection.protocolFee)} USDC</span> (2% on yield)</span>
           </div>
 
           {/* Footer */}
-          <div className="text-xs text-text-secondary mt-4 space-y-1">
+          <div className="text-xs text-muted-foreground mt-4 space-y-1">
             <div>Based on current {protocol.activeProtocol} APY: {protocol.currentApyPct.toFixed(2)}%</div>
             <div>Rates fluctuate. Not financial advice.</div>
           </div>

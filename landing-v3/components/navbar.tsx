@@ -24,13 +24,13 @@ export function Navbar() {
           <div className="hidden md:flex items-center justify-center space-x-8 flex-1">
             <a
               href="#how-it-works"
-              className="text-text-secondary hover:text-text-primary transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               How it Works
             </a>
             <a
               href="#developers"
-              className="text-text-secondary hover:text-text-primary transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               Developers
             </a>
@@ -40,7 +40,7 @@ export function Navbar() {
               href="https://github.com/clicks-protocol"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-text-secondary hover:text-text-primary transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               GitHub
             </a>
@@ -48,7 +48,7 @@ export function Navbar() {
               href="https://discord.gg/clicks-protocol"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-text-secondary hover:text-text-primary transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               Discord
             </a>
@@ -68,40 +68,40 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-bg-primary/95 backdrop-blur-xl">
+        <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-xl">
           <div className="px-4 py-4 space-y-3">
             <a
               href="#how-it-works"
               onClick={() => setMobileOpen(false)}
-              className="block text-text-secondary hover:text-text-primary transition-colors py-2"
+              className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               How it Works
             </a>
             <a
               href="#developers"
               onClick={() => setMobileOpen(false)}
-              className="block text-text-secondary hover:text-text-primary transition-colors py-2"
+              className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               Developers
             </a>
             <a
               href="/about"
               onClick={() => setMobileOpen(false)}
-              className="block text-text-secondary hover:text-text-primary transition-colors py-2"
+              className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               About
             </a>
             <a
               href="/security"
               onClick={() => setMobileOpen(false)}
-              className="block text-text-secondary hover:text-text-primary transition-colors py-2"
+              className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               Security
             </a>
             <a
               href="/docs"
               onClick={() => setMobileOpen(false)}
-              className="block text-text-secondary hover:text-text-primary transition-colors py-2"
+              className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
               Docs
             </a>
@@ -110,7 +110,7 @@ export function Navbar() {
                 href="https://github.com/clicks-protocol"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-secondary hover:text-text-primary transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 GitHub
               </a>
@@ -118,7 +118,7 @@ export function Navbar() {
                 href="https://discord.gg/clicks-protocol"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-secondary hover:text-text-primary transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
               >
                 Discord
               </a>

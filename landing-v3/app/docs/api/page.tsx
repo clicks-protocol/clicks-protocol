@@ -4,12 +4,12 @@ import { CopyButton } from '@/components/copy-button';
 
 function CodeBlock({ code, language = 'typescript' }: { code: string; language?: string }) {
   return (
-    <div className="relative rounded-xl overflow-hidden border border-white/10 bg-surface my-4">
+    <div className="relative rounded-xl overflow-hidden border border-white/10 bg-card my-4">
       <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
-        <span className="text-xs text-text-secondary font-mono">{language}</span>
+        <span className="text-xs text-muted-foreground font-mono">{language}</span>
         <CopyButton text={code} />
       </div>
-      <pre className="p-4 overflow-x-auto text-sm font-mono text-text-primary leading-relaxed">
+      <pre className="p-4 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
         <code>{code}</code>
       </pre>
     </div>
@@ -27,25 +27,25 @@ function MethodSection({ name, signature, description, params, returns, example 
   return (
     <div className="glassmorphism rounded-xl p-5 mb-6">
       <h3 className="text-lg font-semibold text-accent mb-1 font-mono">{name}</h3>
-      <code className="text-xs text-text-secondary bg-white/5 px-2 py-1 rounded block mb-3 overflow-x-auto">{signature}</code>
-      <p className="text-text-secondary text-sm mb-3">{description}</p>
+      <code className="text-xs text-muted-foreground bg-white/5 px-2 py-1 rounded block mb-3 overflow-x-auto">{signature}</code>
+      <p className="text-muted-foreground text-sm mb-3">{description}</p>
       {params && params.length > 0 && (
         <div className="mb-3">
-          <h4 className="text-xs font-semibold text-text-primary uppercase tracking-wider mb-2">Parameters</h4>
+          <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider mb-2">Parameters</h4>
           <div className="space-y-1.5">
             {params.map((p) => (
               <div key={p.name} className="flex items-start gap-2 text-sm">
                 <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs flex-shrink-0">{p.name}</code>
-                <span className="text-text-secondary text-xs">({p.type})</span>
-                <span className="text-text-secondary text-xs">{p.desc}</span>
+                <span className="text-muted-foreground text-xs">({p.type})</span>
+                <span className="text-muted-foreground text-xs">{p.desc}</span>
               </div>
             ))}
           </div>
         </div>
       )}
       <div className="mb-3">
-        <h4 className="text-xs font-semibold text-text-primary uppercase tracking-wider mb-1">Returns</h4>
-        <p className="text-text-secondary text-sm">{returns}</p>
+        <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider mb-1">Returns</h4>
+        <p className="text-muted-foreground text-sm">{returns}</p>
       </div>
       <CodeBlock code={example} />
     </div>
@@ -56,37 +56,37 @@ export default function ApiReferencePage() {
   return (
     <div className="prose-docs">
       <h1 className="text-3xl sm:text-4xl font-bold mb-6 gradient-text">SDK Reference</h1>
-      <p className="text-text-secondary text-lg mb-8">
+      <p className="text-muted-foreground text-lg mb-8">
         Complete API reference for <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">@clicks-protocol/sdk</code>.
       </p>
 
       {/* Installation */}
       <section className="mb-10">
-        <h2 className="text-2xl font-bold mb-4 text-text-primary">Installation</h2>
+        <h2 className="text-2xl font-bold mb-4 text-foreground">Installation</h2>
         <CodeBlock code="npm install @clicks-protocol/sdk" language="bash" />
-        <p className="text-text-secondary text-sm mb-2">Or with yarn:</p>
+        <p className="text-muted-foreground text-sm mb-2">Or with yarn:</p>
         <CodeBlock code="yarn add @clicks-protocol/sdk" language="bash" />
-        <h3 className="text-lg font-semibold mt-4 mb-2 text-text-primary">Dependencies</h3>
+        <h3 className="text-lg font-semibold mt-4 mb-2 text-foreground">Dependencies</h3>
         <CodeBlock code="npm install ethers@^6" language="bash" />
       </section>
 
       {/* Quick Start */}
       <section className="mb-10">
-        <h2 className="text-2xl font-bold mb-4 text-text-primary">Quick Start</h2>
+        <h2 className="text-2xl font-bold mb-4 text-foreground">Quick Start</h2>
         <CodeBlock code={`import { ClicksClient } from '@clicks-protocol/sdk';
 
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('1000', agentAddress);
 // 800 USDC → liquid (instant access)
 // 200 USDC → earning 4-8% APY (withdraw anytime)`} />
-        <p className="text-text-secondary text-sm">
+        <p className="text-muted-foreground text-sm">
           That&apos;s it. No config. No dashboard. No human required.
         </p>
       </section>
 
       {/* Methods */}
       <section className="mb-10">
-        <h2 className="text-2xl font-bold mb-6 text-text-primary">Methods</h2>
+        <h2 className="text-2xl font-bold mb-6 text-foreground">Methods</h2>
 
         <MethodSection
           name="quickStart"
@@ -207,26 +207,26 @@ const agent = await clicks.getAgentInfo(agentAddress);
 
       {/* MCP Server */}
       <section className="mb-10">
-        <h2 className="text-2xl font-bold mb-4 text-text-primary">MCP Server</h2>
-        <p className="text-text-secondary leading-relaxed mb-4">
+        <h2 className="text-2xl font-bold mb-4 text-foreground">MCP Server</h2>
+        <p className="text-muted-foreground leading-relaxed mb-4">
           AI agents can discover and use Clicks via{' '}
           <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
             Model Context Protocol (MCP)
           </a>:
         </p>
         <CodeBlock code="CLICKS_PRIVATE_KEY=0x... npx @clicks-protocol/mcp-server" language="bash" />
-        <p className="text-text-secondary text-sm mb-2">Or install globally:</p>
+        <p className="text-muted-foreground text-sm mb-2">Or install globally:</p>
         <CodeBlock code={`npm install -g @clicks-protocol/mcp-server
 CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
 
-        <h3 className="text-lg font-semibold mt-6 mb-4 text-text-primary">Available Tools (9)</h3>
+        <h3 className="text-lg font-semibold mt-6 mb-4 text-foreground">Available Tools (9)</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="text-left py-3 pr-4 font-semibold text-text-primary">Tool</th>
-                <th className="text-left py-3 pr-4 font-semibold text-text-primary">Type</th>
-                <th className="text-left py-3 font-semibold text-text-primary">Description</th>
+                <th className="text-left py-3 pr-4 font-semibold text-foreground">Tool</th>
+                <th className="text-left py-3 pr-4 font-semibold text-foreground">Type</th>
+                <th className="text-left py-3 font-semibold text-foreground">Description</th>
               </tr>
             </thead>
             <tbody>
@@ -245,8 +245,8 @@ CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
                   <td className="py-3 pr-4">
                     <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">{row.tool}</code>
                   </td>
-                  <td className="py-3 pr-4 text-text-secondary whitespace-nowrap">{row.type}</td>
-                  <td className="py-3 text-text-secondary">{row.desc}</td>
+                  <td className="py-3 pr-4 text-muted-foreground whitespace-nowrap">{row.type}</td>
+                  <td className="py-3 text-muted-foreground">{row.desc}</td>
                 </tr>
               ))}
             </tbody>
@@ -254,12 +254,12 @@ CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
         </div>
 
         <div className="glassmorphism rounded-lg p-4 mt-4">
-          <p className="text-text-secondary text-sm">
-            <span className="font-semibold text-text-primary">Resource:</span>{' '}
+          <p className="text-muted-foreground text-sm">
+            <span className="font-semibold text-foreground">Resource:</span>{' '}
             <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks://info</code> — full protocol metadata
           </p>
-          <p className="text-text-secondary text-sm mt-2">
-            <span className="font-semibold text-text-primary">Compatible with:</span> Claude, Cursor, LangChain, CrewAI, and any MCP-compatible client.
+          <p className="text-muted-foreground text-sm mt-2">
+            <span className="font-semibold text-foreground">Compatible with:</span> Claude, Cursor, LangChain, CrewAI, and any MCP-compatible client.
           </p>
         </div>
       </section>

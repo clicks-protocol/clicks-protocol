@@ -30,14 +30,14 @@ function Breadcrumbs() {
   ];
 
   return (
-    <nav className="flex items-center space-x-2 text-sm text-text-secondary mb-6">
+    <nav className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
       {crumbs.map((crumb, i) => (
         <span key={crumb.href} className="flex items-center">
           {i > 0 && <ChevronRight className="w-3.5 h-3.5 mx-1.5 opacity-50" />}
           {i === crumbs.length - 1 ? (
-            <span className="text-text-primary font-medium">{crumb.label}</span>
+            <span className="text-foreground font-medium">{crumb.label}</span>
           ) : (
-            <Link href={crumb.href} className="hover:text-text-primary transition-colors">
+            <Link href={crumb.href} className="hover:text-foreground transition-colors">
               {crumb.label}
             </Link>
           )}
@@ -66,7 +66,7 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
         {!mobile && (
           <Link
             href="/"
-            className="flex items-center space-x-2.5 px-3 py-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all text-sm mb-3"
+            className="flex items-center space-x-2.5 px-3 py-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all text-sm mb-3"
           >
             <Home className="w-4 h-4" />
             <span>Back to Home</span>
@@ -85,7 +85,7 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={onClose}
-                  className="flex items-center space-x-2.5 px-3 py-2.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all text-sm"
+                  className="flex items-center space-x-2.5 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all text-sm"
                 >
                   <Icon className="w-4 h-4" />
                   <span>{link.label}</span>
@@ -100,7 +100,7 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
                   key={link.href}
                   href={link.href}
                   onClick={onClose}
-                  className="flex items-center space-x-2.5 px-3 py-2.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-white/5 transition-all text-sm"
+                  className="flex items-center space-x-2.5 px-3 py-2.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all text-sm"
                 >
                   <Icon className="w-4 h-4" />
                   <span>{link.label}</span>
@@ -116,7 +116,7 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
                 className={`flex items-center space-x-2.5 px-3 py-2.5 rounded-lg transition-all text-sm ${
                   isActive
                     ? 'bg-accent/10 text-accent border border-accent/20'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
               <Link href="/" className="flex items-center space-x-2">
                 <img src="/logo.svg" alt="Clicks" className="h-8 sm:h-9 w-auto" />
               </Link>
-              <span className="text-text-secondary text-sm hidden sm:inline">/</span>
+              <span className="text-muted-foreground text-sm hidden sm:inline">/</span>
               <Link href="/docs" className="text-sm font-medium hidden sm:inline hover:text-accent transition-colors">
                 Docs
               </Link>
@@ -168,7 +168,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                 href="https://github.com/clicks-protocol"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-secondary hover:text-text-primary transition-colors text-sm"
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm"
               >
                 GitHub
               </a>
@@ -176,7 +176,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                 href="https://discord.gg/clicks-protocol"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-text-secondary hover:text-text-primary transition-colors text-sm"
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm"
               >
                 Discord
               </a>
@@ -189,7 +189,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
       {mobileOpen && (
         <div className="fixed inset-0 z-[60] lg:hidden">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-72 bg-bg-primary border-r border-white/10 overflow-y-auto">
+          <div className="absolute inset-y-0 left-0 w-72 bg-background border-r border-white/10 overflow-y-auto">
             <Sidebar mobile onClose={() => setMobileOpen(false)} />
           </div>
         </div>

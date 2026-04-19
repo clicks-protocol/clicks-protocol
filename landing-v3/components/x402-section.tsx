@@ -6,11 +6,11 @@ import { Zap, CheckCircle2, Code2 } from 'lucide-react';
 
 export function X402Section() {
   return (
-    <section className="py-8 sm:py-12 lg:py-20 px-4 sm:px-6 lg:px-8 bg-surface/30 relative fade-in-section">
+    <section className="py-8 sm:py-12 lg:py-20 px-4 sm:px-6 lg:px-8 bg-card/30 relative fade-in-section">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8 sm:mb-10 lg:mb-14">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">Built for the x402 Economy</h2>
-          <p className="text-text-secondary text-base sm:text-lg lg:text-xl">
+          <p className="text-muted-foreground text-base sm:text-lg lg:text-xl">
             Native payment infrastructure for autonomous agents
           </p>
         </div>
@@ -37,7 +37,7 @@ export function X402Section() {
                     </CardDescription>
                   </div>
                 </div>
-                <ul className="space-y-3 text-text-secondary ml-20">
+                <ul className="space-y-3 text-muted-foreground ml-20">
                   <li className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-accent shrink-0" />
                     <span>Sub-cent transaction fees</span>
@@ -70,7 +70,7 @@ export function X402Section() {
                     </CardDescription>
                   </div>
                 </div>
-                <ul className="space-y-3 text-text-secondary ml-20">
+                <ul className="space-y-3 text-muted-foreground ml-20">
                   <li className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-accent shrink-0" />
                     <span>Automatic payment routing</span>
@@ -103,7 +103,7 @@ export function X402Section() {
                     </CardDescription>
                   </div>
                 </div>
-                <ul className="space-y-3 text-text-secondary ml-20">
+                <ul className="space-y-3 text-muted-foreground ml-20">
                   <li className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-accent shrink-0" />
                     <span>TypeScript SDK with full type safety</span>

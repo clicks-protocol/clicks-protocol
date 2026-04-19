@@ -41,7 +41,7 @@ export function WorksWith() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8 sm:mb-10 lg:mb-14">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">Works With</h2>
-          <p className="text-text-secondary text-base sm:text-lg lg:text-xl">
+          <p className="text-muted-foreground text-base sm:text-lg lg:text-xl">
             Connect any MCP-compatible client in seconds
           </p>
         </div>
@@ -66,9 +66,9 @@ export function WorksWith() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
                         {item.name}
-                        {isExternal && <ExternalLink className="w-3.5 h-3.5 text-text-secondary" />}
+                        {isExternal && <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />}
                       </h3>
-                      <p className="text-text-secondary text-sm">{item.description}</p>
+                      <p className="text-muted-foreground text-sm">{item.description}</p>
                     </div>
                   </div>
                 </Card>
