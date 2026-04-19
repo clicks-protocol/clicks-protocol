@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronRight, ExternalLink, BookOpen, Shield, Code, FileText, Info, Layers, Home, Rocket } from 'lucide-react';
 import { Footer } from '@/components/footer';
@@ -55,7 +56,7 @@ function Sidebar({ mobile, onClose }: { mobile?: boolean; onClose?: () => void }
       {mobile && (
         <div className="flex items-center justify-between p-4 border-b border-white/10">
           <Link href="/" className="flex items-center space-x-2" onClick={onClose}>
-            <img src="/logo.svg" alt="Clicks" className="h-8 w-auto" />
+            <Image src="/logo.svg" alt="Clicks Protocol" width={128} height={32} className="h-8 w-auto" />
           </Link>
           <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
             <X className="w-5 h-5" />
@@ -156,7 +157,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                 <Menu className="w-5 h-5" />
               </button>
               <Link href="/" className="flex items-center space-x-2">
-                <img src="/logo.svg" alt="Clicks" className="h-8 sm:h-9 w-auto" />
+                <Image src="/logo.svg" alt="Clicks Protocol" width={144} height={36} priority className="h-8 sm:h-9 w-auto" />
               </Link>
               <span className="text-muted-foreground text-sm hidden sm:inline">/</span>
               <Link href="/docs" className="text-sm font-medium hidden sm:inline hover:text-accent transition-colors">

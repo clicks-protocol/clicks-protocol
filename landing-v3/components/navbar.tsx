@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
 
@@ -14,9 +15,12 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 sm:space-x-3 flex-1">
             <Link href="/">
-              <img
+              <Image
                 src="/logo.svg"
-                alt="Clicks"
+                alt="Clicks Protocol"
+                width={160}
+                height={40}
+                priority
                 className="h-8 sm:h-9 lg:h-10 w-auto"
               />
             </Link>
