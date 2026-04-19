@@ -103,10 +103,11 @@ export function Calculator() {
         <div className="glassmorphism-strong rounded-xl sm:rounded-2xl lg:rounded-3xl p-4 sm:p-6 lg:p-10 hover-glow transition-all duration-300">
           {/* Amount Input */}
           <div className="mb-8">
-            <label className="text-sm text-muted-foreground mb-3 block tracking-wider uppercase">
+            <label htmlFor="usdc-amount" className="text-sm text-muted-foreground mb-3 block tracking-wider uppercase">
               USDC Amount
             </label>
             <input
+              id="usdc-amount"
               type="text"
               inputMode="numeric"
               value={amount}
@@ -138,19 +139,26 @@ export function Calculator() {
 
           {/* Yield Split Slider */}
           <div className="mb-8">
-            <label className="text-sm text-muted-foreground mb-3 block tracking-wider uppercase">
+            <label htmlFor="yield-split-slider" className="text-sm text-muted-foreground mb-3 block tracking-wider uppercase">
               Yield Split
             </label>
             <div className="flex items-center gap-4">
               <input
+                id="yield-split-slider"
                 type="range"
                 min={5}
                 max={50}
+                step={5}
                 value={yieldPct}
                 onChange={handleSliderChange}
+                aria-label="Yield Split Percentage"
+                aria-valuemin={5}
+                aria-valuemax={50}
+                aria-valuenow={yieldPct}
+                aria-valuetext={`${yieldPct} percent earning, ${100 - yieldPct} percent liquid`}
                 className="flex-1 accent-accent"
               />
-              <span className="text-lg font-bold tabular-nums min-w-[48px] text-right">{yieldPct}%</span>
+              <span className="text-lg font-bold tabular-nums min-w-[48px] text-right" aria-hidden="true">{yieldPct}%</span>
             </div>
           </div>
 

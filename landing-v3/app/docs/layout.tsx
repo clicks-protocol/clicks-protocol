@@ -203,7 +203,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
         </aside>
 
         {/* Content */}
-        <main className="flex-1 min-w-0 px-4 sm:px-8 lg:px-12 py-8 max-w-4xl">
+        <main id="main" className="flex-1 min-w-0 px-4 sm:px-8 lg:px-12 py-8 max-w-4xl">
           <Breadcrumbs />
           {children}
         </main>

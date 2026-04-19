@@ -98,14 +98,16 @@ export default function Home() {
       <div className="gradient-orb orb-3"></div>
 
       <Navbar />
-      <Hero />
-      <Stats />
-      <Calculator />
-      <HowItWorks />
-      <X402Section />
-      <ERC8004Section />
-      <Developers />
-      <XPixelDeveloperView />
+      <main id="main">
+        <Hero />
+        <Stats />
+        <Calculator />
+        <HowItWorks />
+        <X402Section />
+        <ERC8004Section />
+        <Developers />
+        <XPixelDeveloperView />
+      </main>
       <Footer />
     </>
   );
