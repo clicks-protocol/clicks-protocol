@@ -19,15 +19,15 @@ export function Hero() {
               Autonomous Yield for AI&nbsp;Agents
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 lg:mb-12 leading-relaxed max-w-xl">
-              Your agent holds USDC. Make it earn 4-8% APY while it sits idle. One SDK call. No&nbsp;lockup. Built on&nbsp;Base.
+              Your AI agent&apos;s USDC shouldn&apos;t sit idle. Earn 4–8% APY in one SDK call. No&nbsp;lockup. Built on&nbsp;Base.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 lg:mb-10 w-full sm:w-auto">
-              <a href="/docs/api" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full">Get Started</Button>
+              <a href="/docs/getting-started" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full">Start Earning Yield</Button>
               </a>
               <a href="/docs" className="w-full sm:w-auto">
                 <Button size="lg" variant="outline" className="w-full">
-                  View Documentation
+                  Read the Docs
                 </Button>
               </a>
             </div>
@@ -67,7 +67,7 @@ export function Hero() {
                     quickstart.js
                   </span>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Three lines. That&apos;s it.
+                    Live in 3 lines
                   </p>
                 </div>
                 <div className="flex space-x-2">

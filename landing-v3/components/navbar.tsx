@@ -53,7 +53,7 @@ export function Navbar() {
               Discord
             </a>
             <a href="/docs/getting-started">
-              <Button size="sm">Get Started</Button>
+              <Button size="sm">Install SDK</Button>
             </a>
           </div>
           <button
@@ -124,7 +124,7 @@ export function Navbar() {
               </a>
             </div>
             <a href="/docs/getting-started" className="block">
-              <Button size="sm" className="w-full">Get Started</Button>
+              <Button size="sm" className="w-full">Install SDK</Button>
             </a>
           </div>
         </div>

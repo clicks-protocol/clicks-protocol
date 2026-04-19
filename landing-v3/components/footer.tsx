@@ -6,9 +6,9 @@ export function Footer() {
       <div className="max-w-6xl mx-auto">
         {/* Newsletter */}
         <div className="glassmorphism-strong rounded-xl sm:rounded-2xl p-5 sm:p-8 lg:p-10 mb-8 sm:mb-12 lg:mb-14 text-center max-w-2xl mx-auto">
-          <h3 className="text-xl md:text-2xl font-bold mb-3">Stay Updated</h3>
+          <h3 className="text-xl md:text-2xl font-bold mb-3">Get the Builder Digest</h3>
           <p className="text-muted-foreground mb-6 text-sm md:text-base">
-            Get the latest updates on Clicks Protocol development.
+            Protocol changes, new integrations, and what we&apos;re shipping.
           </p>
           <form
             className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
@@ -30,10 +30,10 @@ export function Footer() {
                 const data = await res.json();
                 input.value = '';
                 btn.textContent = '✓ Subscribed';
-                setTimeout(() => { btn.textContent = 'Subscribe'; btn.disabled = false; }, 3000);
+                setTimeout(() => { btn.textContent = 'Get Updates'; btn.disabled = false; }, 3000);
               } catch {
                 btn.textContent = 'Error';
-                setTimeout(() => { btn.textContent = 'Subscribe'; btn.disabled = false; }, 3000);
+                setTimeout(() => { btn.textContent = 'Get Updates'; btn.disabled = false; }, 3000);
               }
             }}
           >
@@ -51,7 +51,7 @@ export function Footer() {
               Protocol updates and new integrations. Unsubscribe anytime.
             </span>
             <Button type="submit" size="sm" className="whitespace-nowrap w-full sm:w-auto">
-              Subscribe
+              Get Updates
             </Button>
           </form>
         </div>
