@@ -5,16 +5,20 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Menu, X } from 'lucide-react';
+import { LangSwitcher } from '@/components/lang-switcher';
+import { getDict, type Locale, LOCALES } from '@/lib/i18n';
 
-export function Navbar() {
+export function Navbar({ locale = 'en' }: { locale?: Locale }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const t = getDict(locale).nav;
+  const home = LOCALES.find((l) => l.code === locale)?.path ?? '/';
 
   return (
     <nav aria-label="Primary" className="fixed top-0 w-full z-50 border-b border-border glassmorphism">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2 sm:space-x-3 flex-1">
-            <Link href="/">
+            <Link href={home}>
               <Image
                 src="/logo.svg"
                 alt="Clicks Protocol"
@@ -30,23 +34,24 @@ export function Navbar() {
               href="#how-it-works"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              How it Works
+              {t.howItWorks}
             </a>
             <a
               href="#developers"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              Developers
+              {t.developers}
             </a>
           </div>
-          <div className="hidden md:flex items-center justify-end space-x-6 flex-1">
+          <div className="hidden md:flex items-center justify-end space-x-5 flex-1">
+            <LangSwitcher current={locale} />
             <a
               href="https://github.com/clicks-protocol"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              GitHub
+              {t.github}
             </a>
             <a
               href="https://discord.gg/clicks-protocol"
@@ -54,10 +59,10 @@ export function Navbar() {
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
-              Discord
+              {t.discord}
             </a>
             <a href="/docs/getting-started">
-              <Button size="sm">Install SDK</Button>
+              <Button size="sm">{t.ctaInstallSdk}</Button>
             </a>
           </div>
           <button
@@ -79,36 +84,39 @@ export function Navbar() {
               onClick={() => setMobileOpen(false)}
               className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
-              How it Works
+              {t.howItWorks}
             </a>
             <a
               href="#developers"
               onClick={() => setMobileOpen(false)}
               className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
-              Developers
+              {t.developers}
             </a>
             <a
               href="/about"
               onClick={() => setMobileOpen(false)}
               className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
-              About
+              {t.about}
             </a>
             <a
               href="/security"
               onClick={() => setMobileOpen(false)}
               className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
-              Security
+              {t.security}
             </a>
             <a
               href="/docs"
               onClick={() => setMobileOpen(false)}
               className="block text-muted-foreground hover:text-foreground transition-colors py-2"
             >
-              Docs
+              {t.docs}
             </a>
+            <div className="pt-2 border-t border-border">
+              <LangSwitcher current={locale} />
+            </div>
             <div className="pt-2 border-t border-border flex items-center space-x-4">
               <a
                 href="https://github.com/clicks-protocol"
@@ -116,7 +124,7 @@ export function Navbar() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                GitHub
+                {t.github}
               </a>
               <a
                 href="https://discord.gg/clicks-protocol"
@@ -124,11 +132,11 @@ export function Navbar() {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"
               >
-                Discord
+                {t.discord}
               </a>
             </div>
             <a href="/docs/getting-started" className="block">
-              <Button size="sm" className="w-full">Install SDK</Button>
+              <Button size="sm" className="w-full">{t.ctaInstallSdk}</Button>
             </a>
           </div>
         </div>

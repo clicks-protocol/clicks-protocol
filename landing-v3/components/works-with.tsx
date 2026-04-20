@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { ExternalLink, Bot, Terminal, Sparkles, MessageSquare, BarChart3, Code2 } from 'lucide-react';
+import { getDict, type Locale } from '@/lib/i18n';
 
 const integrations = [
   {
@@ -42,14 +43,15 @@ const integrations = [
   },
 ];
 
-export function WorksWith() {
+export function WorksWith({ locale = 'en' }: { locale?: Locale }) {
+  const t = getDict(locale).worksWith;
   return (
     <section className="py-8 sm:py-12 lg:py-20 px-4 sm:px-6 lg:px-8 relative fade-in-section">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8 sm:mb-10 lg:mb-14">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">Works With</h2>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">{t.headline}</h2>
           <p className="text-muted-foreground text-base sm:text-lg lg:text-xl">
-            Connect any MCP-compatible client in seconds
+            {t.sub}
           </p>
         </div>
 

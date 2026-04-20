@@ -3,8 +3,10 @@
 import { Button } from '@/components/ui/button';
 import { Star } from 'lucide-react';
 import { CopyButton } from './copy-button';
+import { getDict, type Locale } from '@/lib/i18n';
 
-export function Hero() {
+export function Hero({ locale = 'en' }: { locale?: Locale }) {
+  const t = getDict(locale).hero;
   return (
     <section className="relative pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-24 lg:pb-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
       <div className="max-w-7xl mx-auto">
@@ -13,21 +15,21 @@ export function Hero() {
           <div className="parallax" data-speed="0.5">
             <div className="inline-flex items-center px-4 py-2 mb-6 border border-accent/30 rounded-full text-sm text-accent badge-glow">
               <Star className="w-4 h-4 mr-2 fill-current" />
-              Built for x402 Economy
+              {t.badge}
             </div>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black mb-4 sm:mb-6 lg:mb-8 pb-2 gradient-text leading-[1.15] sm:leading-[1.2] lg:leading-[1.35] tracking-tight">
-              Autonomous Yield for AI&nbsp;Agents
+              {t.headline}
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 lg:mb-12 leading-relaxed max-w-xl">
-              Your AI agent&apos;s USDC shouldn&apos;t sit idle. Earn 4–8% APY in one SDK call. No&nbsp;lockup. Built on&nbsp;Base.
+              {t.subhead}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 lg:mb-10 w-full sm:w-auto">
               <a href="/docs/getting-started" className="w-full sm:w-auto">
-                <Button size="lg" className="w-full">Start Earning Yield</Button>
+                <Button size="lg" className="w-full">{t.ctaPrimary}</Button>
               </a>
               <a href="/docs" className="w-full sm:w-auto">
                 <Button size="lg" variant="outline" className="w-full">
-                  Read the Docs
+                  {t.ctaSecondary}
                 </Button>
               </a>
             </div>
@@ -35,7 +37,7 @@ export function Hero() {
             {/* Social Proof */}
             <div className="glassmorphism rounded-xl sm:rounded-2xl p-4 sm:p-6">
               <div className="text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4 tracking-wider uppercase text-center">
-                Integrates with
+                {t.integratesWith}
               </div>
               <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center justify-center gap-4 sm:gap-6">
                 <div className="flex items-center space-x-2 opacity-70 hover:opacity-100 transition-opacity">
@@ -67,7 +69,7 @@ export function Hero() {
                     quickstart.js
                   </span>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Live in 3 lines
+                    {t.codeCaption}
                   </p>
                 </div>
                 <div className="flex space-x-2">
@@ -100,11 +102,11 @@ export function Hero() {
                     <span className="text-foreground">, agentAddress);</span>
                     {'\n\n'}
                     <span className="text-green-400">
-                      {`// 80 USDC → agent wallet (instant)`}
+                      {t.codeCommentLiquid}
                     </span>
                     {'\n'}
                     <span className="text-green-400">
-                      {`// 20 USDC → DeFi yield (4-8% APY)`}
+                      {t.codeCommentYield}
                     </span>
                   </code>
                 </pre>
