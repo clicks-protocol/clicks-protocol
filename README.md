@@ -16,6 +16,7 @@
   <a href="https://registry.modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP%20Registry-published-00FF9B" alt="MCP Registry"></a>
   <a href="https://discord.gg/vkczMC8g3J"><img src="https://img.shields.io/badge/Discord-join-5865F2" alt="Discord"></a>
   <a href="https://clawhub.ai/protogenosone/clicks-protocol"><img src="https://img.shields.io/badge/ClawHub-40%2B%20downloads-00FF9B" alt="ClawHub"></a>
+  <a href="https://cursor.directory/plugins/clicks-protocol"><img src="https://img.shields.io/badge/Cursor%20Directory-approved-00FF9B" alt="Cursor Directory"></a>
 </p>
 
 <p align="center">

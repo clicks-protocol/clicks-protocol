@@ -143,6 +143,35 @@ export default function DocsOverview() {
             </div>
           </div>
 
+          {/* Cursor */}
+          <div>
+            <h3 className="font-semibold text-lg mb-2">Cursor <span className="text-xs text-muted-foreground font-normal">· approved on <a href="https://cursor.directory/plugins/clicks-protocol" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Cursor Directory</a></span></h3>
+            <p className="text-muted-foreground text-sm mb-3">
+              Install from the IDE: <kbd className="text-accent">⌘ ⇧ P</kbd> → <em>Plugin Directory</em> → search <em>clicks-protocol</em>. Or add to <code className="text-accent">.cursor/mcp.json</code>:
+            </p>
+            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-card">
+              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
+                <span className="text-xs text-muted-foreground font-mono">json</span>
+                <CopyButton text={`{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}`} />
+              </div>
+              <pre className="p-4 overflow-x-auto text-sm font-mono text-foreground leading-relaxed">
+                <code>{`{
+  "mcpServers": {
+    "clicks-protocol": {
+      "url": "https://mcp.clicksprotocol.xyz/mcp"
+    }
+  }
+}`}</code>
+              </pre>
+            </div>
+          </div>
+
           {/* OpenClaw */}
           <div>
             <h3 className="font-semibold text-lg mb-2">OpenClaw</h3>
