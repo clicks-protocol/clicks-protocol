@@ -8,6 +8,7 @@ import { Calculator } from '@/components/calculator';
 import { HowItWorks } from '@/components/how-it-works';
 import { X402Section } from '@/components/x402-section';
 import { ERC8004Section } from '@/components/erc8004-section';
+import { WorksWith } from '@/components/works-with';
 import { Developers } from '@/components/developers';
 import { XPixelDeveloperView } from '@/components/x-pixel-events';
 import { Footer } from '@/components/footer';
@@ -105,6 +106,7 @@ export default function Home() {
         <HowItWorks />
         <X402Section />
         <ERC8004Section />
+        <WorksWith />
         <Developers />
         <XPixelDeveloperView />
       </main>
