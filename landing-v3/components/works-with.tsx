@@ -1,5 +1,5 @@
 import { Card } from '@/components/ui/card';
-import { ExternalLink, Bot, Terminal, Sparkles, MessageSquare, BarChart3 } from 'lucide-react';
+import { ExternalLink, Bot, Terminal, Sparkles, MessageSquare, BarChart3, Code2 } from 'lucide-react';
 
 const integrations = [
   {
@@ -7,6 +7,13 @@ const integrations = [
     icon: MessageSquare,
     description: 'Add Clicks to Claude Desktop with one JSON config.',
     href: '/docs#mcp-integration',
+  },
+  {
+    name: 'Cursor',
+    icon: Code2,
+    description: 'Approved plugin on Cursor Directory — install from the IDE.',
+    href: 'https://cursor.directory/plugins/clicks-protocol',
+    external: true,
   },
   {
     name: 'OpenClaw',
