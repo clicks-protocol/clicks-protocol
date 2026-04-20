@@ -44,12 +44,13 @@ export function LangSwitcher({ current }: { current: Locale }) {
                 href={l.path}
                 onClick={() => setOpen(false)}
                 lang={l.htmlLang}
-                className={`flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                className={`flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
                   l.code === current
                     ? 'bg-accent/10 text-accent'
                     : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                 }`}
               >
+                <span aria-hidden="true" className="text-base leading-none">{l.flag}</span>
                 <span>{l.label}</span>
               </Link>
             </li>

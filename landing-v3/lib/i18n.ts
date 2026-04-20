@@ -15,11 +15,11 @@ import ja from '@/content/i18n/ja';
 
 export type Locale = 'en' | 'cn' | 'ko' | 'ja';
 
-export const LOCALES: { code: Locale; label: string; path: string; htmlLang: string }[] = [
-  { code: 'en', label: 'English',  path: '/',    htmlLang: 'en'    },
-  { code: 'cn', label: '中文',     path: '/cn',  htmlLang: 'zh-CN' },
-  { code: 'ko', label: '한국어',   path: '/ko',  htmlLang: 'ko'    },
-  { code: 'ja', label: '日本語',   path: '/ja',  htmlLang: 'ja'    },
+export const LOCALES: { code: Locale; label: string; path: string; htmlLang: string; flag: string }[] = [
+  { code: 'en', label: 'English',  path: '/',    htmlLang: 'en',    flag: '🌐' },
+  { code: 'cn', label: '中文',     path: '/cn',  htmlLang: 'zh-CN', flag: '🇨🇳' },
+  { code: 'ko', label: '한국어',   path: '/ko',  htmlLang: 'ko',    flag: '🇰🇷' },
+  { code: 'ja', label: '日本語',   path: '/ja',  htmlLang: 'ja',    flag: '🇯🇵' },
 ];
 
 export const DEFAULT_LOCALE: Locale = 'en';
