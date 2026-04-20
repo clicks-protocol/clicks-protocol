@@ -111,9 +111,9 @@ export function HomeContent({ locale = 'en' }: { locale?: Locale }) {
         <Hero locale={locale} />
         <Stats locale={locale} />
         <Calculator />
-        <HowItWorks />
-        <X402Section />
-        <ERC8004Section />
+        <HowItWorks locale={locale} />
+        <X402Section locale={locale} />
+        <ERC8004Section locale={locale} />
         <WorksWith locale={locale} />
         <Developers />
         <XPixelDeveloperView />
