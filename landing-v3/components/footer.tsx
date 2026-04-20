@@ -1,15 +1,19 @@
+"use client";
+
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
+import { getDict, type Locale } from '@/lib/i18n';
 
-export function Footer() {
+export function Footer({ locale = 'en' }: { locale?: Locale }) {
+  const t = getDict(locale).footer;
   return (
     <footer className="border-t border-border py-8 sm:py-12 lg:py-16 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-6xl mx-auto">
         {/* Newsletter */}
         <div className="glassmorphism-strong rounded-xl sm:rounded-2xl p-5 sm:p-8 lg:p-10 mb-8 sm:mb-12 lg:mb-14 text-center max-w-2xl mx-auto">
-          <h3 className="text-xl md:text-2xl font-bold mb-3">Get the Builder Digest</h3>
+          <h3 className="text-xl md:text-2xl font-bold mb-3">{t.newsletterHeadline}</h3>
           <p className="text-muted-foreground mb-6 text-sm md:text-base">
-            Protocol changes, new integrations, and what we&apos;re shipping.
+            {t.newsletterSub}
           </p>
           <form
             className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
@@ -30,29 +34,29 @@ export function Footer() {
                 });
                 const data = await res.json();
                 input.value = '';
-                btn.textContent = '✓ Subscribed';
-                setTimeout(() => { btn.textContent = 'Get Updates'; btn.disabled = false; }, 3000);
+                btn.textContent = t.subscribeSuccess;
+                setTimeout(() => { btn.textContent = t.subscribeCta; btn.disabled = false; }, 3000);
               } catch {
-                btn.textContent = 'Error';
-                setTimeout(() => { btn.textContent = 'Get Updates'; btn.disabled = false; }, 3000);
+                btn.textContent = t.subscribeError;
+                setTimeout(() => { btn.textContent = t.subscribeCta; btn.disabled = false; }, 3000);
               }
             }}
           >
-            <label htmlFor="subscribe-email" className="sr-only">Email address</label>
+            <label htmlFor="subscribe-email" className="sr-only">{t.emailLabel}</label>
             <input
               id="subscribe-email"
               name="email"
               type="email"
               required
-              placeholder="your@email.com"
+              placeholder={t.emailPlaceholder}
               aria-describedby="subscribe-help"
               className="flex-1 bg-card border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-accent transition-colors w-full"
             />
             <span id="subscribe-help" className="sr-only">
-              Protocol updates and new integrations. Unsubscribe anytime.
+              {t.emailHelp}
             </span>
             <Button type="submit" size="sm" className="whitespace-nowrap w-full sm:w-auto">
-              Get Updates
+              {t.subscribeCta}
             </Button>
           </form>
         </div>

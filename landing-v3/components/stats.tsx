@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Shield, TrendingUp, Unlock, Zap } from 'lucide-react';
+import { getDict, type Locale } from '@/lib/i18n';
 
 interface PublicMetrics {
   totalAgents: number;
@@ -16,7 +17,8 @@ const DEFAULTS: PublicMetrics = {
   currentApyPct: 6,
 };
 
-export function Stats() {
+export function Stats({ locale = 'en' }: { locale?: Locale }) {
+  const t = getDict(locale).stats;
   const [metrics, setMetrics] = useState<PublicMetrics>(DEFAULTS);
 
   useEffect(() => {
@@ -33,26 +35,26 @@ export function Stats() {
   const signals = [
     {
       icon: Zap,
-      label: 'Base Mainnet',
-      sub: 'Sub-cent fees · 2s settlement',
+      label: t.baseMainnet,
+      sub: t.baseMainnetSub,
       href: undefined as string | undefined,
     },
     {
       icon: Shield,
-      label: 'ERC-8004 Verified',
-      sub: 'agentId 45074',
+      label: t.erc8004,
+      sub: t.erc8004Sub,
       href: 'https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074',
     },
     {
       icon: TrendingUp,
-      label: 'Current APY',
-      sub: `${metrics.currentApyPct.toFixed(1)}% on yield portion`,
+      label: t.apyLabel,
+      sub: t.apySubTemplate.replace('{apy}', metrics.currentApyPct.toFixed(1)),
       href: undefined,
     },
     {
       icon: Unlock,
-      label: 'Zero Lockup',
-      sub: 'Withdraw anytime',
+      label: t.zeroLockup,
+      sub: t.zeroLockupSub,
       href: undefined,
     },
   ];

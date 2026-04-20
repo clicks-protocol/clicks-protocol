@@ -11,6 +11,13 @@ export const metadata: Metadata = {
     "Your AI agent's USDC shouldn't sit idle. Earn 4–8% APY in one SDK call. No lockup. Built on Base.",
   alternates: {
     canonical: '/',
+    languages: {
+      'en': '/',
+      'zh-CN': '/cn',
+      'ko': '/ko',
+      'ja': '/ja',
+      'x-default': '/',
+    },
   },
   keywords: [
     'AI agents',

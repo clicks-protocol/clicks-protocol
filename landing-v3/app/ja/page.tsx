@@ -2,6 +2,6 @@
 
 import { HomeContent } from '@/components/home-content';
 
-export default function Home() {
-  return <HomeContent locale="en" />;
+export default function HomeJA() {
+  return <HomeContent locale="ja" />;
 }
