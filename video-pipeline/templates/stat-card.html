@@ -33,26 +33,25 @@
       }
       .brand {
         position: absolute;
-        top: 80px;
+        top: 120px;
         left: 0;
         right: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 14px;
+        gap: 22px;
       }
-      .brand-dot {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        background: #00FF9B;
-        box-shadow: 0 0 24px rgba(0,255,155,0.6);
+      .brand-logo {
+        width: 88px;
+        height: 88px;
+        filter: drop-shadow(0 0 18px rgba(0,255,155,0.35));
       }
       .brand-name {
-        font-size: 32px;
+        font-size: 56px;
         font-weight: 900;
-        letter-spacing: 6px;
+        letter-spacing: 10px;
         color: #00FF9B;
+        line-height: 1;
       }
       .stat-wrap {
         text-align: center;
@@ -110,7 +109,7 @@
       data-height="1920"
     >
       <div class="brand">
-        <div class="brand-dot"></div>
+        <img class="brand-logo" src="assets/icon.png" alt="Clicks" />
         <div class="brand-name">CLICKS</div>
       </div>
 
