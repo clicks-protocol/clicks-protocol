@@ -7,7 +7,7 @@
  *   npx tsx snapshot.ts <template> '<json-data>' [--t <sec>] [--out <path>]
  */
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -101,6 +101,10 @@ async function main() {
 
   await page.screenshot({ path: outPath, type: 'png' });
   await browser.close();
+
+  // Remove scratch file so lint doesn't flag multiple root compositions.
+  try { unlinkSync(workFile); } catch { /* noop */ }
+
   console.log(`[snapshot] ${outPath}`);
 }
 
