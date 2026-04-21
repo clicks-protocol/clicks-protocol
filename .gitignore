@@ -58,3 +58,8 @@ observability/data/*.sqlite
 observability/data/*.sqlite-*
 observability/data/*.db
 treasury-benchmark/
+
+# Video pipeline (generated)
+media/renders/
+video-pipeline/index.html
+video-pipeline/render-log.json

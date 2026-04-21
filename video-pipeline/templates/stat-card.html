@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Clicks Stat Card</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #0F0814;
+        font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+        color: #fff;
+      }
+      body::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at center, rgba(0,255,155,0.06) 0%, transparent 70%);
+        pointer-events: none;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .brand {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+      }
+      .brand-dot {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #00FF9B;
+        box-shadow: 0 0 24px rgba(0,255,155,0.6);
+      }
+      .brand-name {
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: 6px;
+        color: #00FF9B;
+      }
+      .stat-wrap {
+        text-align: center;
+        padding: 0 60px;
+      }
+      .stat {
+        font-size: 320px;
+        font-weight: 900;
+        line-height: 1;
+        color: #00FF9B;
+        letter-spacing: -8px;
+        text-shadow: 0 0 60px rgba(0,255,155,0.25);
+      }
+      .label {
+        font-size: 64px;
+        font-weight: 700;
+        color: #ffffff;
+        margin-top: 40px;
+        letter-spacing: -1px;
+      }
+      .subtext {
+        font-size: 36px;
+        font-weight: 400;
+        color: #9ca3af;
+        margin-top: 28px;
+        letter-spacing: 0.5px;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        line-height: 1.4;
+      }
+      .footer {
+        position: absolute;
+        bottom: 80px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 24px;
+        color: #6b7280;
+        letter-spacing: 3px;
+      }
+      .footer span { color: #4b5563; margin: 0 10px; }
+
+      /* initial hidden states for timeline */
+      .brand, .stat, .label, .subtext, .footer { opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="8"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div class="brand">
+        <div class="brand-dot"></div>
+        <div class="brand-name">CLICKS</div>
+      </div>
+
+      <div class="stat-wrap">
+        <div class="stat" data-slot="stat">227</div>
+        <div class="label" data-slot="label">tests passing</div>
+        <div class="subtext" data-slot="subtext">Full V4 + V5 suite green</div>
+      </div>
+
+      <div class="footer">clicksprotocol.xyz <span>·</span> Autonomous Yield for AI Agents</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.to(".brand",   { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.1)
+        .from(".brand", { y: -30, duration: 0.6, ease: "power2.out" }, 0.1)
+
+        .to(".stat",    { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }, 0.8)
+        .from(".stat",  { scale: 0.85, duration: 0.8, ease: "power3.out" }, 0.8)
+
+        .to(".label",   { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 1.6)
+        .from(".label", { y: 20, duration: 0.6, ease: "power2.out" }, 1.6)
+
+        .to(".subtext", { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 2.1)
+        .from(".subtext", { y: 20, duration: 0.6, ease: "power2.out" }, 2.1)
+
+        .to(".footer",  { opacity: 1, duration: 0.8, ease: "power2.out" }, 2.6)
+
+        // hold
+        .to({}, { duration: 4.0 }, 3.4)
+
+        // fade out
+        .to([".stat", ".label", ".subtext", ".footer", ".brand"], { opacity: 0, duration: 0.4, ease: "power2.in" }, 7.5);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
