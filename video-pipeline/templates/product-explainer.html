@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Clicks Protocol — Product Explainer</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #0F0814;
+        font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+        color: #fff;
+      }
+      body::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at 50% 40%, rgba(0,255,155,0.08) 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      /* brand header (persistent) */
+      .brand {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        z-index: 10;
+      }
+      .brand-logo {
+        width: 56px;
+        height: 56px;
+        filter: drop-shadow(0 0 14px rgba(0,255,155,0.35));
+      }
+      .brand-name {
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: 7px;
+        color: #00FF9B;
+      }
+
+      /* scenes (absolute-positioned, z-stacked) */
+      .scene {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 80px;
+        text-align: center;
+        opacity: 0;
+      }
+      .eyebrow {
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        color: #00FF9B;
+        margin-bottom: 32px;
+      }
+      .headline {
+        font-size: 110px;
+        font-weight: 900;
+        line-height: 1.02;
+        letter-spacing: -3px;
+        color: #fff;
+      }
+      .headline .hi { color: #00FF9B; }
+      .sub {
+        font-size: 42px;
+        font-weight: 400;
+        color: #c4c8d0;
+        margin-top: 40px;
+        line-height: 1.35;
+        max-width: 880px;
+      }
+
+      /* scene 2: problem — idle stack */
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        margin-top: 56px;
+        align-items: center;
+      }
+      .bill {
+        width: 480px;
+        height: 82px;
+        border: 2px solid #1f2937;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        font-size: 28px;
+        color: #6b7280;
+        letter-spacing: 1px;
+      }
+      .bill .amt { color: #9ca3af; font-weight: 700; font-family: 'SF Mono', 'Monaco', monospace; }
+      .bill .note { font-size: 22px; color: #4b5563; letter-spacing: 4px; text-transform: uppercase; }
+
+      /* scene 3: solution — split diagram */
+      .split {
+        display: flex;
+        gap: 28px;
+        margin-top: 56px;
+      }
+      .tile {
+        width: 380px;
+        padding: 40px 32px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(0,255,155,0.15);
+      }
+      .tile .pct {
+        font-size: 92px;
+        font-weight: 900;
+        color: #00FF9B;
+        line-height: 1;
+      }
+      .tile .lbl {
+        font-size: 28px;
+        color: #fff;
+        margin-top: 16px;
+        font-weight: 700;
+      }
+      .tile .meta {
+        font-size: 22px;
+        color: #9ca3af;
+        margin-top: 10px;
+        letter-spacing: 0.5px;
+      }
+
+      /* scene 4: code snippet */
+      pre.code {
+        margin-top: 56px;
+        background: #0b0510;
+        border: 1px solid rgba(0,255,155,0.18);
+        border-radius: 18px;
+        padding: 44px 48px;
+        text-align: left;
+        font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+        font-size: 34px;
+        line-height: 1.55;
+        color: #e5e7eb;
+        max-width: 900px;
+        box-shadow: 0 0 60px rgba(0,255,155,0.08);
+      }
+      pre.code .kw { color: #00FF9B; }
+      pre.code .fn { color: #7dd3fc; }
+      pre.code .str { color: #fde68a; }
+      pre.code .cm { color: #6b7280; }
+
+      /* scene 5: proof chips */
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        justify-content: center;
+        margin-top: 56px;
+        max-width: 900px;
+      }
+      .chip {
+        padding: 16px 28px;
+        border-radius: 999px;
+        background: rgba(0,255,155,0.08);
+        border: 1px solid rgba(0,255,155,0.28);
+        font-size: 28px;
+        color: #a7f3d0;
+        letter-spacing: 0.4px;
+        font-weight: 600;
+      }
+
+      /* scene 6: CTA */
+      .cta-button {
+        margin-top: 56px;
+        padding: 30px 64px;
+        border-radius: 999px;
+        background: #00FF9B;
+        color: #0F0814;
+        font-size: 40px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        box-shadow: 0 0 40px rgba(0,255,155,0.35);
+      }
+      .url {
+        margin-top: 30px;
+        font-size: 30px;
+        color: #9ca3af;
+        letter-spacing: 3px;
+      }
+
+      /* footer */
+      .footer {
+        position: absolute;
+        bottom: 70px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 22px;
+        color: #4b5563;
+        letter-spacing: 3px;
+        z-index: 10;
+      }
+      .footer span { color: #374151; margin: 0 10px; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="30"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div class="brand">
+        <img class="brand-logo" src="assets/icon.png" alt="Clicks" />
+        <div class="brand-name">CLICKS</div>
+      </div>
+
+      <!-- SCENE 1: Hero (0-4s) -->
+      <div class="scene" id="sc1">
+        <div class="eyebrow">Clicks Protocol</div>
+        <div class="headline">
+          Autonomous<br/><span class="hi">Yield</span> for<br/>AI Agents
+        </div>
+      </div>
+
+      <!-- SCENE 2: Problem (4-9s) -->
+      <div class="scene" id="sc2">
+        <div class="eyebrow">The Problem</div>
+        <div class="headline">USDC<br/>sitting <span class="hi">idle</span>.</div>
+        <div class="stack">
+          <div class="bill"><span class="amt">$10,000</span><span class="note">0% APY</span></div>
+          <div class="bill"><span class="amt">$24,500</span><span class="note">0% APY</span></div>
+          <div class="bill"><span class="amt">$  8,000</span><span class="note">0% APY</span></div>
+        </div>
+      </div>
+
+      <!-- SCENE 3: Solution — 80/20 split (9-15s) -->
+      <div class="scene" id="sc3">
+        <div class="eyebrow">How it Works</div>
+        <div class="headline"><span class="hi">One SDK</span> call.</div>
+        <div class="split">
+          <div class="tile">
+            <div class="pct">80%</div>
+            <div class="lbl">Liquid</div>
+            <div class="meta">instant ops · any time</div>
+          </div>
+          <div class="tile">
+            <div class="pct">20%</div>
+            <div class="lbl">Earning</div>
+            <div class="meta">4–8% APY · DeFi routed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCENE 4: Code snippet (15-21s) -->
+      <div class="scene" id="sc4">
+        <div class="eyebrow">3 Lines</div>
+        <div class="headline"><span class="hi">Live</span> in a minute.</div>
+        <pre class="code"><span class="cm">// npm i @clicks-protocol/sdk</span>
+<span class="kw">import</span> { Clicks } <span class="kw">from</span> <span class="str">'@clicks-protocol/sdk'</span>;
+<span class="kw">const</span> clicks = <span class="kw">new</span> <span class="fn">Clicks</span>({ agent });
+<span class="kw">await</span> clicks.<span class="fn">register</span>();</pre>
+      </div>
+
+      <!-- SCENE 5: Proof (21-26s) -->
+      <div class="scene" id="sc5">
+        <div class="eyebrow">Why Clicks</div>
+        <div class="headline"><span class="hi">Zero</span> trade-offs.</div>
+        <div class="chips">
+          <div class="chip">No lockup</div>
+          <div class="chip">Built on Base</div>
+          <div class="chip">Sub-cent fees</div>
+          <div class="chip">x402 compatible</div>
+          <div class="chip">ERC-8004 · agentId 45074</div>
+          <div class="chip">Fee on yield only · 2%</div>
+        </div>
+      </div>
+
+      <!-- SCENE 6: CTA (26-30s) -->
+      <div class="scene" id="sc6">
+        <div class="eyebrow">Start earning</div>
+        <div class="headline">Ship it in <span class="hi">3 lines</span>.</div>
+        <div class="cta-button">Install SDK</div>
+        <div class="url">clicksprotocol.xyz</div>
+      </div>
+
+      <div class="footer">clicksprotocol.xyz <span>·</span> Autonomous Yield for AI Agents</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Brand header fades in once, stays for the duration
+      tl.to(".brand", { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.2)
+        .from(".brand", { y: -30, duration: 0.6, ease: "power2.out" }, 0.2);
+
+      // Generic helper: show a scene between [start, end]
+      function showScene(id, start, end) {
+        tl.to(id, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, start);
+        tl.from(id + " .headline", { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, start + 0.1);
+        tl.from(id + " .eyebrow", { y: -20, opacity: 0, duration: 0.5, ease: "power2.out" }, start);
+        tl.to(id, { opacity: 0, duration: 0.5, ease: "power2.in" }, end - 0.5);
+      }
+
+      showScene("#sc1", 0.4, 4.0);
+      showScene("#sc2", 4.0, 9.0);
+      tl.from("#sc2 .bill", { x: -40, opacity: 0, stagger: 0.15, duration: 0.5, ease: "power2.out" }, 4.6);
+
+      showScene("#sc3", 9.0, 15.0);
+      tl.from("#sc3 .tile", { y: 50, opacity: 0, stagger: 0.2, duration: 0.6, ease: "back.out(1.4)" }, 9.6);
+
+      showScene("#sc4", 15.0, 21.0);
+      tl.from("#sc4 .code", { opacity: 0, scale: 0.95, duration: 0.8, ease: "power2.out" }, 15.6);
+
+      showScene("#sc5", 21.0, 26.0);
+      tl.from("#sc5 .chip", { y: 20, opacity: 0, stagger: 0.08, duration: 0.4, ease: "power2.out" }, 21.5);
+
+      showScene("#sc6", 26.0, 30.0);
+      tl.from("#sc6 .cta-button", { scale: 0.8, opacity: 0, duration: 0.6, ease: "back.out(1.6)" }, 26.6);
+      tl.from("#sc6 .url", { y: 10, opacity: 0, duration: 0.5, ease: "power2.out" }, 27.0);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

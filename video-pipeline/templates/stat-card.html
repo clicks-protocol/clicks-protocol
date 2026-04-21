@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Clicks Stat Card</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #070410;
+        font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+        color: #fff;
+      }
+      /* Aurora background */
+      body::before {
+        content: '';
+        position: absolute; inset: -100px;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(0,255,155,0.28) 0%, transparent 35%),
+          radial-gradient(circle at 70% 75%, rgba(120,60,255,0.22) 0%, transparent 40%),
+          radial-gradient(circle at 50% 50%, rgba(0,180,130,0.18) 0%, transparent 55%);
+        filter: blur(40px);
+      }
+      body::after {
+        content: '';
+        position: absolute; inset: 0;
+        background:
+          linear-gradient(180deg, rgba(7,4,16,0.4) 0%, rgba(7,4,16,0) 30%, rgba(7,4,16,0) 70%, rgba(7,4,16,0.6) 100%);
+      }
+
+      #root { position: relative; width: 100%; height: 100%; }
+
+      .brand {
+        position: absolute; top: 120px; left: 0; right: 0;
+        display: flex; align-items: center; justify-content: center; gap: 22px;
+      }
+      .brand-logo { width: 88px; height: 88px; filter: drop-shadow(0 0 30px rgba(0,255,155,0.7)); }
+      .brand-name {
+        font-size: 56px; font-weight: 900; letter-spacing: 10px;
+        color: #fff;
+        text-shadow: 0 0 32px rgba(0,255,155,0.9);
+      }
+
+      /* Glassmorphic card centered */
+      .card {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 880px;
+        padding: 100px 60px;
+        border-radius: 44px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.12);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        box-shadow:
+          0 0 80px rgba(0,255,155,0.22),
+          inset 0 1px 0 rgba(255,255,255,0.15);
+        text-align: center;
+      }
+      .stat {
+        font-size: 320px; font-weight: 900; line-height: 1;
+        letter-spacing: -8px;
+        color: #fff;
+        text-shadow:
+          0 0 40px rgba(0,255,155,0.9),
+          0 0 80px rgba(0,255,155,0.5),
+          0 0 140px rgba(0,255,155,0.25);
+      }
+      .label {
+        font-size: 64px; font-weight: 700; color: #fff;
+        margin-top: 40px; letter-spacing: -0.5px;
+      }
+      .subtext {
+        font-size: 32px; color: rgba(255,255,255,0.7);
+        margin-top: 28px; letter-spacing: 0.5px; line-height: 1.4;
+      }
+
+      .footer {
+        position: absolute; bottom: 110px; left: 0; right: 0;
+        text-align: center;
+        font-size: 26px; color: rgba(255,255,255,0.5); letter-spacing: 4px; text-transform: uppercase;
+      }
+
+      .brand, .card, .footer { opacity: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="8" data-width="1080" data-height="1920">
+      <div class="brand">
+        <img class="brand-logo" src="assets/icon.png" alt="Clicks" />
+        <div class="brand-name">CLICKS</div>
+      </div>
+
+      <div class="card">
+        <div class="stat" data-slot="stat">227</div>
+        <div class="label" data-slot="label">tests passing</div>
+        <div class="subtext" data-slot="subtext">Full V4 + V5 suite green</div>
+      </div>
+
+      <div class="footer">clicksprotocol.xyz</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.to(".brand",  { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.1)
+        .from(".brand",{ y: -30, duration: 0.6, ease: "power2.out" }, 0.1)
+        .to(".card",   { opacity: 1, duration: 0.8, ease: "power3.out" }, 0.6)
+        .from(".card", { scale: 0.88, duration: 0.8, ease: "power3.out" }, 0.6)
+        .from(".stat", { opacity: 0, y: 20, duration: 0.6, ease: "power2.out" }, 1.2)
+        .from(".label", { opacity: 0, y: 20, duration: 0.5, ease: "power2.out" }, 1.6)
+        .from(".subtext", { opacity: 0, y: 20, duration: 0.5, ease: "power2.out" }, 1.9)
+        .to(".footer",  { opacity: 1, duration: 0.6, ease: "power2.out" }, 2.4)
+        .to({}, { duration: 4.5 }, 3.0)
+        .to([".brand", ".card", ".footer"], { opacity: 0, duration: 0.4 }, 7.5);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
