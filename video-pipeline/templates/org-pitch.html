@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Clicks Protocol — Org Pitch</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1080px; height: 1920px; overflow: hidden;
+        background: #070410; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; color: #fff;
+      }
+      body::before {
+        content: ''; position: absolute; inset: -100px;
+        background:
+          radial-gradient(circle at 30% 25%, rgba(0,255,155,0.25) 0%, transparent 38%),
+          radial-gradient(circle at 75% 80%, rgba(120,60,255,0.22) 0%, transparent 42%),
+          radial-gradient(circle at 50% 55%, rgba(0,180,130,0.16) 0%, transparent 55%);
+        filter: blur(40px);
+      }
+      body::after {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(7,4,16,0.4) 0%, rgba(7,4,16,0) 35%, rgba(7,4,16,0) 70%, rgba(7,4,16,0.6) 100%);
+      }
+      #root { position: relative; width: 100%; height: 100%; }
+
+      .brand {
+        position: absolute; top: 90px; left: 0; right: 0; z-index: 10;
+        display: flex; align-items: center; justify-content: center; gap: 18px;
+      }
+      .brand-logo { width: 60px; height: 60px; filter: drop-shadow(0 0 18px rgba(0,255,155,0.55)); }
+      .brand-name {
+        font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #fff;
+        text-shadow: 0 0 20px rgba(0,255,155,0.85);
+      }
+
+      .scene {
+        position: absolute; inset: 0;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 0 80px; text-align: center; opacity: 0;
+      }
+      .eyebrow {
+        font-size: 28px; font-weight: 700; letter-spacing: 10px;
+        text-transform: uppercase; color: #00FF9B; margin-bottom: 32px;
+      }
+      .headline {
+        font-size: 108px; font-weight: 900; line-height: 1.02;
+        letter-spacing: -3px; color: #fff;
+      }
+      .headline .hi { color: #00FF9B; text-shadow: 0 0 30px rgba(0,255,155,0.6); }
+      .sub {
+        font-size: 40px; font-weight: 400; color: #c4c8d0;
+        margin-top: 36px; line-height: 1.35; max-width: 920px;
+      }
+
+      /* Repo card */
+      .repo-card {
+        margin-top: 56px; width: 880px; padding: 52px 56px;
+        border-radius: 28px; text-align: left;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(0,255,155,0.25);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 0 60px rgba(0,255,155,0.15);
+      }
+      .repo-path {
+        font-family: 'SF Mono', 'Monaco', monospace;
+        font-size: 38px; font-weight: 700; color: #00FF9B; letter-spacing: 0.5px;
+        margin-bottom: 22px;
+      }
+      .repo-desc { font-size: 30px; color: #e5e7eb; line-height: 1.5; margin-bottom: 28px; }
+      .repo-chips { display: flex; flex-wrap: wrap; gap: 12px; }
+      .repo-chip {
+        padding: 12px 22px; border-radius: 999px; font-size: 22px; font-weight: 600;
+        background: rgba(0,255,155,0.08); border: 1px solid rgba(0,255,155,0.3);
+        color: #a7f3d0; letter-spacing: 0.4px;
+      }
+
+      /* Integrations scene */
+      .integ-grid {
+        margin-top: 48px; display: grid; grid-template-columns: repeat(2, 1fr);
+        gap: 24px; max-width: 900px;
+      }
+      .integ {
+        padding: 32px 28px; border-radius: 22px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.12);
+        font-size: 30px; font-weight: 700;
+        text-align: center;
+      }
+      .integ .dot {
+        display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+        background: #00FF9B; margin-right: 12px;
+        box-shadow: 0 0 12px rgba(0,255,155,0.8); vertical-align: middle;
+      }
+
+      /* CTA */
+      .cta-url {
+        margin-top: 40px; padding: 28px 56px; border-radius: 999px;
+        background: #00FF9B; color: #0F0814;
+        font-size: 36px; font-weight: 900; letter-spacing: 1px;
+        font-family: 'SF Mono', 'Monaco', monospace;
+        box-shadow: 0 0 40px rgba(0,255,155,0.4);
+      }
+      .cta-label {
+        margin-top: 28px; font-size: 28px; color: #9ca3af; letter-spacing: 3px; text-transform: uppercase;
+      }
+
+      .footer {
+        position: absolute; bottom: 80px; left: 0; right: 0;
+        text-align: center; font-size: 22px; color: #6b7280;
+        letter-spacing: 3px; z-index: 10;
+      }
+      .footer span { color: #374151; margin: 0 8px; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="45"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div class="brand">
+        <img class="brand-logo clip" id="brand-logo" data-start="0" data-duration="45" data-track-index="1" src="assets/icon.png" alt="Clicks" />
+        <div class="brand-name">CLICKS</div>
+      </div>
+
+      <!-- SC1 Hero 0–5 -->
+      <div class="scene" id="sc1">
+        <div class="eyebrow">The Ecosystem</div>
+        <div class="headline">Clicks<br/><span class="hi">Protocol</span></div>
+        <div class="sub">Agent commerce settlement router on Base.<br/>Open-source. Built in public.</div>
+      </div>
+
+      <!-- SC2 monorepo 5–14 -->
+      <div class="scene" id="sc2">
+        <div class="eyebrow">Core Monorepo</div>
+        <div class="headline">The <span class="hi">engine</span></div>
+        <div class="repo-card">
+          <div class="repo-path">clicks-protocol/<br/>clicks-protocol</div>
+          <div class="repo-desc">Solidity contracts · TS SDK · MCP server · Landing · 227 tests green</div>
+          <div class="repo-chips">
+            <div class="repo-chip">USDC split 80/20</div>
+            <div class="repo-chip">x402</div>
+            <div class="repo-chip">MCP</div>
+            <div class="repo-chip">Solidity V4</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SC3 clicks (attestation skill) 14–23 -->
+      <div class="scene" id="sc3">
+        <div class="eyebrow">Reputation Layer</div>
+        <div class="headline">On-chain <span class="hi">trust</span></div>
+        <div class="repo-card">
+          <div class="repo-path">clicks-protocol/clicks</div>
+          <div class="repo-desc">ERC-8004 attestation skill · agentId 45074 live on Base · Schema V1 spec</div>
+          <div class="repo-chips">
+            <div class="repo-chip">ERC-8004</div>
+            <div class="repo-chip">Claude skill</div>
+            <div class="repo-chip">Base mainnet</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SC4 treasury-benchmark 23–32 -->
+      <div class="scene" id="sc4">
+        <div class="eyebrow">Neutral Metric</div>
+        <div class="headline">Measure<br/>before <span class="hi">ship.</span></div>
+        <div class="repo-card">
+          <div class="repo-path">clicks-protocol/<br/>treasury-benchmark</div>
+          <div class="repo-desc">Treasury Efficiency Score — neutral on-chain benchmark for agent USDC utilisation</div>
+          <div class="repo-chips">
+            <div class="repo-chip">TES</div>
+            <div class="repo-chip">public dataset</div>
+            <div class="repo-chip">agent-agnostic</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SC5 integrations 32–40 -->
+      <div class="scene" id="sc5">
+        <div class="eyebrow">Integrations</div>
+        <div class="headline">Plugs into <span class="hi">everything</span>.</div>
+        <div class="integ-grid">
+          <div class="integ"><span class="dot"></span>CrewAI</div>
+          <div class="integ"><span class="dot"></span>Eliza</div>
+          <div class="integ"><span class="dot"></span>LangChain</div>
+          <div class="integ"><span class="dot"></span>MCP clients</div>
+        </div>
+      </div>
+
+      <!-- SC6 CTA 40–45 -->
+      <div class="scene" id="sc6">
+        <div class="eyebrow">Open Source</div>
+        <div class="headline">Explore the <span class="hi">stack.</span></div>
+        <div class="cta-url">github.com/clicks-protocol</div>
+        <div class="cta-label">8 repos · Apache-2.0 · MIT</div>
+      </div>
+
+      <div class="footer">clicksprotocol.xyz <span>·</span> Autonomous Yield for AI Agents</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.to(".brand", { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.2)
+        .from(".brand", { y: -30, duration: 0.6, ease: "power2.out" }, 0.2);
+
+      function show(id, start, end) {
+        tl.to(id, { opacity: 1, duration: 0.6, ease: "power2.out" }, start);
+        tl.from(id + " .headline", { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, start + 0.1);
+        tl.from(id + " .eyebrow", { y: -20, opacity: 0, duration: 0.5, ease: "power2.out" }, start);
+        tl.to(id, { opacity: 0, duration: 0.5, ease: "power2.in" }, end - 0.5);
+      }
+
+      show("#sc1", 0.4, 5.0);
+      tl.from("#sc1 .sub", { opacity: 0, y: 20, duration: 0.6, ease: "power2.out" }, 1.0);
+
+      show("#sc2", 5.0, 14.0);
+      tl.from("#sc2 .repo-card", { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, 5.7);
+      tl.from("#sc2 .repo-chip", { y: 14, opacity: 0, stagger: 0.08, duration: 0.4, ease: "power2.out" }, 6.3);
+
+      show("#sc3", 14.0, 23.0);
+      tl.from("#sc3 .repo-card", { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, 14.7);
+      tl.from("#sc3 .repo-chip", { y: 14, opacity: 0, stagger: 0.08, duration: 0.4, ease: "power2.out" }, 15.3);
+
+      show("#sc4", 23.0, 32.0);
+      tl.from("#sc4 .repo-card", { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, 23.7);
+      tl.from("#sc4 .repo-chip", { y: 14, opacity: 0, stagger: 0.08, duration: 0.4, ease: "power2.out" }, 24.3);
+
+      show("#sc5", 32.0, 40.0);
+      tl.from("#sc5 .integ", { y: 30, opacity: 0, stagger: 0.12, duration: 0.5, ease: "back.out(1.4)" }, 32.7);
+
+      show("#sc6", 40.0, 45.0);
+      tl.from("#sc6 .cta-url", { scale: 0.8, opacity: 0, duration: 0.6, ease: "back.out(1.6)" }, 40.7);
+      tl.from("#sc6 .cta-label", { y: 10, opacity: 0, duration: 0.5, ease: "power2.out" }, 41.2);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>
