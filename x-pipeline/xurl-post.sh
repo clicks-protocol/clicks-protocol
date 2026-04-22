@@ -67,11 +67,15 @@ if [ -n "$MEDIA_PATH" ]; then
     exit 1
   fi
 
-  # Extract media id (xurl returns JSON with { data: { id: "..." } } or { media_id_string })
+  # Extract media id. xurl often prints a coloured status line alongside
+  # the JSON blob, so strip ANSI codes and grab the outermost {...} block.
   MEDIA_ID=$(echo "$UPLOAD_RESPONSE" | node -e "
   let raw='';process.stdin.on('data',c=>raw+=c).on('end',()=>{
     try {
-      const j=JSON.parse(raw);
+      const clean = raw.replace(/\x1b\[[0-9;]*m/g, '');
+      const m = clean.match(/\{[\s\S]*\}/);
+      if (!m) { process.stdout.write(''); return; }
+      const j = JSON.parse(m[0]);
       const id = (j.data && j.data.id) || j.media_id_string || j.media_id || '';
       process.stdout.write(String(id));
     } catch { process.stdout.write(''); }
@@ -82,6 +86,20 @@ if [ -n "$MEDIA_PATH" ]; then
     exit 1
   fi
   echo "Media uploaded: id=$MEDIA_ID"
+
+  # Video uploads return state=pending. X rejects posts referencing
+  # a still-processing media. xurl has a native --wait flag that
+  # blocks until the upload completes (or fails).
+  case "$ABS_PATH" in
+    *.mp4|*.mov|*.m4v|*.webm)
+      echo "Waiting for media processing..."
+      if ! xurl media status --wait "$MEDIA_ID" > /dev/null 2>&1; then
+        echo "Media processing did not succeed (status --wait failed)"
+        exit 1
+      fi
+      echo "Media ready."
+      ;;
+  esac
 fi
 
 # Post
