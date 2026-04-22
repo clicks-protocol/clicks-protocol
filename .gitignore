@@ -66,3 +66,11 @@ video-pipeline/index.html
 video-pipeline/render-log.json
 video-pipeline/.snapshot.html
 video-pipeline/.thumbnails/
+
+# Outreach — local-only (drafts, tracker, DM strategy stay off-repo)
+marketing/drafts/outreach/
+marketing/outreach-tracker.json
+marketing/outreach-tracker.md
+marketing/outreach-templates.md
+marketing/outreach/
+marketing/developer-outreach-list.md
