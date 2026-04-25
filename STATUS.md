@@ -1,6 +1,6 @@
 # Clicks Protocol Status
 
-> Stand: 2026-04-22 (Berlin, afternoon)
+> Stand: 2026-04-25 (Berlin, evening)
 > Priorität: P0
 > Update-Rule: **Jede Session endet mit Aktualisierung dieser Datei, bevor Emma/Claude die Arbeit niederlegt.** Staleness > 48 h = Drift-Risiko.
 
@@ -40,7 +40,18 @@
 
 **Outreach-Drafts:**
 - `marketing/drafts/outreach/cambrian-landscape-inclusion.md` — DM an @CambrianNetwork (nicht gesendet)
+- `marketing/drafts/outreach/yield-agents/heyelsa.md` — Tier-1 #1 Draft (3 Versionen: Short DM, Opening DM, Follow-up Email + Talking Points + Send Plan). **Nicht gesendet.** (Emma-Session 14:30)
+- `marketing/drafts/outreach/yield-agents/sail.md` — Tier-1 #2 Draft (3 Versionen + Talking Points + Send Plan). **Nicht gesendet.** (Emma-Session 14:30)
 - Zentraler Tracker: `marketing/outreach-tracker.json` (gitignored)
+
+**1-Pager (Pre-Outreach-Blocker gelöst, gerendert):**
+- [`marketing/drafts/one-pagers/clicks-architecture-2026-04.md`](marketing/drafts/one-pagers/clicks-architecture-2026-04.md) — 9-Slide Marp-Reference (advisor source).
+- [`marketing/drafts/one-pagers/clicks-architecture-2026-04.html`](marketing/drafts/one-pagers/clicks-architecture-2026-04.html) — Standalone landscape 1920×1080 HTML (eigenes CSS, kein Marp).
+- [`marketing/drafts/one-pagers/clicks-architecture-2026-04.png`](marketing/drafts/one-pagers/clicks-architecture-2026-04.png) — gerendertes Outreach-Attachment (Puppeteer, deviceScaleFactor 2 = 3840×2160).
+- [`marketing/drafts/one-pagers/clicks-architecture-2026-04.pdf`](marketing/drafts/one-pagers/clicks-architecture-2026-04.pdf) — gleiches Layout als PDF.
+- [`marketing/drafts/one-pagers/render.mjs`](marketing/drafts/one-pagers/render.mjs) — Render-Script (puppeteer-core via video-pipeline, system-Chrome).
+- **Inhalt:** Headline · Architektur-Flow (x402/ACP → SplitterV4 → 80/20 → {Liquid Ops, YieldRouter→Aave/Morpho}) · 3-Zeilen-SDK-Snippet · Proof-Row (agentId 45074 · Schema V1 · 227 tests · Base Mainnet · Apache-2.0). **Keine Contract-Adressen** auf dem 1-Pager (intentional — Adressen folgen separat im Evidence-Block der Follow-up-Email nach erstem Call).
+- **Offene Entscheidung David:** one-pagers/ gitignoren wie outreach/, oder tracked lassen? Aktuell tracked.
 
 ## Package Versions
 
@@ -58,7 +69,7 @@
 - **Virtuals ACP Alchemy Paymaster Bug** — Miratisu ohne Antwort seit 16.04.
 - **AgentKit PR #1107** — @murrlincoln Review ausstehend seit 17.04. Ping 21.04. gesendet.
 - **V5 Ship Gate:** MID-or-better ≥ 50 % der Clicks-Agents. Aktuell 0 %. Gate erreicht frühestens nach Virtuals-Validator-Whitelisting.
-- **1-Pager-PDF fehlt** — Emma empfiehlt: vor dem ersten Tier-1-Outreach-Send braucht's einen visuellen 1-Pager (SplitterV4 + YieldRouter + x402-Flow in einem Diagramm). Sonst Cold-DMs im "Was ist das konkret?"-Loop.
+- ~~**1-Pager-PDF fehlt**~~ → DONE 2026-04-22 (PNG + PDF gerendert, V4-only, contract-address-frei).
 
 ## Services / Cron
 
@@ -93,21 +104,44 @@
 - BaseScan Identity: https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074
 - Cursor Directory: listed (April 2026)
 
-## Nächste Schritte (priorisiert, 2026-04-22 → folgende Tage)
+## Conway Research / Automaton Integration (Stage 1, 2026-04-25)
 
-**Sofort (keine Abhängigkeit):**
-1. **1-Pager-Visual erstellen** — Markdown + Diagramm als HTML → PNG via video-pipeline-Puppeteer oder Marp/WeasyPrint zu PDF. Ohne das blockieren alle 8 Tier-1-Outreach.
-2. **Cambrian-DM senden** — Draft ready in `cambrian-landscape-inclusion.md`. Manuelle Aktion von David.
+Three permissionless tracks built today (no Conway-Research-Buy-In erforderlich):
 
-**Nach 1-Pager (diese Woche):**
-3. **HeyElsa-Outreach-Draft** (Emmas Top-1-Empfehlung, x402+Base+Coinbase-Backing)
-4. **Sail-Outreach-Draft** (Revenue-Problem, wir lösen es)
-5. Rest Tier 1 (Mamo, ARMA, Bankr, Infinit, Deep42, LlamaAI) parallel über 1-2 Wochen
+**Vorschlag 1 — Clicks-Skill für Conway-Research/skills**
+- [`integrations/conway-research-skills/clicks-protocol/SKILL.md`](integrations/conway-research-skills/clicks-protocol/SKILL.md) — YAML-frontmatter + markdown skill nach Convention von [Conway-Research/skills](https://github.com/Conway-Research/skills)
+- [`integrations/conway-research-skills/SKILLS.md.diff`](integrations/conway-research-skills/SKILLS.md.diff) — Index-Eintrag + PR-Body-Draft
+- [`integrations/conway-research-skills/README.md`](integrations/conway-research-skills/README.md) — Fork+PR-Befehlssequenz
+- **Status:** Draft komplett. Awaiting David go für Fork+PR (Rule #6).
+
+**Vorschlag 3 — Cross-Attestation Strategy**
+- [`strategy/CROSS-ATTESTATION-CONWAY.md`](strategy/CROSS-ATTESTATION-CONWAY.md) — Pattern A (we attest Conway agents), Pattern B (Conway agents attest us), Pattern C (deferred bilateral)
+- [`scripts/seed-conway-attestations.ts`](scripts/seed-conway-attestations.ts) — Dry-run-only. `--execute` blockt absichtlich, weil signer-Frage offen
+- [`scripts/conway-attestations.config.example.json`](scripts/conway-attestations.config.example.json) — Template. Hard Rule #1 enforced (Operator-Wallet als Attestor refused mit exit 3)
+- **Status:** Phase 0 ready. Phase 1 (erste echte Attestation) braucht David go + dedicated trusted-attestor wallet.
+
+**Vorschlag 5 — OpenX402 Facilitator Registration**
+- [`strategy/OPENX402-REGISTRATION.md`](strategy/OPENX402-REGISTRATION.md) — Was wir wissen / nicht wissen / Phase-Plan
+- [`scripts/openx402-register.ts`](scripts/openx402-register.ts) — Stub mit dry-run default
+- **Status:** Verified `POST /api/register` existiert (returns `{"error":"Missing required fields"}`). Spec unklar. Phase 2 = Conway DM/Email für Spec.
+
+## Nächste Schritte (priorisiert, 2026-04-25 → folgende Tage)
+
+**Sofort (keine Abhängigkeit, davids Aktion):**
+1. **HeyElsa-DM senden** — Version A (≤280 char) via X DM @heyelsa_ai. Draft: [`yield-agents/heyelsa.md`](marketing/drafts/outreach/yield-agents/heyelsa.md). 1-Pager-PNG attached bei Version C.
+2. **Sail-DM senden** — Version A via X DM @sail_money. Draft: [`yield-agents/sail.md`](marketing/drafts/outreach/yield-agents/sail.md). 1-Pager-PNG attached bei Version C.
+3. **Cambrian-DM senden** — Draft ready in `cambrian-landscape-inclusion.md`.
+4. **Conway-Research PR** (Vorschlag 1) — Fork `Conway-Research/skills`, copy `clicks-protocol/SKILL.md`, open PR. Befehlssequenz in `integrations/conway-research-skills/README.md`.
+5. **OpenX402-Spec-Anfrage** (Vorschlag 5) — DM/Reply an [@openx402](https://x.com/openx402), Email an root@conway.tech. Suggested message in `strategy/OPENX402-REGISTRATION.md`.
+6. **Cross-Attestation Phase 1** (Vorschlag 3) — Dedicated trusted-attestor wallet anlegen + erste Conway-Attestation via Safe ausführen. Voraussetzung: 3+ Conway-Automaton-IDs auf Base mainnet identifiziert.
+
+**Diese Woche:**
+7. Rest Tier 1 (Mamo, ARMA, Bankr, Infinit, Deep42, LlamaAI) parallel über 1-2 Wochen
 
 **Immer-offen:**
-6. Miratisu-DM via Discord (ACP-Paymaster-Bug unblocken)
-7. V5 NICHT deployen bis MID-or-better ≥ 50 %
-8. Engagement-Monitoring der heutigen Content-Ships nach 24/48 h
+8. Miratisu-DM via Discord (ACP-Paymaster-Bug unblocken)
+9. V5 NICHT deployen bis MID-or-better ≥ 50 %
+10. Engagement-Monitoring der Content-Ships nach 24/48 h
 
 ## Sync-Regeln zwischen Emma & Claude (neu)
 

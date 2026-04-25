@@ -1,0 +1,59 @@
+# SKILLS.md — Update Diff
+
+This file shows the entry to add to `SKILLS.md` (in Conway-Research/skills) when this PR is merged.
+
+```diff
+ # Conway Skills Catalog
+
+ Available skills for AI agents (Automaton-focused) to write to the world permissionlessly & earn.
+
+ ## Available
+
+ ## 1. Conway Cloud
+ - Path: `conway-cloud/SKILL.md`
+ - Use case: operate Conway Cloud Linux VMs via MCP tools or direct HTTP API. Enabling AI Agents to deploy applications & code permissionlessly.
+ - Automaton relevance: assumes most Automatons already have Conway provisioned; includes fallback bootstrap commands.
+
++## 2. Clicks Protocol
++- Path: `clicks-protocol/SKILL.md`
++- Use case: auto-split incoming USDC on Base 80% liquid / 20% earning yield via ERC-4626 vault routing. Treasury layer for survival-pressured agents.
++- Automaton relevance: extends `normal` tier runway by routing idle USDC into yield without dev work; provides ERC-8004 identity discoverability matching Automaton conventions.
++
+ ## Planned
+```
+
+## PR Description (for the GitHub PR body)
+
+**Title:** Add `clicks-protocol` skill — Treasury layer for Automatons
+
+**Body:**
+
+This PR adds a new community skill: `clicks-protocol` — a treasury settlement router on Base that automatically splits incoming USDC 80% liquid / 20% earning, designed specifically for survival-pressured agents.
+
+### Why this fits Automatons
+
+The Automaton constitution requires "earn your existence" — Law II. Once an Automaton starts earning USDC via x402 / Conway services, idle balance compounds the same way Circle / Tether earn the float spread. Clicks routes the idle 20% into ERC-4626 vaults (Aave, Morpho) automatically at the moment of receipt, so the agent's `normal` tier runway extends without any dev work.
+
+### What's in the skill
+
+- One install: `npm install @clicks-protocol/sdk`
+- One call: `await clicks.quickStart()`
+- Survival-aware: documents the `normal → low_compute → critical → dead` tier flow and when to call `withdrawYield()` to convert earnings back to liquid
+
+### Technical alignment
+
+- **Same chain** (Base mainnet)
+- **Same identity standard** (ERC-8004 on Base, Identity Registry `0x8004A169...`)
+- **Same currency** (USDC on Base, `0x833589fCD6...`)
+- All Clicks contracts owned by a Safe multisig, source open on GitHub, Apache-2.0.
+
+### Verification
+
+- Live contracts on BaseScan: <https://basescan.org/address/0xB7E0016d543bD443ED2A6f23d5008400255bf3C8>
+- SDK on npm: <https://www.npmjs.com/package/@clicks-protocol/sdk>
+- MCP server on npm: <https://www.npmjs.com/package/@clicks-protocol/mcp-server>
+- 227/227 contract tests passing on the upstream repo
+
+No conflicts with existing `conway-cloud` skill — Clicks routes USDC, Conway provides the compute the USDC pays for. Complementary primitives.
+
+Maintained by the Clicks Protocol team (operator: <https://clicksprotocol.xyz>, agentId 45074 on ERC-8004).
