@@ -1,9 +1,9 @@
 ---
 name: clicks-protocol
-description: "Integrate autonomous USDC yield into AI agent projects on Base. Query live APY, inspect agent treasury state, simulate payment splits, use the MCP server, and implement x402-aligned agent treasury flows with built-in 3-level referrals. Use when an agent holds idle USDC, needs treasury yield data, or wants programmable agent monetization."
-tags: [yield, defi, usdc, base, agent, treasury, x402, autonomous, aave, morpho, mcp, crypto]
+description: "Integrate Clicks Protocol settlement routing into AI agents on Base. Inspect agent treasury state, simulate USDC payment splits, route idle balances to yield, use the MCP server, and implement x402-aligned attribution flows."
+tags: [settlement, router, treasury, usdc, base, agent, x402, mcp, commerce, defi, aave, morpho]
 author: clicks-protocol
-version: 1.2.0
+version: 1.2.2
 license: MIT
 homepage: https://clicksprotocol.xyz
 metadata:
@@ -16,16 +16,16 @@ metadata:
 
 # Clicks Protocol
 
-Autonomous DeFi yield for AI agents on Base. 80% liquid, 20% earning by default. No lockup.
+Agent commerce settlement routing for AI agents on Base. Keep working capital liquid, route the idle slice into Aave V3 or Morpho, and make attribution explicit.
 
 ## When to Use
 
-- Check current DeFi yield rates on Base: Aave V3 vs Morpho Blue
+- Check current routed yield rates on Base: Aave V3 vs Morpho Blue
 - Query whether an agent is registered and inspect its treasury state
-- Preview how a USDC payment gets split between liquid funds and yield
-- Check referral network stats, team bonus status, and earned rewards
+- Preview how a USDC payment gets split between liquid operations and routed yield
+- Check explicit attribution stats, team bonus status, and earned rewards
 - Add x402-aligned treasury logic to AI agents that hold or route USDC
-- Give agents a monetization layer through referrals, yield spread, and treasury automation
+- Give agents a monetization layer through attribution, settlement policy, and treasury automation
 
 ## Commands
 
@@ -64,8 +64,8 @@ Returns: protocol overview, contract addresses, fee model, and links.
 ## How Clicks Works
 
 1. Agent receives a USDC payment.
-2. Clicks auto-splits funds: 80% stays liquid, 20% goes to DeFi yield.
-3. YieldRouter picks the best APY automatically between Aave V3 and Morpho Blue.
+2. Clicks routes settlement: 80% stays liquid, 20% goes to routed yield by default.
+3. YieldRouter picks the active backend between Aave V3 and Morpho Blue.
 4. Principal and earned yield can be withdrawn anytime.
 5. Protocol fee is 2% on yield only, never on principal.
 
@@ -90,13 +90,15 @@ What `quickStart('1000', agentAddress)` does:
 - routes 200 USDC to the best current yield source
 - leaves funds fully non-custodial and withdrawable
 
-With referrer:
+Explicit referral wrapper:
 
 ```typescript
-await clicks.quickStart('1000', agentAddress, referrerAddress);
+const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
+const signature = await clicks.signReferralApproval(agentAddress, referrerAddress, deadline);
+await clicks.quickStartWithReferral('1000', agentAddress, referrerAddress, deadline, signature);
 ```
 
-That activates the 3-level referral graph for agent-driven distribution.
+The current SDK keeps `referrerAddress` on `quickStart()` only for compatibility. Real attribution happens through `registerReferralWithSig()` or the `quickStartWithReferral()` wrapper.
 
 ## MCP Server
 
@@ -110,8 +112,9 @@ npx @clicks-protocol/mcp-server
 # POST https://mcp.clicksprotocol.xyz/mcp
 ```
 
-Available tools (10):
+Available tools (11):
 - clicks_quick_start
+- clicks_register_referral
 - clicks_receive_payment
 - clicks_withdraw_yield
 - clicks_register_agent
@@ -139,9 +142,9 @@ This lets agents monetize onboarding other agents, tools, teams, or x402 payment
 
 Agents with larger attributed downstream volume can unlock team bonus logic and higher economics. Use this when building agent ecosystems, operator dashboards, or monetized agent templates.
 
-### Yield Discovery Bounty
+### Settlement Discovery
 
-Agents can promote Clicks by showing live APY deltas, explaining idle-USDC optimization, and routing users into a working treasury flow.
+Agents can promote Clicks by explaining payment settlement, working-capital preservation, idle-USDC routing, and explicit attribution.
 
 ### x402 + ACP Alignment
 
@@ -161,8 +164,8 @@ Clicks is registered as **agentId 45074** on the Base ERC-8004 Identity Registry
 |---|---|
 | Chain | Base L2 |
 | Asset | USDC |
-| Split | 80% liquid / 20% yield by default |
-| Yield Range | Aave and Morpho, auto-routed |
+| Split | 80% liquid / 20% routed yield by default |
+| Yield Routing | Aave and Morpho backend selection |
 | Fee | 2% on yield only |
 | Lockup | None |
 | Referral | 3-level: 40% / 20% / 10% |

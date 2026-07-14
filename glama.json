@@ -3,5 +3,20 @@
   "maintainers": [
     "clicksprotocol"
   ],
-  "serverPath": "mcp-server"
+  "serverPath": "mcp-server",
+  "name": "Clicks Protocol MCP Server",
+  "description": "Agent commerce settlement tools on Base for treasury setup, payment splits, routed yield, attribution, and protocol discovery.",
+  "type": "mcp_server",
+  "status": "beta",
+  "transport": ["stdio", "streamable-http"],
+  "keywords": [
+    "agent-commerce",
+    "settlement-router",
+    "treasury",
+    "usdc",
+    "base",
+    "x402",
+    "mcp",
+    "ai-agents"
+  ]
 }

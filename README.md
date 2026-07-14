@@ -1,7 +1,7 @@
 <p align="center">
   <img src="assets/logo.svg" width="200" alt="Clicks Protocol Logo">
   <h1 align="center">Clicks Protocol ⚡</h1>
-  <p align="center">Your agent earns USDC. That USDC sits idle. Clicks fixes that.</p>
+  <p align="center">Agent commerce settlement routing for USDC flows on Base.</p>
 </p>
 
 <p align="center">
@@ -13,16 +13,15 @@
   <a href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"><img src="https://img.shields.io/badge/Base%20Mainnet-live-00FF9B" alt="Base Mainnet"></a>
   <a href="#"><img src="https://img.shields.io/badge/tests-227%20passing-00FF9B" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License"></a>
-  <a href="https://registry.modelcontextprotocol.io"><img src="https://img.shields.io/badge/MCP%20Registry-published-00FF9B" alt="MCP Registry"></a>
-  <a href="https://discord.gg/vkczMC8g3J"><img src="https://img.shields.io/badge/Discord-join-5865F2" alt="Discord"></a>
+  <a href="https://clicksprotocol.xyz/mcp/server.json"><img src="https://img.shields.io/badge/MCP%20metadata-valid-00FF9B" alt="MCP metadata"></a>
+  <a href="https://discord.gg/FfmJGUcxfe"><img src="https://img.shields.io/badge/Discord-join-5865F2" alt="Discord"></a>
   <a href="https://clawhub.ai/protogenosone/clicks-protocol"><img src="https://img.shields.io/badge/ClawHub-40%2B%20downloads-00FF9B" alt="ClawHub"></a>
-  <a href="https://cursor.directory/plugins/clicks-protocol"><img src="https://img.shields.io/badge/Cursor%20Directory-approved-00FF9B" alt="Cursor Directory"></a>
 </p>
 
 <p align="center">
   <a href="https://clicksprotocol.xyz">Website</a> ·
   <a href="https://x.com/ClicksProtocol">Twitter</a> ·
-  <a href="https://discord.gg/clicks-protocol">Discord</a> ·
+  <a href="https://discord.gg/FfmJGUcxfe">Discord</a> ·
   <a href="https://clicksprotocol.medium.com">Medium</a> ·
   <a href="https://substack.com/@clicksprotocol">Substack</a> ·
   <a href="https://reddit.com/user/clicksprotocol/">Reddit</a> ·
@@ -167,7 +166,7 @@ npm install @clicks-protocol/mcp-server
 CLICKS_PRIVATE_KEY=0x... clicks-mcp
 ```
 
-10 tools available: `clicks_quick_start`, `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`, `clicks_get_referral_stats`, `clicks_explain`
+11 tools available: `clicks_quick_start`, `clicks_register_referral`, `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_get_referral_stats`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`, `clicks_explain`
 
 Works with Claude, Cursor, LangChain, and any MCP-compatible client.
 
@@ -175,7 +174,7 @@ Works with Claude, Cursor, LangChain, and any MCP-compatible client.
 
 ## Referral Network
 
-Agents recruit agents. Three levels deep. On-chain.
+Referral contracts exist on-chain. Treat them as a separate attribution layer from the current SDK `quickStart()` helper.
 
 | Level | Share of protocol fee |
 |-------|----------------------|
@@ -184,7 +183,27 @@ Agents recruit agents. Three levels deep. On-chain.
 | L3 | 10% |
 | Treasury | 30% |
 
-The referred agent pays **nothing extra**. Rewards come from the 2% protocol fee.
+The referred agent pays **nothing extra**. Rewards come from the 2% protocol fee once referral attribution has been registered through a dedicated flow.
+
+Recommended flow:
+
+```typescript
+const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
+const signature = await clicks.signReferralApproval(agentAddress, referrerAddress, deadline);
+
+const result = await clicks.quickStartWithReferral(
+  '100',
+  agentAddress,
+  referrerAddress,
+  deadline,
+  signature,
+);
+```
+
+Important:
+- `quickStart()` handles treasury setup.
+- `registerReferralWithSig()` handles explicit attribution.
+- `quickStartWithReferral()` is a convenience wrapper over those two steps, not an atomic one-shot contract call.
 
 **Economics per $10k deposit at 7% APY:**
 
@@ -244,7 +263,7 @@ clicks-protocol/
 │   ├── ClicksRegistry      Agent ↔ Operator mapping
 │   └── ClicksReferral      Multi-level referral system
 ├── sdk/                 TypeScript SDK
-├── mcp-server/          MCP Server (10 tools)
+├── mcp-server/          MCP Server (11 tools)
 ├── site/                Landing page + llms.txt + agent.json
 └── test/                227 tests (Hardhat)
 ```
