@@ -1202,3 +1202,40 @@
 - Moltbook-Key rotieren.
 - Glama UI/Support anstossen.
 - Danach P1 starten: x402 Revenue Settlement Adapter als Prototyp.
+
+---
+
+## 2026-07-21 - Moltbook Pipeline reaktiviert
+
+**Trigger:** David lieferte neuen Moltbook-Key und gab den Auftrag, die Moltbook Pipeline neu zu befuellen, weil der Kanal wieder aktiv genutzt werden soll.
+
+**Befund vor Refill:**
+- Moltbook ist ein alter Clicks-Crosspost-Kanal fuer text-only Posts in AI-Agent- und Agent-Commerce-Submolts.
+- Account laut Doku: Bot `clicksprotocol`, Owner `DEVStarClicks`.
+- LaunchAgent `com.clicks.moltbook-crosspost` ist geladen und startet stuendlich Minute 07.
+- `bots/moltbook-state.json` zeigte `nextIndex=14`, letzter echter Post `2026-05-20T09:07:02Z`.
+- Logs zeigten nur noch `Source exhausted (14 posts). Nothing to do.`
+
+**Geliefert:**
+- Neuer Moltbook-Key lokal in Workspace-`.env` und Projekt-`.env` gesetzt. Key-Wert nicht in Doku oder Memory gespeichert.
+- `bots/moltbook-source.json` lokal mit 14 neuen Settlement-first Posts befuellt.
+- `bots/submolt-routing.json` auf neue Settlement-first Routen aktualisiert und auf `main` gepusht.
+- `bots/moltbook-state.json` lokal auf `nextIndex=0` gesetzt.
+
+**Content-Regeln fuer den Refill:**
+- Keine URLs im Postbody.
+- Keine Hashtags.
+- Keine APY-Claims.
+- Kein `supports x402`, keine automatische x402-Interception und keine built-in x402 Verification behauptet.
+- Fokus: x402 Payment versus Settlement, Seller-Side Revenue, Receipts, Treasury Policy, MCP-Queries und Audit.
+
+**Verifikation:**
+- JSON valid fuer Source, Routing und State.
+- 14 Posts, 14 Routen, alle Indizes abgedeckt.
+- Claim/Humanizer-Scan sauber: keine URLs, keine Hashtags, keine APY-Claims, keine harten x402-Support-Claims, keine Gedankenstriche im Content.
+- Naechster Post: Index 0 nach `agentcommerce`, Title `I keep seeing teams celebrate when they add x402 to an endpoint.`
+- Aktueller `origin/main` nach Routing-Commit: `b9be85a chore(bots): update moltbook settlement routing`.
+
+**Weiter offen:**
+- Nach dem 01:07-Berlin-Tick Logs pruefen und ersten Moltbook-Post zuruecklesen.
+- Wenn Spam-Flag kommt: Frequenz senken oder Engagement-First-Posts ohne Produktbezug bauen.

@@ -1,6 +1,6 @@
 # Clicks Protocol Status
 
-> Stand: 2026-07-21 (Berlin, PR #32 gemerged, Main sauber auf Settlement-first, Glama weiter stale)
+> Stand: 2026-07-21 (Berlin, PR #32 gemerged, Main sauber auf Settlement-first, Moltbook refilled, Glama weiter stale)
 > Priorität: P0
 > Update-Rule: **Jede Session endet mit Aktualisierung dieser Datei, bevor Emma/Claude die Arbeit niederlegt.** Staleness > 48 h = Drift-Risiko.
 > ⚠️ **Diese Datei war zwischen 13.05. und 13.07. veraltet. Heute auf Stand gezogen.**
@@ -21,6 +21,8 @@
 **GitHub main:** PR #32 `chore: align Clicks settlement router state` ist gemerged. Merge-Commit `ac1d837d103d22d0d10d035f0c4c49d4e6274df9`. Der bereinigte Settlement-first Stand ist damit remote auf `main`.
 
 **Security note:** Beim PR-Audit wurde ein Moltbook API-Key in einem Branch-Commit entdeckt. Der Commit wurde vor Merge aus der Branch-History entfernt und `main` enthaelt den Key nicht. Der Key war aber kurz auf GitHub sichtbar und muss rotiert werden.
+
+**Moltbook:** Neuer Key lokal gesetzt in Workspace-`.env` und Projekt-`.env`. LaunchAgent `com.clicks.moltbook-crosspost` ist aktiv und laeuft stuendlich Minute 07. Queue lokal mit 14 Settlement-first Textposts neu befuellt, `nextIndex=0`, naechster Ziel-Submolt `agentcommerce`. `bots/*-source.json` und `bots/*-state.json` bleiben absichtlich gitignored.
 
 **Live auf Base Mainnet:**
 - V4 Contracts: siehe CLAUDE.md (Safe Multisig `0xaD8228fE...`)

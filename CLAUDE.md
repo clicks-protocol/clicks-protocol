@@ -64,6 +64,7 @@ Nicht deployen bis Gate erfüllt.
 - Farcaster Mini App: https://clicksprotocol.xyz/miniapp/
 - GitHub: https://github.com/clicks-protocol/clicks-protocol
 - BaseScan Identity NFT: https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074
+- Moltbook: local launchd `com.clicks.moltbook-crosspost` active hourly at minute 07. Queue refilled locally with 14 Settlement-first text posts on 2026-07-21, next route `agentcommerce`. Queue/state files are intentionally gitignored runtime data.
 
 ## x402 Revenue Settlement
 
