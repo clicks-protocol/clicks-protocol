@@ -72,3 +72,12 @@ export const FEE_ABI = [
   'event FeeCollected(address indexed agent, uint256 amount)',
   'event FeeSwept(address indexed to, uint256 amount)',
 ] as const;
+
+/** ClicksReferral ABI */
+export const REFERRAL_ABI = [
+  'function registerReferral(address newAgent, address referrer)',
+  'function registerReferralWithSig(address newAgent, address referrer, uint256 deadline, bytes signature)',
+  'function referralNonces(address agent) view returns (uint256)',
+  'function getReferralStats(address agent) view returns (uint32 directCount, uint256 totalEarned, uint256 claimable, address referrer)',
+  'function getReferralChain(address agent) view returns (address[3])',
+] as const;

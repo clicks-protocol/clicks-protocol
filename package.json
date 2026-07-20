@@ -1,7 +1,7 @@
 {
   "name": "clicks-protocol",
   "version": "0.1.0",
-  "description": "On-chain yield protocol for AI agents",
+  "description": "Agent commerce settlement router for AI agents on Base",
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",

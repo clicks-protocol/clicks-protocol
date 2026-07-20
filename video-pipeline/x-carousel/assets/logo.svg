@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 512 512"
+   fill="none"
+   version="1.1"
+   id="svg3"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs3" />
+  <!-- CLICKS PROTOCOL — Final Logo Icon -->
+  <!-- Pill Toggle + Spark Lines = "Yield: ON" -->
+  <!-- Pill track -->
+  <rect
+     x="100"
+     y="192"
+     width="312"
+     height="128"
+     rx="64"
+     stroke="#00FF9B"
+     stroke-width="16"
+     fill="none"
+     id="rect1" />
+  <!-- Knob ON -->
+  <circle
+     cx="348"
+     cy="256"
+     r="48"
+     fill="#00FF9B"
+     id="circle1" />
+  <!-- Spark lines -->
+  <line
+     x1="404"
+     y1="224"
+     x2="420"
+     y2="208"
+     stroke="#00FF9B"
+     stroke-width="7"
+     stroke-linecap="round"
+     opacity="0.45"
+     id="line1" />
+  <line
+     x1="408"
+     y1="256"
+     x2="428"
+     y2="256"
+     stroke="#00FF9B"
+     stroke-width="7"
+     stroke-linecap="round"
+     opacity="0.45"
+     id="line2" />
+  <line
+     x1="404"
+     y1="288"
+     x2="420"
+     y2="304"
+     stroke="#00FF9B"
+     stroke-width="7"
+     stroke-linecap="round"
+     opacity="0.45"
+     id="line3" />
+</svg>

@@ -1,0 +1,14 @@
+{
+  "_comment": "Example config for seed-conway-attestations.ts. Copy to conway-attestations.config.json (gitignored). Never commit real attestor wallet keys.",
+  "_rule_1_reminder": "attestorWallet MUST NOT be 0xf873BB73e10D24cD3CF9bBed917F5E2d07dA8B80 (Operator). Hard Rule #1.",
+  "attestorWallet": "0x0000000000000000000000000000000000000000",
+  "rpcUrl": "https://mainnet.base.org",
+  "agents": [
+    {
+      "_comment": "Replace with real Conway Automaton agentIds once observed live",
+      "agentId": 0,
+      "wallet": "0x0000000000000000000000000000000000000000",
+      "firstSeenBlock": 0
+    }
+  ]
+}

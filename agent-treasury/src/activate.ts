@@ -221,14 +221,14 @@ export class ClicksActivator {
   }
 
   /**
-   * Quick start: one-call yield activation.
-   * Checks balance, finds best yield, deposits via Clicks.
+   * Quick start: one-call settlement routing.
+   * Checks balance, finds the active yield route, deposits via Clicks.
    */
   static quickStartMessage(idleAmount: string): string {
     return [
       `💰 You have ${idleAmount} USDC sitting idle.`,
       ``,
-      `Activate yield with Clicks Protocol:`,
+      `Route settlement with Clicks Protocol:`,
       `  const clicks = new ClicksActivator();`,
       `  await clicks.deposit(signer, "${idleAmount}");`,
       ``,

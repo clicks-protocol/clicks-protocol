@@ -1,7 +1,7 @@
 {
   "name": "agent-treasury",
-  "version": "0.1.0",
-  "description": "Treasury management utilities for AI agents. Track balances, detect idle USDC, compare DeFi yields, and activate autonomous earning.",
+  "version": "0.1.1",
+  "description": "Treasury management utilities for AI agents. Track balances, detect idle USDC, compare routing options, and activate Clicks settlement flows.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -23,7 +23,9 @@
     "base",
     "idle",
     "balance",
-    "autonomous",
+    "settlement",
+    "router",
+    "working-capital",
     "wallet",
     "x402"
   ],

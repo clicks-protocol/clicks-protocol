@@ -78,7 +78,7 @@ export default function ApiReferencePage() {
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('1000', agentAddress);
 // 800 USDC → liquid (instant access)
-// 200 USDC → earning 4-8% APY (withdraw anytime)`} />
+// 200 USDC → treasury yield route (withdraw anytime)`} />
         <p className="text-muted-foreground text-sm">
           That&apos;s it. No config. No dashboard. No human required.
         </p>
@@ -95,7 +95,7 @@ await clicks.quickStart('1000', agentAddress);
           params={[
             { name: 'amount', type: 'string', desc: 'USDC amount (human-readable, e.g. "1000")' },
             { name: 'agentAddress', type: 'string', desc: 'Agent wallet address' },
-            { name: 'referrerAddress', type: 'string', desc: 'Optional referrer address for referral rewards' },
+            { name: 'referrerAddress', type: 'string', desc: 'Optional reserved parameter. Current quickStart flow does not assign referral attribution on-chain.' },
           ]}
           returns="{ registered: boolean, approved: boolean, paymentSplit: boolean }"
           example={`const result = await clicks.quickStart('100', agentAddress);
@@ -103,8 +103,47 @@ await clicks.quickStart('1000', agentAddress);
 // result.approved     → true (skips if allowance sufficient)
 // result.paymentSplit → true
 
-// With referrer (L1=40%, L2=20%, L3=10% of protocol fee)
+// The SDK currently accepts referrerAddress for forward compatibility only.
 await clicks.quickStart('1000', agentAddress, referrerAddress);`}
+        />
+
+        <MethodSection
+          name="registerReferralWithSig"
+          signature="registerReferralWithSig(agentAddress: string, referrerAddress: string, deadline: bigint, signature: string): Promise<ReferralRegistrationResult>"
+          description="Explicit referral attribution after treasury setup. The agent signs approval off-chain, and an authorized caller submits it on-chain."
+          params={[
+            { name: 'agentAddress', type: 'string', desc: 'Agent wallet address being attributed' },
+            { name: 'referrerAddress', type: 'string', desc: 'Referrer address to assign' },
+            { name: 'deadline', type: 'bigint', desc: 'Unix timestamp after which the approval expires' },
+            { name: 'signature', type: 'string', desc: 'EIP-712 signature from the agent wallet' },
+          ]}
+          returns="{ txHash: string }"
+          example={`const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
+const signature = await clicks.signReferralApproval(agentAddress, referrerAddress, deadline);
+const result = await clicks.registerReferralWithSig(agentAddress, referrerAddress, deadline, signature);
+console.log(result.txHash);`}
+        />
+
+        <MethodSection
+          name="quickStartWithReferral"
+          signature="quickStartWithReferral(amount: string, agentAddress: string, referrerAddress: string, deadline: bigint, signature: string): Promise<QuickStartWithReferralResult>"
+          description="Convenience wrapper that runs treasury setup first and referral attribution second. It is intentionally not atomic."
+          params={[
+            { name: 'amount', type: 'string', desc: 'USDC amount (human-readable, e.g. \"1000\")' },
+            { name: 'agentAddress', type: 'string', desc: 'Agent wallet address' },
+            { name: 'referrerAddress', type: 'string', desc: 'Referrer address to assign after treasury setup' },
+            { name: 'deadline', type: 'bigint', desc: 'Unix timestamp after which the approval expires' },
+            { name: 'signature', type: 'string', desc: 'EIP-712 signature from the agent wallet' },
+          ]}
+          returns="{ treasury: QuickStartResult, referralRegistered: boolean, referralTxHash?: string, referralError?: string }"
+          example={`const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
+const signature = await clicks.signReferralApproval(agentAddress, referrerAddress, deadline);
+const result = await clicks.quickStartWithReferral('1000', agentAddress, referrerAddress, deadline, signature);
+
+console.log(result.treasury.txHashes);
+console.log(result.referralRegistered);
+console.log(result.referralTxHash);
+console.log(result.referralError);`}
         />
 
         <MethodSection
@@ -219,7 +258,7 @@ const agent = await clicks.getAgentInfo(agentAddress);
         <CodeBlock code={`npm install -g @clicks-protocol/mcp-server
 CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
 
-        <h3 className="text-lg font-semibold mt-6 mb-4 text-foreground">Available Tools (9)</h3>
+        <h3 className="text-lg font-semibold mt-6 mb-4 text-foreground">Available Tools (11)</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -230,17 +269,19 @@ CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
               </tr>
             </thead>
             <tbody>
-              {[
-                { tool: 'clicks_quick_start', type: '✍️ write', desc: 'One-call setup + first payment' },
-                { tool: 'clicks_receive_payment', type: '✍️ write', desc: 'Split incoming USDC payment' },
-                { tool: 'clicks_withdraw_yield', type: '✍️ write', desc: 'Withdraw principal + yield' },
-                { tool: 'clicks_register_agent', type: '✍️ write', desc: 'Register new agent' },
-                { tool: 'clicks_set_yield_pct', type: '✍️ write', desc: 'Set custom yield percentage' },
-                { tool: 'clicks_get_agent_info', type: '📖 read', desc: 'Agent registration + balance info' },
-                { tool: 'clicks_simulate_split', type: '📖 read', desc: 'Preview payment split' },
-                { tool: 'clicks_get_yield_info', type: '📖 read', desc: 'Current APY + active protocol' },
-                { tool: 'clicks_get_referral_stats', type: '📖 read', desc: 'Referral network stats' },
-              ].map((row) => (
+                {[
+                  { tool: 'clicks_quick_start', type: '✍️ write', desc: 'One-call setup + first payment' },
+                  { tool: 'clicks_register_referral', type: '✍️ write', desc: 'Explicit referral attribution with agent signature' },
+                  { tool: 'clicks_receive_payment', type: '✍️ write', desc: 'Split incoming USDC payment' },
+                  { tool: 'clicks_withdraw_yield', type: '✍️ write', desc: 'Withdraw principal + yield' },
+                  { tool: 'clicks_register_agent', type: '✍️ write', desc: 'Register new agent' },
+                  { tool: 'clicks_set_yield_pct', type: '✍️ write', desc: 'Set custom yield percentage' },
+                  { tool: 'clicks_get_agent_info', type: '📖 read', desc: 'Agent registration + balance info' },
+                  { tool: 'clicks_simulate_split', type: '📖 read', desc: 'Preview payment split' },
+                  { tool: 'clicks_get_yield_info', type: '📖 read', desc: 'Current APY + active protocol' },
+                  { tool: 'clicks_get_referral_stats', type: '📖 read', desc: 'Referral network stats' },
+                  { tool: 'clicks_explain', type: '📖 read', desc: 'Agent-to-agent protocol explanation' },
+                ].map((row) => (
                 <tr key={row.tool} className="border-b border-white/5">
                   <td className="py-3 pr-4">
                     <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">{row.tool}</code>

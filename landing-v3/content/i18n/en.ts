@@ -7,9 +7,9 @@
 
 const en = {
   meta: {
-    title: 'Clicks Protocol — Autonomous Yield for AI Agents',
+    title: 'Clicks Protocol — Agent Commerce Settlement Router',
     description:
-      "Your AI agent's USDC shouldn't sit idle. Earn 4–8% APY in one SDK call. No lockup. Built on Base.",
+      'Settlement routing for AI agents on Base. Route revenue, split payouts, produce receipts, and keep treasury policy programmable.',
   },
   nav: {
     howItWorks: 'How it Works',
@@ -22,16 +22,16 @@ const en = {
     docs: 'Docs',
   },
   hero: {
-    badge: 'Built for x402 Economy',
-    headline: 'Autonomous Yield for AI\u00A0Agents',
+    badge: 'Built for agent revenue settlement',
+    headline: 'Agent Commerce Settlement\u00A0Router',
     subhead:
-      "Your AI agent's USDC shouldn't sit idle. Earn 4\u20138% APY in one SDK call. No\u00A0lockup. Built on\u00A0Base.",
-    ctaPrimary: 'Start Earning Yield',
+      'Route incoming USDC into liquid working capital, yield routing, attribution, and audit-ready receipts. One SDK call. Built on\u00A0Base.',
+    ctaPrimary: 'Start Settling Revenue',
     ctaSecondary: 'Read the Docs',
     integratesWith: 'Integrates with',
     codeCaption: 'Live in 3 lines',
     codeCommentLiquid: '// 80 USDC → agent wallet (instant)',
-    codeCommentYield: '// 20 USDC → DeFi yield (4-8% APY)',
+    codeCommentYield: '// 20 USDC → treasury yield route',
   },
   stats: {
     baseMainnet: 'Base Mainnet',
@@ -56,13 +56,13 @@ const en = {
     step3Label: 'Step 3',
     step3Title: 'Earn Yield',
     step3Desc: 'Earning starts instantly. Pull funds any time.',
-    step3CodeComment: '// 4-8% APY, zero lockup',
+    step3CodeComment: '// Variable yield route, zero lockup',
   },
   x402: {
-    headline: 'Built for the x402 Economy',
-    sub: 'Native payment infrastructure for autonomous agents',
+    headline: 'Built for x402 Revenue Settlement',
+    sub: 'Post-payment treasury routing for autonomous agents',
     tabWallets: 'Agentic Wallets',
-    tabProtocols: 'Supported Protocols',
+    tabProtocols: 'Settlement Layer',
     tabEconomy: 'Economy Benefits',
     walletsTitle: 'Base Native',
     walletsDesc:
@@ -70,12 +70,12 @@ const en = {
     walletsBullet1: 'Sub-cent transaction fees',
     walletsBullet2: 'Instant settlement (2 seconds)',
     walletsBullet3: 'EVM-compatible smart contracts',
-    protocolsTitle: 'x402 Compatible',
+    protocolsTitle: 'After x402 Payment',
     protocolsDesc:
-      'Standards-compliant agent payment protocol. Works with any x402 agent.',
-    protocolsBullet1: 'Automatic payment routing',
-    protocolsBullet2: 'Built-in yield optimization',
-    protocolsBullet3: 'Transparent fee structure',
+      'x402 handles authorization and payment. Clicks routes USDC after receipt.',
+    protocolsBullet1: 'Post-payment settlement routing',
+    protocolsBullet2: 'Programmable treasury policy',
+    protocolsBullet3: 'Receipt-ready accounting',
     economyTitle: 'One SDK Call',
     economyDesc:
       'Simple integration, complex yield strategies handled. Focus on building.',

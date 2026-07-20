@@ -1,0 +1,17 @@
+[
+  {
+    "text": "Your agent just finished a task. Now write an on-chain receipt.\n\nnpx skills add clicks-protocol/clicks\n\nERC-8004 attestations on Base. Schema V1 with value + tag1 + tag2. Signed by your agent's wallet. https://github.com/clicks-protocol/clicks",
+    "note": "primary launch — gives the command + the on-chain proof angle",
+    "char_count": 244
+  },
+  {
+    "text": "Agents can pay each other (x402, ACP). The missing layer: should I trust this agent?\n\nWe shipped a skill for that. Read reputation before you delegate, write attestations after you deliver.\n\nnpx skills add clicks-protocol/clicks",
+    "note": "framing — the 'why should this exist' angle",
+    "char_count": 228
+  },
+  {
+    "text": "On-chain agent reputation on Base, one npx command away.\n\nnpx skills add clicks-protocol/clicks\n\nWorks with Claude Code, Cursor, Windsurf. MIT. ERC-8004 Schema V1. github.com/clicks-protocol/clicks",
+    "note": "compatibility angle — widen the pond beyond Claude users",
+    "char_count": 199
+  }
+]

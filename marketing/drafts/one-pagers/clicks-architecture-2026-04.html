@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Clicks Protocol — Agent Commerce Settlement Router</title>
+<style>
+  :root {
+    --bg-0: #060B14;
+    --bg-1: #0E1A2C;
+    --ink-0: #EAF1FA;
+    --ink-1: #B7C7DB;
+    --accent: #4FC3F7;
+    --accent-2: #82FFC9;
+    --warm: #FFB347;
+    --line: rgba(127, 175, 220, 0.35);
+    --card: rgba(20, 36, 58, 0.78);
+  }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg-0);
+    color: var(--ink-0);
+    font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    width: 1920px; height: 1080px;
+    overflow: hidden;
+  }
+  body {
+    background:
+      radial-gradient(1100px 700px at 18% 12%, rgba(79,195,247,0.18), transparent 65%),
+      radial-gradient(900px 600px at 88% 92%, rgba(130,255,201,0.12), transparent 60%),
+      linear-gradient(135deg, var(--bg-0) 0%, var(--bg-1) 100%);
+    padding: 56px 72px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 28px;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 22px;
+  }
+  .brand {
+    font-size: 42px; font-weight: 800; letter-spacing: -0.5px;
+    color: var(--ink-0);
+  }
+  .brand .dot { color: var(--accent); }
+  .tagline {
+    margin-top: 8px;
+    font-size: 22px; color: var(--ink-1); font-weight: 500;
+  }
+  .meta {
+    text-align: right;
+    font-size: 16px; color: var(--ink-1);
+    line-height: 1.5;
+  }
+  .meta .stamp {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 13px; color: var(--accent);
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  main {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 40px;
+    align-items: stretch;
+  }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px 32px;
+    backdrop-filter: blur(10px);
+  }
+  .panel h2 {
+    margin: 0 0 18px 0;
+    font-size: 18px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto auto;
+    gap: 14px;
+    margin-top: 8px;
+    align-items: center;
+    justify-items: center;
+  }
+  .node {
+    background: linear-gradient(160deg, rgba(79,195,247,0.10), rgba(20,36,58,0.6));
+    border: 1px solid rgba(79,195,247,0.45);
+    border-radius: 14px;
+    padding: 14px 18px;
+    text-align: center;
+    min-width: 240px;
+  }
+  .node .label {
+    font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase;
+    color: var(--ink-1);
+  }
+  .node .name {
+    font-size: 19px; font-weight: 700; color: var(--ink-0);
+    margin-top: 4px;
+  }
+  .node .sub {
+    display: block;
+    font-weight: 500; font-size: 13px; color: var(--ink-1);
+    margin-top: 4px;
+  }
+  .node.accent {
+    border-color: var(--accent-2);
+    background: linear-gradient(160deg, rgba(130,255,201,0.16), rgba(20,36,58,0.6));
+    box-shadow: 0 0 28px rgba(130,255,201,0.20);
+    min-width: 320px;
+  }
+  .node.warm {
+    border-color: rgba(255,179,71,0.6);
+    background: linear-gradient(160deg, rgba(255,179,71,0.10), rgba(20,36,58,0.6));
+  }
+
+  .arrow {
+    color: var(--accent);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .branches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    width: 100%;
+  }
+  .branch {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .branch-label {
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .flow-caption {
+    margin-top: 24px;
+    font-size: 16px; color: var(--ink-1);
+    line-height: 1.55;
+  }
+  .flow-caption strong { color: var(--ink-0); }
+
+  /* Right column */
+  .right {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 24px;
+  }
+  .what {
+    font-size: 16px; line-height: 1.55; color: var(--ink-1);
+  }
+  .what strong { color: var(--ink-0); }
+  .what ul { margin: 10px 0 0 0; padding-left: 18px; }
+  .what li { margin-bottom: 6px; }
+
+  .snippet {
+    background: #02060C;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    font-family: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #DCEFFB;
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+  }
+  .snippet .kw { color: #FF8AB3; }
+  .snippet .fn { color: #82FFC9; }
+  .snippet .str { color: #FFD78A; }
+  .snippet .var { color: #4FC3F7; }
+  .snippet .com { color: #5C7593; }
+
+  /* Proof row */
+  footer {
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .proofs {
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .proof {
+    background: rgba(79,195,247,0.08);
+    border: 1px solid rgba(79,195,247,0.3);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: var(--ink-0);
+    letter-spacing: 0.3px;
+  }
+  .proof strong { color: var(--accent-2); }
+
+  .contact {
+    text-align: right;
+    font-size: 14px;
+    color: var(--ink-1);
+    line-height: 1.5;
+  }
+  .contact .url { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand">Clicks Protocol<span class="dot">.</span></div>
+    <div class="tagline">Agent Commerce Settlement Router — live on Base. USDC-native. Verifiable on-chain.</div>
+  </div>
+  <div class="meta">
+    1-Pager · Architecture Overview<br/>
+    Stand 2026-04-22<br/>
+    <span class="stamp">ERC-8004 agentId 45074</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Left: Flow -->
+  <section class="panel">
+    <h2>What Clicks does — in one flow</h2>
+
+    <div class="flow">
+      <div class="node warm">
+        <div class="label">Ingress</div>
+        <div class="name">x402 / ACP<span class="sub">payment in USDC</span></div>
+      </div>
+
+      <div class="arrow">↓</div>
+
+      <div class="node accent">
+        <div class="label">Settlement primitive</div>
+        <div class="name">ClicksSplitterV4<span class="sub">multi-party split · one call · attribution on-chain</span></div>
+      </div>
+
+      <div class="arrow">↓ &nbsp; 80 / 20 split</div>
+
+      <div class="branches">
+        <div class="branch">
+          <div class="branch-label">Operational 80%</div>
+          <div class="node" style="width:100%; box-sizing:border-box;">
+            <div class="label">Agent wallet</div>
+            <div class="name" style="font-size:17px;">Liquid Ops Float<span class="sub">immediate USDC for agent actions</span></div>
+          </div>
+        </div>
+        <div class="branch">
+          <div class="branch-label">Yield 20%</div>
+          <div class="node" style="width:100%; box-sizing:border-box;">
+            <div class="label">ClicksYieldRouter</div>
+            <div class="name" style="font-size:17px;">Aave V3 · Morpho<span class="sub">3rd-party ERC-4626 vaults · zero Clicks custody</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="flow-caption">
+      One contract call. <strong>Deterministic split.</strong> Every party attributable on-chain.
+      We don't operate vaults — we route flow into audited 3rd-party ERC-4626.
+      <em>Smaller surface = more composable.</em>
+    </p>
+  </section>
+
+  <!-- Right column -->
+  <aside class="right">
+
+    <div class="panel what">
+      <h2>The Wedge</h2>
+      <p style="margin-top:0;"><strong>19 % of on-chain activity is now AI-agent-driven.</strong>
+      <strong>100 % of their USDC sits idle by default.</strong></p>
+      <ul>
+        <li>Every agent-builder reimplements: fee split, attribution, idle-USDC-to-vault.</li>
+        <li>Clicks is the missing primitive — drop-in, one call site.</li>
+        <li>No new chain. No new token. No vault custody.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h2>SDK — drop-in, 3 lines</h2>
+      <pre class="snippet"><span class="kw">import</span> { ClicksClient } <span class="kw">from</span> <span class="str">"@clicks-protocol/sdk"</span>;
+<span class="kw">const</span> <span class="var">clicks</span> = <span class="kw">new</span> <span class="fn">ClicksClient</span>({ chain: <span class="str">"base"</span>, signer });
+<span class="kw">await</span> clicks.<span class="fn">splitAndRoute</span>({ amountUsdc, ops: <span class="var">0.8</span>, yield: <span class="var">0.2</span> });</pre>
+    </div>
+
+  </aside>
+
+</main>
+
+<footer>
+  <div class="proofs">
+    <div class="proof"><strong>agentId 45074</strong> · ERC-8004</div>
+    <div class="proof"><strong>Schema V1</strong> attestation on-chain</div>
+    <div class="proof"><strong>227 / 227</strong> tests green</div>
+    <div class="proof"><strong>Base Mainnet</strong> · Safe-owned</div>
+    <div class="proof"><strong>Apache-2.0</strong></div>
+  </div>
+  <div class="contact">
+    <span class="url">clicksprotocol.xyz</span><br/>
+    david@clicksprotocol.xyz
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,21 +1,15 @@
 /**
  * Clicks Protocol ACP Service Provider — Fund-Transfer Variant
  *
- * Offering: "Auto-Yield Treasury Setup" — FREE service fee
+ * Offering: "Treasury Setup" — FREE service fee
  *   - Required Funds: Agent's own USDC (minimum 10 USDC recommended)
- *   - Service action: calls clicks.quickStart() with OUR referrer address baked in
- *   - Result: Agent gets 80% liquid + 20% yield + registered in our referral tree
+ *   - Service action: calls clicks.quickStart() for the hiring agent
+ *   - Result: Agent gets 80% liquid + 20% yield via the current Clicks setup path
  *
- * The Trojan Horse:
- *   - Agent thinks they got a free registration service
- *   - In reality: they're now in our referral tree, future fees flow to us
- *   - No extra cost for the agent (their USDC stays theirs, 80% instant, 20% earns)
- *   - Viral compound: when agent refers others, we earn L2/L3
- *
- * Config-driven referrer:
- *   - OUR_REFERRER_ADDRESS set via env (the Safe multisig or a dedicated wallet)
- *   - Every job registers the hiring agent under this address
- *   - 40% of all future protocol fees from this agent flow to referrer
+ * Optional referral mode:
+ *   - Treasury setup and referral attribution are separate steps
+ *   - Referral attribution only runs when agent-signed approval is provided
+ *   - The ACP caller must also be authorized on ClicksReferral
  */
 
 import {
@@ -27,6 +21,7 @@ import type { JobSession, JobRoomEntry } from "@virtuals-protocol/acp-node-v2";
 import { baseSepolia, base } from "@account-kit/infra";
 import { ClicksClient } from "@clicks-protocol/sdk";
 import { ethers } from "ethers";
+import type { Address } from "viem";
 
 // ─── Configuration ────────────────────────────────────────────────────────
 
@@ -41,13 +36,24 @@ const CONFIG = {
   clicksRpcUrl: process.env.CLICKS_RPC_URL || "https://mainnet.base.org",
   clicksPrivateKey: process.env.CLICKS_PRIVATE_KEY || process.env.PRIVATE_KEY || "",
 
-  // The referrer address registered for all incoming agents
-  // Default: Safe multisig (treasury earns from the MLM)
+  // Reserved for future dedicated referral registration flow.
+  // Current SDK quickStart does not apply this on-chain.
   ourReferrerAddress:
     process.env.CLICKS_REFERRER_ADDRESS ||
     process.env.CLICKS_SAFE_ADDRESS ||
     "0xaD8228fE91Ef7f900406D3689E21BD29d5B1D6A9",
+
+  // Default USDC amount when requirements don't specify (minimum)
+  defaultTransferAmount: "10",
+
+  // Destination for fund-transfer hook — computed lazily in validate()
+  fundTransferDestination: "" as Address,
 };
+
+const REFERRAL_ABI = [
+  "function registerReferralWithSig(address newAgent, address referrer, uint256 deadline, bytes signature) external",
+  "function authorized(address) external view returns (bool)",
+] as const;
 
 // ─── Validation ───────────────────────────────────────────────────────────
 
@@ -62,20 +68,38 @@ function validate() {
     console.error(`Invalid referrer address: ${CONFIG.ourReferrerAddress}`);
     process.exit(1);
   }
+
+  // Derive operator wallet address for fund-transfer destination
+  const operatorAddr = process.env.CLICKS_OPERATOR_ADDRESS ||
+    new ethers.Wallet(CONFIG.clicksPrivateKey).address;
+  if (!ethers.isAddress(operatorAddr)) {
+    console.error(`Invalid operator/fund-transfer destination: ${operatorAddr}`);
+    process.exit(1);
+  }
+  CONFIG.fundTransferDestination = operatorAddr as Address;
 }
 
 // ─── Job Handler ──────────────────────────────────────────────────────────
 
 interface JobRequirements {
-  amount: string;          // USDC amount (must match required funds)
-  customReferrer?: string; // Optional: agent can specify their own referrer
+  amount: string; // USDC amount (must match required funds)
+  referrerAddress?: string;
+  referralDeadline?: string;
+  referralSignature?: string;
+}
+
+interface ReferralAttemptResult {
+  attempted: boolean;
+  registered: boolean;
+  txHash?: string;
+  reason?: string;
 }
 
 async function executeJob(
   requirements: JobRequirements,
   clientAgentAddress: string
 ): Promise<string> {
-  const { amount, customReferrer } = requirements;
+  const { amount, referrerAddress, referralDeadline, referralSignature } = requirements;
 
   // Validate inputs
   if (!amount || isNaN(Number(amount)) || Number(amount) < 1) {
@@ -85,24 +109,23 @@ async function executeJob(
     throw new Error(`Invalid client agent address: ${clientAgentAddress}`);
   }
 
-  // Referrer: use agent's custom referrer if they provided a valid one, else ours
-  let referrer = CONFIG.ourReferrerAddress;
-  if (customReferrer) {
-    if (!ethers.isAddress(customReferrer)) {
-      throw new Error(`Invalid custom referrer address: ${customReferrer}`);
-    }
-    if (customReferrer.toLowerCase() !== clientAgentAddress.toLowerCase()) {
-      referrer = customReferrer;
-    }
-  }
-
   // Initialize Clicks SDK with operator wallet
   const provider = new ethers.JsonRpcProvider(CONFIG.clicksRpcUrl);
   const signer = new ethers.Wallet(CONFIG.clicksPrivateKey, provider);
   const clicks = new ClicksClient(signer);
 
-  // Execute yield activation with our referrer baked in
-  const result = await clicks.quickStart(amount, clientAgentAddress, referrer);
+  // Execute treasury activation through the current SDK path
+  const result = await clicks.quickStart(amount, clientAgentAddress);
+
+  // Optional separate referral attribution
+  const referralResult = await tryRegisterReferral(
+    signer,
+    clicks,
+    clientAgentAddress,
+    referrerAddress,
+    referralDeadline,
+    referralSignature,
+  );
 
   // Fetch live APY for deliverable
   const yieldInfo = await clicks.getYieldInfo();
@@ -116,15 +139,87 @@ async function executeJob(
   const yieldAmount = (Number(amount) * 0.2).toFixed(2);
 
   const deliverable = [
-    `Yield activated for agent ${clientAgentAddress}.`,
+    `Treasury setup activated for agent ${clientAgentAddress}.`,
     `Deposited: ${amount} USDC. Split: ${liquid} USDC liquid (your wallet now), ${yieldAmount} USDC earning ${currentAPY.toFixed(2)}% APY via ${activeProtocol} on Base.`,
     `Transaction hashes: ${result.txHashes.join(", ")}.`,
-    `Referrer registered: ${referrer}.`,
-    `All future USDC payments to your agent wallet can be auto-split by calling clicks.receivePayment() — no further setup needed.`,
-    `Your agent can also earn referral rewards by specifying its own address when onboarding other agents.`,
+    referralDeliverableLine(referralResult),
+    `All future USDC payments to your agent wallet can be auto-split by calling clicks.receivePayment() — no further treasury setup needed.`,
   ].join(" ");
 
   return deliverable;
+}
+
+async function tryRegisterReferral(
+  signer: ethers.Wallet,
+  clicks: ClicksClient,
+  clientAgentAddress: string,
+  referrerAddress?: string,
+  referralDeadline?: string,
+  referralSignature?: string,
+): Promise<ReferralAttemptResult> {
+  if (!referrerAddress && !referralDeadline && !referralSignature) {
+    return {
+      attempted: false,
+      registered: false,
+      reason: "No referral approval provided. Treasury setup completed without attribution.",
+    };
+  }
+
+  if (!referrerAddress || !referralDeadline || !referralSignature) {
+    return {
+      attempted: true,
+      registered: false,
+      reason: "Referral inputs incomplete. Need referrerAddress, referralDeadline and referralSignature together.",
+    };
+  }
+
+  if (!ethers.isAddress(referrerAddress)) {
+    return {
+      attempted: true,
+      registered: false,
+      reason: `Invalid referrer address: ${referrerAddress}`,
+    };
+  }
+
+  const referral = new ethers.Contract(
+    clicks.addresses.referral,
+    REFERRAL_ABI,
+    signer,
+  );
+
+  const isAuthorized = await referral.authorized(signer.address) as boolean;
+  if (!isAuthorized) {
+    return {
+      attempted: true,
+      registered: false,
+      reason: `Referral caller ${signer.address} is not authorized on ClicksReferral. Treasury setup completed without attribution.`,
+    };
+  }
+
+  const deadline = BigInt(referralDeadline);
+  const tx = await referral.registerReferralWithSig(
+    clientAgentAddress,
+    referrerAddress,
+    deadline,
+    referralSignature,
+  );
+  await tx.wait();
+
+  return {
+    attempted: true,
+    registered: true,
+    txHash: tx.hash,
+  };
+}
+
+function referralDeliverableLine(result: ReferralAttemptResult): string {
+  if (!result.attempted) {
+    return result.reason || "Referral attribution not attempted.";
+  }
+  if (result.registered) {
+    return `Referral attribution registered successfully. Referral tx hash: ${result.txHash}.`;
+  }
+  return `Referral attribution not completed. ${result.reason}`;
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────
@@ -137,13 +232,13 @@ async function main() {
   console.log("=== Clicks Protocol ACP Service (Fund-Transfer) ===");
   console.log(`Chain:       ${chain.name} (${chain.id})`);
   console.log(`Wallet:      ${CONFIG.walletAddress}`);
-  console.log(`Referrer:    ${CONFIG.ourReferrerAddress}`);
+  console.log(`Referrer:    optional explicit flow (${CONFIG.ourReferrerAddress})`);
   console.log(`Operator:    ${new ethers.Wallet(CONFIG.clicksPrivateKey).address}`);
   console.log("");
 
   const agent = await AcpAgent.create({
     provider: await PrivyAlchemyEvmProviderAdapter.create({
-      walletAddress: CONFIG.walletAddress,
+      walletAddress: CONFIG.walletAddress as Address,
       walletId: CONFIG.walletId,
       signerPrivateKey: CONFIG.signerPrivateKey,
       chains: [chain],
@@ -160,9 +255,11 @@ async function main() {
 
         switch (eventType) {
           case "job.created":
-            // New job incoming. Set service fee = 0 (fund-transfer covers our cost).
-            await session.setBudget(AssetToken.usdc(0, session.chainId));
-            console.log(`  Budget set: 0 USDC (fund-transfer model)`);
+            // New job incoming — wait for requirements message before setting budget.
+            // The FundTransferHook requires setBudgetWithFundRequest which needs
+            // the transfer amount from requirements. We'll set budget when we
+            // receive the requirement message.
+            console.log(`  Job created, waiting for requirements...`);
             break;
 
           case "job.funded":
@@ -195,7 +292,18 @@ async function main() {
           const reqs = JSON.parse(entry.content) as JobRequirements;
           console.log(`[${ts}] Requirements (job ${session.jobId}):`, reqs);
           (session as any).requirements = reqs;
-          await session.setBudget(AssetToken.usdc(0, session.chainId));
+
+          // Determine transfer amount from requirements
+          const transferAmt = reqs.amount || CONFIG.defaultTransferAmount;
+          const transferUsdc = AssetToken.usdc(Number(transferAmt), session.chainId);
+
+          // Service fee = 0, but request USDC transfer from buyer to our operator
+          await session.setBudgetWithFundRequest(
+            AssetToken.usdc(0, session.chainId),  // service fee: free
+            transferUsdc,                           // buyer transfers this much USDC
+            CONFIG.fundTransferDestination           // to our operator wallet
+          );
+          console.log(`  Budget set: 0 USDC fee, requesting ${transferAmt} USDC transfer to ${CONFIG.fundTransferDestination}`);
         }
       }
     } catch (err) {

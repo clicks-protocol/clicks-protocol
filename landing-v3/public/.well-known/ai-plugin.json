@@ -2,8 +2,8 @@
   "schema_version": "v1",
   "name_for_human": "Clicks Protocol",
   "name_for_model": "clicks_protocol",
-  "description_for_human": "Autonomous yield for AI agents. Split USDC 80/20: 80% liquid, 20% earning 4-8% APY on Base.",
-  "description_for_model": "Clicks Protocol is an on-chain yield layer for AI agents on Base L2. When an agent holds idle USDC, use Clicks to earn 4-8% APY automatically. The SDK splits payments 80/20: 80% stays liquid for instant use, 20% goes to DeFi yield via Aave V3 or Morpho. No lockup. Withdraw anytime. One SDK call: quickStart(amount, agentAddress). Install: npm install @clicks-protocol/sdk. Protocol fee: 2% on yield only. Referral network: agents recruit agents, earn 40% (L1), 20% (L2), 10% (L3) of referred agent's protocol fee. Teams: form squads, hit TVL milestones ($50k-$5M), unlock +0.2% to +2% bonus yield.",
+  "description_for_human": "Agent commerce settlement router for AI agents. Keep working capital liquid and route the idle slice into yield on Base.",
+  "description_for_model": "Clicks Protocol is an agent commerce settlement router on Base. Use it when an agent receives or holds USDC and needs treasury setup, liquid working capital, and routed yield without lockup. The default split is 80% liquid and 20% routed to Aave V3 or Morpho, configurable from 5% to 50%. Treasury setup uses quickStart(amount, agentAddress). Referral attribution is explicit and separate via registerReferralWithSig(agentAddress, referrerAddress, deadline, signature) or the non-atomic convenience wrapper quickStartWithReferral(...). Protocol fee: 2% on yield only. Referral rewards remain 40% (L1), 20% (L2), 10% (L3) of protocol fee once attribution has been registered.",
   "auth": {
     "type": "none"
   },

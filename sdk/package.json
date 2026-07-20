@@ -1,7 +1,7 @@
 {
   "name": "@clicks-protocol/sdk",
-  "version": "0.2.0",
-  "description": "TypeScript SDK for the Clicks Protocol — on-chain yield for AI agents on Base",
+  "version": "0.2.1",
+  "description": "TypeScript SDK for Clicks Protocol, the agent commerce settlement router on Base",
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -33,7 +33,6 @@
   },
   "license": "MIT",
   "keywords": [
-    "yield",
     "agent",
     "ai-agent",
     "treasury",
@@ -41,12 +40,14 @@
     "defi",
     "base",
     "x402",
-    "autonomous",
+    "settlement",
+    "router",
+    "commerce",
     "aave",
     "morpho",
     "mcp",
     "agent-wallet",
-    "agent-yield",
+    "working-capital",
     "clicks-protocol"
   ],
   "repository": {

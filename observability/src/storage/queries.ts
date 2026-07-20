@@ -8,6 +8,10 @@ import type {
 } from '../shared/types';
 import type { DatabaseLike } from './sqlite';
 
+function sqlValue<T>(value: T | undefined): T | null {
+  return value === undefined ? null : value;
+}
+
 function rowToSyncState(row: Record<string, unknown> | undefined): SyncStateRow | null {
   if (!row) {
     return null;
@@ -84,24 +88,24 @@ export function insertCollectedEvent(db: DatabaseLike, event: CollectedChainEven
   `);
 
   chainStmt.run(
-    event.chainEvent.chainId,
-    event.chainEvent.contractName,
-    event.chainEvent.contractAddress,
-    event.chainEvent.eventName,
-    event.chainEvent.txHash,
-    event.chainEvent.logIndex,
-    event.chainEvent.blockNumber,
-    event.chainEvent.blockHash,
-    event.chainEvent.blockTime,
-    event.chainEvent.agentAddress,
-    event.chainEvent.operatorAddress,
-    event.chainEvent.amountTotalUsdc,
-    event.chainEvent.amountLiquidUsdc,
-    event.chainEvent.amountToYieldUsdc,
-    event.chainEvent.amountPrincipalUsdc,
-    event.chainEvent.amountYieldUsdc,
-    event.chainEvent.amountFeeUsdc,
-    event.chainEvent.rawJson,
+    sqlValue(event.chainEvent.chainId),
+    sqlValue(event.chainEvent.contractName),
+    sqlValue(event.chainEvent.contractAddress),
+    sqlValue(event.chainEvent.eventName),
+    sqlValue(event.chainEvent.txHash),
+    sqlValue(event.chainEvent.logIndex),
+    sqlValue(event.chainEvent.blockNumber),
+    sqlValue(event.chainEvent.blockHash),
+    sqlValue(event.chainEvent.blockTime),
+    sqlValue(event.chainEvent.agentAddress),
+    sqlValue(event.chainEvent.operatorAddress),
+    sqlValue(event.chainEvent.amountTotalUsdc),
+    sqlValue(event.chainEvent.amountLiquidUsdc),
+    sqlValue(event.chainEvent.amountToYieldUsdc),
+    sqlValue(event.chainEvent.amountPrincipalUsdc),
+    sqlValue(event.chainEvent.amountYieldUsdc),
+    sqlValue(event.chainEvent.amountFeeUsdc),
+    sqlValue(event.chainEvent.rawJson),
   );
 
   if (event.agentRegistration) {

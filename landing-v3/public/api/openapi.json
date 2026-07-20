@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Clicks Protocol API",
-    "description": "Autonomous yield for AI agents on Base L2. Split USDC payments 80/20: 80% liquid, 20% earning 4-8% APY via Aave V3 or Morpho. No lockup. One SDK call.",
+    "description": "Agent commerce settlement router on Base. Split incoming USDC into liquid operations and routed yield with programmable treasury policy, explicit referral attribution support, and no lockup.",
     "version": "1.0.0",
     "contact": {
       "name": "Clicks Protocol",
@@ -54,7 +54,7 @@
       "post": {
         "operationId": "quickStart",
         "summary": "One-call setup: register agent, approve USDC, receive first payment",
-        "description": "Handles registration, USDC approval, and payment splitting in a single call. This is the recommended entry point.\n\n```typescript\nimport { ClicksClient } from '@clicks-protocol/sdk';\nconst clicks = new ClicksClient(signer);\nawait clicks.quickStart('1000', agentAddress);\n// 800 USDC → liquid, 200 USDC → earning 4-8% APY\n```",
+        "description": "Handles registration, USDC approval, and payment splitting in a single call. This is the recommended treasury entry point.\n\n```typescript\nimport { ClicksClient } from '@clicks-protocol/sdk';\nconst clicks = new ClicksClient(signer);\nawait clicks.quickStart('1000', agentAddress);\n// 800 USDC → liquid, 200 USDC → routed to yield\n```",
         "tags": ["Quick Start"],
         "parameters": [
           {
@@ -70,13 +70,6 @@
             "required": true,
             "description": "Ethereum address of the AI agent",
             "schema": { "type": "string", "example": "0x1234...abcd" }
-          },
-          {
-            "name": "referrer",
-            "in": "query",
-            "required": false,
-            "description": "Optional referrer address for referral rewards",
-            "schema": { "type": "string" }
           }
         ],
         "responses": {

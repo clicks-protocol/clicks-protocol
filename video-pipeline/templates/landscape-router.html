@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Clicks Protocol — The Router Beneath the Landscape</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1080px; height: 1920px; overflow: hidden;
+        background: #070410; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; color: #fff;
+      }
+      body::before {
+        content: ''; position: absolute; inset: -100px;
+        background:
+          radial-gradient(circle at 30% 30%, rgba(0,255,155,0.28) 0%, transparent 35%),
+          radial-gradient(circle at 70% 75%, rgba(120,60,255,0.22) 0%, transparent 40%),
+          radial-gradient(circle at 50% 50%, rgba(0,180,130,0.18) 0%, transparent 55%);
+        filter: blur(40px);
+      }
+      body::after {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(7,4,16,0.4) 0%, rgba(7,4,16,0) 35%, rgba(7,4,16,0) 70%, rgba(7,4,16,0.6) 100%);
+      }
+      #root { position: relative; width: 100%; height: 100%; }
+
+      .brand {
+        position: absolute; top: 90px; left: 0; right: 0; z-index: 10;
+        display: flex; align-items: center; justify-content: center; gap: 18px;
+      }
+      .brand-logo { width: 60px; height: 60px; filter: drop-shadow(0 0 18px rgba(0,255,155,0.55)); }
+      .brand-name { font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #fff; text-shadow: 0 0 20px rgba(0,255,155,0.85); }
+
+      .scene {
+        position: absolute; inset: 0;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 0 80px; text-align: center; opacity: 0;
+      }
+      .eyebrow {
+        font-size: 28px; font-weight: 700; letter-spacing: 10px;
+        text-transform: uppercase; color: #00FF9B; margin-bottom: 28px;
+      }
+      .headline {
+        font-size: 110px; font-weight: 900; line-height: 1.02;
+        letter-spacing: -3px; color: #fff;
+      }
+      .headline .hi { color: #00FF9B; text-shadow: 0 0 30px rgba(0,255,155,0.6); }
+      .sub {
+        font-size: 36px; font-weight: 400; color: #c4c8d0;
+        margin-top: 32px; line-height: 1.35; max-width: 920px;
+      }
+      .source {
+        margin-top: 22px; font-size: 22px; color: #6b7280; letter-spacing: 2px;
+        font-family: 'SF Mono', 'Monaco', monospace; text-transform: uppercase;
+      }
+
+      /* Scene 2 — 16 yield-agent name pills in a grid */
+      .agent-grid {
+        margin-top: 48px;
+        display: grid; grid-template-columns: repeat(4, auto);
+        gap: 14px 16px; justify-content: center; max-width: 960px;
+      }
+      .pill {
+        padding: 14px 22px; border-radius: 999px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.15);
+        font-size: 26px; font-weight: 600; color: #d1d5db;
+        letter-spacing: 0.3px;
+      }
+      .pill .dot {
+        display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+        background: #9ca3af; margin-right: 12px; vertical-align: middle;
+      }
+
+      /* Scene 3 — reveal */
+      .reveal-num {
+        font-size: 200px; font-weight: 900; color: #00FF9B;
+        text-shadow: 0 0 50px rgba(0,255,155,0.6); line-height: 1;
+      }
+      .reveal-num .pct { font-size: 120px; vertical-align: top; margin-left: 8px; }
+
+      /* Scene 4 — router diagram (Clicks below the yield agents) */
+      .diagram {
+        margin-top: 48px; display: flex; flex-direction: column; align-items: center; gap: 24px;
+        width: 900px;
+      }
+      .diagram .top-row {
+        display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; max-width: 880px;
+      }
+      .diagram .top-row .dot-pill {
+        padding: 10px 18px; border-radius: 999px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.12);
+        font-size: 22px; color: #9ca3af; font-weight: 600;
+      }
+      .diagram .arrows {
+        font-size: 46px; color: #00FF9B; line-height: 1;
+        text-shadow: 0 0 16px rgba(0,255,155,0.6);
+        letter-spacing: 22px; margin-left: 22px;
+      }
+      .diagram .router {
+        width: 100%; padding: 36px 48px; border-radius: 24px;
+        background: linear-gradient(135deg, rgba(0,255,155,0.14), rgba(0,255,155,0.05));
+        border: 2px solid rgba(0,255,155,0.55);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        box-shadow: 0 0 50px rgba(0,255,155,0.25);
+        display: flex; align-items: center; justify-content: space-between;
+      }
+      .diagram .router .title {
+        font-size: 40px; font-weight: 900; color: #fff;
+      }
+      .diagram .router .badge {
+        padding: 10px 22px; border-radius: 999px;
+        background: rgba(0,255,155,0.18); color: #a7f3d0;
+        font-size: 22px; font-weight: 700; letter-spacing: 2px;
+        font-family: 'SF Mono', 'Monaco', monospace;
+      }
+      .diagram .split-row {
+        display: flex; gap: 20px; width: 100%;
+      }
+      .diagram .split-tile {
+        flex: 1; padding: 26px 24px; border-radius: 18px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(0,255,155,0.28);
+        text-align: left;
+      }
+      .diagram .split-tile .pct {
+        font-size: 58px; font-weight: 900; color: #00FF9B; line-height: 1;
+      }
+      .diagram .split-tile .lbl {
+        font-size: 24px; color: #fff; font-weight: 700; margin-top: 6px;
+      }
+      .diagram .split-tile .meta {
+        font-size: 20px; color: #9ca3af; margin-top: 4px;
+      }
+
+      /* Scene 5 — code */
+      pre.code {
+        margin-top: 40px;
+        background: #0b0510;
+        border: 1px solid rgba(0,255,155,0.28);
+        border-radius: 18px;
+        padding: 40px 44px;
+        text-align: left;
+        font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
+        font-size: 34px; line-height: 1.5;
+        color: #e5e7eb; max-width: 900px;
+        box-shadow: 0 0 60px rgba(0,255,155,0.1);
+      }
+      pre.code .kw { color: #00FF9B; }
+      pre.code .fn { color: #7dd3fc; }
+      pre.code .str { color: #fde68a; }
+      pre.code .cm { color: #6b7280; }
+
+      /* Scene 6 — CTA */
+      .cta-url {
+        margin-top: 40px; padding: 28px 56px; border-radius: 999px;
+        background: #00FF9B; color: #0F0814;
+        font-size: 40px; font-weight: 900; letter-spacing: 1px;
+        font-family: 'SF Mono', 'Monaco', monospace;
+        box-shadow: 0 0 40px rgba(0,255,155,0.4);
+      }
+      .tag {
+        margin-top: 26px; font-size: 26px; color: #9ca3af; letter-spacing: 4px; text-transform: uppercase;
+      }
+
+      .footer {
+        position: absolute; bottom: 80px; left: 0; right: 0;
+        text-align: center; font-size: 20px; color: #6b7280;
+        letter-spacing: 2px; z-index: 10;
+      }
+      .footer span { color: #374151; margin: 0 8px; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="30"
+      data-width="1080"
+      data-height="1920"
+    >
+      <div class="brand">
+        <img class="brand-logo clip" id="brand-logo" data-start="0" data-duration="30" data-track-index="1" src="assets/icon.png" alt="Clicks" />
+        <div class="brand-name">CLICKS</div>
+      </div>
+
+      <!-- SC1 Hero 0-4 -->
+      <div class="scene" id="sc1">
+        <div class="eyebrow">Agentic Finance 2026</div>
+        <div class="headline">Agents drive<br/><span class="hi">19%</span> of<br/>on-chain activity.</div>
+        <div class="source">Source · DWF Ventures · April 2026</div>
+      </div>
+
+      <!-- SC2 Yield-Agent Grid 4-10 -->
+      <div class="scene" id="sc2">
+        <div class="eyebrow">16 Yield Agents</div>
+        <div class="headline">All <span class="hi">routing</span><br/>USDC.</div>
+        <div class="agent-grid">
+          <div class="pill"><span class="dot"></span>ARMA</div>
+          <div class="pill"><span class="dot"></span>Arrakis</div>
+          <div class="pill"><span class="dot"></span>Superform</div>
+          <div class="pill"><span class="dot"></span>AFI</div>
+          <div class="pill"><span class="dot"></span>Reflect</div>
+          <div class="pill"><span class="dot"></span>Axal</div>
+          <div class="pill"><span class="dot"></span>DeFi Saver</div>
+          <div class="pill"><span class="dot"></span>Lulo</div>
+          <div class="pill"><span class="dot"></span>Mamo</div>
+          <div class="pill"><span class="dot"></span>ZyFAI</div>
+          <div class="pill"><span class="dot"></span>Sail</div>
+          <div class="pill"><span class="dot"></span>Pendle</div>
+          <div class="pill"><span class="dot"></span>Almanak</div>
+          <div class="pill"><span class="dot"></span>Kamino</div>
+          <div class="pill"><span class="dot"></span>Infinit</div>
+          <div class="pill"><span class="dot"></span>Surf</div>
+        </div>
+      </div>
+
+      <!-- SC3 Reveal 10-16 -->
+      <div class="scene" id="sc3">
+        <div class="eyebrow">The Question</div>
+        <div class="headline">Where does<br/>the other<br/><span class="hi">80%</span> sit?</div>
+        <div class="sub">Idle USDC earns nothing.<br/>And agents hold most of it.</div>
+      </div>
+
+      <!-- SC4 Router Diagram 16-22 -->
+      <div class="scene" id="sc4">
+        <div class="eyebrow">The Layer Beneath</div>
+        <div class="headline">Clicks <span class="hi">routes.</span></div>
+        <div class="diagram">
+          <div class="top-row">
+            <div class="dot-pill">Yield Agents</div>
+            <div class="dot-pill">x402 payments</div>
+            <div class="dot-pill">ACP flows</div>
+          </div>
+          <div class="arrows">↓ ↓ ↓</div>
+          <div class="router">
+            <div class="title">Clicks Settlement Router</div>
+            <div class="badge">BASE · ERC-8004</div>
+          </div>
+          <div class="split-row">
+            <div class="split-tile">
+              <div class="pct">80%</div>
+              <div class="lbl">Liquid</div>
+              <div class="meta">instant ops</div>
+            </div>
+            <div class="split-tile">
+              <div class="pct">20%</div>
+              <div class="lbl">Earning</div>
+              <div class="meta">any ERC-4626 vault</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SC5 Code 22-27 -->
+      <div class="scene" id="sc5">
+        <div class="eyebrow">3 lines</div>
+        <div class="headline"><span class="hi">Route</span> your agent.</div>
+        <pre class="code"><span class="cm">// npm i @clicks-protocol/sdk</span>
+<span class="kw">import</span> { Clicks } <span class="kw">from</span> <span class="str">'@clicks-protocol/sdk'</span>;
+<span class="kw">const</span> clicks = <span class="kw">new</span> <span class="fn">Clicks</span>({ agent });
+<span class="kw">await</span> clicks.<span class="fn">register</span>();</pre>
+      </div>
+
+      <!-- SC6 CTA 27-30 -->
+      <div class="scene" id="sc6">
+        <div class="eyebrow">The Router Beneath</div>
+        <div class="headline">The <span class="hi">landscape.</span></div>
+        <div class="cta-url">clicksprotocol.xyz</div>
+        <div class="tag">Open-source · Apache-2.0 · Base mainnet</div>
+      </div>
+
+      <div class="footer">agentId 45074 <span>·</span> Schema V1 live <span>·</span> 227 tests green</div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.to(".brand", { opacity: 1, duration: 0.6, ease: "power2.out" }, 0.2)
+        .from(".brand", { y: -30, duration: 0.6, ease: "power2.out" }, 0.2);
+
+      function show(id, start, end) {
+        tl.to(id, { opacity: 1, duration: 0.6, ease: "power2.out" }, start);
+        tl.from(id + " .headline", { y: 40, opacity: 0, duration: 0.7, ease: "power2.out" }, start + 0.1);
+        tl.from(id + " .eyebrow", { y: -20, opacity: 0, duration: 0.5, ease: "power2.out" }, start);
+        tl.to(id, { opacity: 0, duration: 0.5, ease: "power2.in" }, end - 0.5);
+      }
+
+      show("#sc1", 0.4, 4.0);
+      tl.from("#sc1 .source", { opacity: 0, y: 10, duration: 0.5, ease: "power2.out" }, 1.2);
+
+      show("#sc2", 4.0, 10.0);
+      tl.from("#sc2 .pill", { y: 20, opacity: 0, scale: 0.9, stagger: 0.05, duration: 0.4, ease: "back.out(1.4)" }, 4.6);
+
+      show("#sc3", 10.0, 16.0);
+      tl.from("#sc3 .sub", { opacity: 0, y: 20, duration: 0.6, ease: "power2.out" }, 11.2);
+
+      show("#sc4", 16.0, 22.0);
+      tl.from("#sc4 .diagram .top-row .dot-pill", { y: -20, opacity: 0, stagger: 0.1, duration: 0.4, ease: "power2.out" }, 16.6);
+      tl.from("#sc4 .diagram .arrows", { opacity: 0, y: -10, duration: 0.5, ease: "power2.out" }, 17.2);
+      tl.from("#sc4 .diagram .router", { y: 30, opacity: 0, scale: 0.95, duration: 0.6, ease: "back.out(1.4)" }, 17.6);
+      tl.from("#sc4 .diagram .split-tile", { y: 20, opacity: 0, stagger: 0.15, duration: 0.5, ease: "power2.out" }, 18.4);
+
+      show("#sc5", 22.0, 27.0);
+      tl.from("#sc5 .code", { opacity: 0, scale: 0.95, duration: 0.7, ease: "power2.out" }, 22.6);
+
+      show("#sc6", 27.0, 30.0);
+      tl.from("#sc6 .cta-url", { scale: 0.85, opacity: 0, duration: 0.6, ease: "back.out(1.6)" }, 27.5);
+      tl.from("#sc6 .tag", { y: 10, opacity: 0, duration: 0.5, ease: "power2.out" }, 28.0);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

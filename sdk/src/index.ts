@@ -1,7 +1,7 @@
 /**
  * @clicks-protocol/sdk
  *
- * TypeScript SDK for the Clicks Protocol — on-chain yield for AI agents on Base.
+ * TypeScript SDK for Clicks Protocol, the agent commerce settlement router on Base.
  *
  * @packageDocumentation
  */
@@ -15,6 +15,9 @@ export type {
   AgentInfo,
   AgentYieldBalance,
   QuickStartResult,
+  QuickStartWithReferralResult,
+  ReferralApprovalTypedData,
+  ReferralRegistrationResult,
   SplitPreview,
   WithdrawResult,
   YieldInfo,
@@ -36,4 +39,5 @@ export {
   SPLITTER_ABI,
   YIELD_ROUTER_ABI,
   FEE_ABI,
+  REFERRAL_ABI,
 } from './abis';

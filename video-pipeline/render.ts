@@ -28,8 +28,8 @@ const LOG_FILE = resolve(PROJECT_ROOT, 'render-log.json');
 
 function usage(): never {
   console.error(
-    'Usage: tsx render.ts <template> \'<json-data>\' [--out <path>]\n' +
-    'Example: tsx render.ts stat-card \'{"stat":"227","label":"tests passing"}\'',
+    'Usage: tsx render.ts <template> \'<json-data>\' [--out <path>] [--strict] [--strict-all]\n' +
+    'Example: tsx render.ts stat-card \'{"stat":"227","label":"tests passing"}\' --strict',
   );
   process.exit(2);
 }
@@ -37,9 +37,13 @@ function usage(): never {
 function parseArgs(argv: string[]) {
   const positional: string[] = [];
   let out: string | undefined;
+  let strict = false;
+  let strictAll = false;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--out') out = argv[++i];
+    else if (a === '--strict') strict = true;
+    else if (a === '--strict-all') strictAll = true;
     else positional.push(a);
   }
   if (positional.length !== 2) usage();
@@ -51,7 +55,7 @@ function parseArgs(argv: string[]) {
     console.error('Invalid JSON data:', (e as Error).message);
     process.exit(2);
   }
-  return { template, data, out };
+  return { template, data, out, strict, strictAll };
 }
 
 function substituteSlots(html: string, data: Record<string, string>): string {
@@ -90,7 +94,7 @@ function appendLog(entry: Record<string, unknown>) {
 }
 
 function main() {
-  const { template, data, out } = parseArgs(process.argv.slice(2));
+  const { template, data, out, strict, strictAll } = parseArgs(process.argv.slice(2));
 
   const tplPath = resolve(TEMPLATES_DIR, `${template}.html`);
   if (!existsSync(tplPath)) {
@@ -102,16 +106,28 @@ function main() {
   const rendered = substituteSlots(html, data);
   writeFileSync(resolve(PROJECT_ROOT, 'index.html'), rendered);
 
+  // Pre-lint: catch schema issues before paying FFmpeg cost.
+  console.log('[render] lint...');
+  const lint = spawnSync(
+    'npx',
+    ['hyperframes', 'lint', '.'],
+    { cwd: PROJECT_ROOT, stdio: 'inherit' },
+  );
+  if (lint.status !== 0) {
+    console.error('[render] lint failed — refusing to render');
+    process.exit(lint.status ?? 1);
+  }
+
   mkdirSync(RENDERS_DIR, { recursive: true });
   const slug = buildSlug(template, data);
   const outPath = out ? resolve(out) : resolve(RENDERS_DIR, `${slug}.mp4`);
 
+  const renderArgs = ['hyperframes', 'render', '.', '-o', outPath, '-q', 'standard', '-f', '30'];
+  if (strictAll) renderArgs.push('--strict-all');
+  else if (strict) renderArgs.push('--strict');
+
   console.log(`[render] template=${template} → ${outPath}`);
-  const res = spawnSync(
-    'npx',
-    ['hyperframes', 'render', '.', '-o', outPath, '-q', 'standard', '-f', '30'],
-    { cwd: PROJECT_ROOT, stdio: 'inherit' },
-  );
+  const res = spawnSync('npx', renderArgs, { cwd: PROJECT_ROOT, stdio: 'inherit' });
   if (res.status !== 0) {
     console.error('[render] hyperframes render failed');
     process.exit(res.status ?? 1);

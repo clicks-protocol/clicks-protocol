@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Clicks Protocol - Settlement Gap</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg: #08070c;
+        --bg2: #111018;
+        --mint: #00ff9b;
+        --mint-soft: rgba(0, 255, 155, 0.18);
+        --mint-faint: rgba(0, 255, 155, 0.07);
+        --blue: #4da3ff;
+        --amber: #ffca6a;
+        --white: #f7f4ff;
+        --muted: #a9a2b8;
+        --dim: #6e667b;
+        --line: rgba(255, 255, 255, 0.12);
+        --mono: "JetBrains Mono";
+        --sans: Inter;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: var(--bg);
+        color: var(--white);
+        font-family: Inter;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+      }
+
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 50% 30%, rgba(0, 255, 155, 0.09), transparent 34%),
+          radial-gradient(circle at 80% 82%, rgba(77, 163, 255, 0.11), transparent 34%),
+          linear-gradient(180deg, #0e0b13 0%, #050407 100%);
+      }
+
+      .grid {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: radial-gradient(circle at 50% 52%, black 0%, transparent 82%);
+      }
+
+      .noise {
+        position: absolute;
+        inset: 0;
+        background-image: repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 3px);
+        mix-blend-mode: overlay;
+        pointer-events: none;
+      }
+
+      .brand {
+        position: absolute;
+        left: 52px;
+        top: 48px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        z-index: 20;
+        opacity: 0.9;
+      }
+
+      .brand-icon,
+      .brandmark {
+        background-image: url("assets/brand-icon.png");
+        background-size: cover;
+        background-position: center;
+      }
+
+      .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        filter: drop-shadow(0 0 16px rgba(0,255,155,0.4));
+      }
+
+      .brand span {
+        font-size: 22px;
+        letter-spacing: 8px;
+        font-weight: 800;
+      }
+
+      .watermark {
+        position: absolute;
+        right: 52px;
+        bottom: 38px;
+        font-family: "JetBrains Mono";
+        font-size: 18px;
+        color: var(--dim);
+        letter-spacing: 2px;
+        z-index: 20;
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        z-index: 5;
+      }
+
+      .headline {
+        position: absolute;
+        left: 72px;
+        right: 72px;
+        top: 185px;
+        font-size: 88px;
+        line-height: 0.96;
+        font-weight: 900;
+        letter-spacing: 0;
+      }
+
+      .subline {
+        position: absolute;
+        left: 76px;
+        right: 76px;
+        top: 380px;
+        font-size: 36px;
+        line-height: 1.22;
+        color: var(--muted);
+        font-weight: 560;
+      }
+
+      .mint { color: var(--mint); }
+      .blue { color: var(--blue); }
+      .amber { color: var(--amber); }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 58px;
+        padding: 0 24px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.045);
+        color: var(--white);
+        font-family: "JetBrains Mono";
+        font-size: 22px;
+        white-space: nowrap;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      }
+
+      .chip.mint-chip {
+        border-color: rgba(0,255,155,0.45);
+        background: var(--mint-faint);
+        color: var(--mint);
+      }
+
+      .rail-map {
+        position: absolute;
+        left: 70px;
+        right: 70px;
+        top: 580px;
+        height: 880px;
+      }
+
+      .rail-chip {
+        position: absolute;
+        opacity: 0;
+      }
+
+      .rail-chip:nth-child(1) { left: 30px; top: 40px; }
+      .rail-chip:nth-child(2) { right: 30px; top: 90px; }
+      .rail-chip:nth-child(3) { left: 120px; top: 260px; }
+      .rail-chip:nth-child(4) { right: 120px; top: 330px; }
+      .rail-chip:nth-child(5) { left: 60px; top: 560px; }
+      .rail-chip:nth-child(6) { right: 70px; top: 610px; }
+
+      .payment-orb {
+        position: absolute;
+        left: 50%;
+        top: 49%;
+        width: 360px;
+        height: 360px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        border: 2px solid rgba(0,255,155,0.32);
+        background:
+          radial-gradient(circle, rgba(0,255,155,0.42) 0%, rgba(0,255,155,0.08) 42%, transparent 72%);
+        box-shadow:
+          0 0 90px rgba(0,255,155,0.18),
+          inset 0 0 60px rgba(0,255,155,0.1);
+        opacity: 0;
+      }
+
+      .payment-orb::before,
+      .payment-orb::after {
+        content: "";
+        position: absolute;
+        inset: 52px;
+        border: 1px solid rgba(0,255,155,0.36);
+        border-radius: 50%;
+      }
+
+      .payment-orb::after {
+        inset: 104px;
+        border-color: rgba(255,255,255,0.18);
+      }
+
+      .op-stack {
+        position: absolute;
+        left: 74px;
+        right: 74px;
+        top: 610px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .op-line {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        min-height: 86px;
+        padding: 0 24px;
+        border: 1px solid rgba(255,255,255,0.11);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.04);
+        font-family: "JetBrains Mono";
+        font-size: 24px;
+        color: var(--muted);
+        opacity: 0;
+      }
+
+      .op-line strong {
+        color: var(--mint);
+        font-weight: 700;
+      }
+
+      .gap-zone {
+        position: absolute;
+        left: 72px;
+        right: 72px;
+        top: 560px;
+        height: 820px;
+        border: 1px dashed rgba(255,202,106,0.4);
+        border-radius: 8px;
+        background: rgba(255,202,106,0.035);
+        opacity: 0;
+      }
+
+      .gap-title {
+        position: absolute;
+        left: 28px;
+        top: 26px;
+        font-family: "JetBrains Mono";
+        font-size: 22px;
+        color: var(--amber);
+        letter-spacing: 2px;
+      }
+
+      .question {
+        position: absolute;
+        left: 42px;
+        right: 42px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        border-left: 3px solid rgba(255,202,106,0.7);
+        background: rgba(0,0,0,0.22);
+        font-size: 28px;
+        color: var(--white);
+        opacity: 0;
+      }
+
+      .question:nth-child(2) { top: 130px; }
+      .question:nth-child(3) { top: 230px; }
+      .question:nth-child(4) { top: 330px; }
+      .question:nth-child(5) { top: 430px; }
+      .question:nth-child(6) { top: 530px; }
+
+      .router {
+        position: absolute;
+        left: 50%;
+        top: 705px;
+        width: 420px;
+        height: 420px;
+        transform: translateX(-50%);
+        opacity: 0;
+      }
+
+      .router-core {
+        position: absolute;
+        inset: 90px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(0,255,155,0.85), rgba(0,255,155,0.08) 72%);
+        box-shadow: 0 0 70px rgba(0,255,155,0.4);
+      }
+
+      .router-ring {
+        position: absolute;
+        inset: 0;
+        border: 2px solid rgba(0,255,155,0.25);
+        border-radius: 50%;
+      }
+
+      .router-ring.r2 { inset: 48px; border-color: rgba(255,255,255,0.12); }
+
+      .route-grid {
+        position: absolute;
+        left: 64px;
+        right: 64px;
+        top: 1210px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .route-card {
+        min-height: 128px;
+        border: 1px solid rgba(0,255,155,0.24);
+        border-radius: 8px;
+        background: rgba(0,255,155,0.055);
+        padding: 18px;
+        opacity: 0;
+      }
+
+      .route-card .k {
+        font-family: "JetBrains Mono";
+        font-size: 20px;
+        color: var(--mint);
+      }
+
+      .route-card .v {
+        margin-top: 12px;
+        font-size: 32px;
+        font-weight: 850;
+      }
+
+      .receipt {
+        position: absolute;
+        left: 92px;
+        right: 92px;
+        top: 575px;
+        min-height: 720px;
+        border: 1px solid rgba(0,255,155,0.32);
+        border-radius: 8px;
+        background: rgba(0,0,0,0.52);
+        box-shadow: 0 0 80px rgba(0,255,155,0.12);
+        padding: 38px;
+        font-family: "JetBrains Mono";
+        opacity: 0;
+      }
+
+      .receipt h2 {
+        font-family: "JetBrains Mono";
+        font-size: 24px;
+        color: var(--mint);
+        letter-spacing: 3px;
+        margin-bottom: 36px;
+      }
+
+      .receipt-row {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        gap: 18px;
+        padding: 19px 0;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        font-size: 24px;
+        opacity: 0;
+      }
+
+      .receipt-row .label { color: var(--dim); }
+      .receipt-row .value { color: var(--white); }
+      .receipt-row .value.mint { color: var(--mint); }
+
+      .close {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 0 80px;
+      }
+
+      .close .pre {
+        font-size: 58px;
+        line-height: 1.08;
+        font-weight: 850;
+        color: var(--white);
+        opacity: 0;
+      }
+
+      .close .brandmark {
+        width: 190px;
+        height: 190px;
+        margin: 72px 0 36px;
+        border-radius: 28px;
+        filter: drop-shadow(0 0 46px rgba(0,255,155,0.48));
+        opacity: 0;
+      }
+
+      .close .final {
+        font-size: 68px;
+        line-height: 1;
+        font-weight: 920;
+        color: var(--white);
+        opacity: 0;
+      }
+
+      .close .tagline {
+        margin-top: 24px;
+        font-size: 36px;
+        color: var(--mint);
+        opacity: 0;
+      }
+
+      .close .url {
+        margin-top: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 64px;
+        padding: 0 32px;
+        border: 1px solid rgba(0,255,155,0.55);
+        border-radius: 8px;
+        background: var(--mint-faint);
+        color: var(--mint);
+        font-family: "JetBrains Mono";
+        font-size: 24px;
+        letter-spacing: 1px;
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="30"
+      data-width="1080"
+      data-height="1920">
+      <div class="grid"></div>
+      <div class="noise"></div>
+      <div class="brand"><div class="brand-icon" aria-label="Clicks"></div><span>CLICKS</span></div>
+      <div class="watermark">base · agent commerce</div>
+
+      <section class="scene" id="s1">
+        <h1 class="headline">Payment APIs<br><span class="mint">move money.</span></h1>
+        <p class="subline">The rails are waking up for AI agents.</p>
+        <div class="rail-map">
+          <div class="chip rail-chip">Stripe</div>
+          <div class="chip rail-chip mint-chip">x402</div>
+          <div class="chip rail-chip">Coinbase</div>
+          <div class="chip rail-chip">Open Banking</div>
+          <div class="chip rail-chip">AgentCard</div>
+          <div class="chip rail-chip">Meow</div>
+          <div class="payment-orb" id="paymentOrb"></div>
+        </div>
+      </section>
+
+      <section class="scene" id="s2">
+        <h1 class="headline">Agent revenue<br><span class="mint">arrives.</span></h1>
+        <p class="subline">Payment confirms that money moved. It does not decide what happens next.</p>
+        <div class="op-stack">
+          <div class="op-line"><span>x402 payload</span><strong>+12.40 USDC</strong></div>
+          <div class="op-line"><span>ACP channel</span><strong>+48.00 USDC</strong></div>
+          <div class="op-line"><span>invoice paid</span><strong>+124.50 USDC</strong></div>
+          <div class="op-line"><span>aggregate 5m</span><strong>191.10 USDC</strong></div>
+        </div>
+      </section>
+
+      <section class="scene" id="s3">
+        <h1 class="headline">But payment is<br><span class="amber">not settlement.</span></h1>
+        <div class="gap-zone">
+          <div class="gap-title">POST-PAYMENT GAP</div>
+          <div class="question">Who gets paid?</div>
+          <div class="question">How much stays liquid?</div>
+          <div class="question">What earns yield?</div>
+          <div class="question">Where is the receipt?</div>
+          <div class="question">Who can audit it?</div>
+        </div>
+      </section>
+
+      <section class="scene" id="s4">
+        <h1 class="headline">Clicks applies<br><span class="mint">settlement policy.</span></h1>
+        <p class="subline">Revenue enters once. Policy routes the rest.</p>
+        <div class="router" id="router">
+          <div class="router-ring"></div>
+          <div class="router-ring r2"></div>
+          <div class="router-core"></div>
+        </div>
+        <div class="route-grid">
+          <div class="route-card"><div class="k">LIQUID</div><div class="v">80% working capital</div></div>
+          <div class="route-card"><div class="k">YIELD</div><div class="v">20% routed</div></div>
+          <div class="route-card"><div class="k">REFERRAL</div><div class="v">split captured</div></div>
+          <div class="route-card"><div class="k">RECEIPT</div><div class="v">signed output</div></div>
+        </div>
+      </section>
+
+      <section class="scene" id="s5">
+        <h1 class="headline">Every route<br><span class="mint">leaves evidence.</span></h1>
+        <div class="receipt">
+          <h2>SETTLEMENT RECEIPT</h2>
+          <div class="receipt-row"><span class="label">source</span><span class="value">x402.payload</span></div>
+          <div class="receipt-row"><span class="label">agent</span><span class="value">agentId 45074</span></div>
+          <div class="receipt-row"><span class="label">policy</span><span class="value mint">liquid 80 · yield 20</span></div>
+          <div class="receipt-row"><span class="label">tx</span><span class="value">0x5aec2067...</span></div>
+          <div class="receipt-row"><span class="label">attestation</span><span class="value mint">ERC-8004 schema v1</span></div>
+          <div class="receipt-row"><span class="label">status</span><span class="value mint">auditable</span></div>
+        </div>
+      </section>
+
+      <section class="scene" id="s6">
+        <div class="close">
+          <div class="pre">Agents can now pay.<br><span class="mint">Who settles their revenue?</span></div>
+          <div class="brandmark" aria-label="Clicks Protocol"></div>
+          <div class="final">Clicks Protocol</div>
+          <div class="tagline">Agent commerce, settled.</div>
+          <div class="url">clicksprotocol.xyz</div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines.main = tl;
+
+      const show = (id, at) => tl.to(id, { opacity: 1, duration: 0.22, ease: "none" }, at);
+      const hide = (id, at) => tl.to(id, { opacity: 0, duration: 0.18, ease: "none" }, at);
+
+      show("#s1", 0);
+      tl.fromTo("#s1 .headline", { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 0.2);
+      tl.fromTo("#s1 .subline", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, ease: "power2.out" }, 0.68);
+      tl.fromTo("#paymentOrb", { scale: 0.72, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: "power3.out" }, 1.0);
+      tl.to("#paymentOrb", { rotate: 360, duration: 29, ease: "none" }, 1.0);
+      tl.fromTo("#s1 .rail-chip", { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.36, stagger: 0.16, ease: "power2.out" }, 1.25);
+      hide("#s1", 4.35);
+
+      show("#s2", 4.5);
+      tl.fromTo("#s2 .headline", { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 4.75);
+      tl.fromTo("#s2 .subline", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 5.2);
+      tl.fromTo("#s2 .op-line", { x: -24, opacity: 0 }, { x: 0, opacity: 1, duration: 0.38, stagger: 0.48, ease: "power2.out" }, 5.8);
+      tl.to("#s2 .op-line strong", { textShadow: "0 0 28px rgba(0,255,155,0.7)", duration: 0.28, stagger: 0.2, yoyo: true, repeat: 1 }, 7.55);
+      hide("#s2", 9.32);
+
+      show("#s3", 9.5);
+      tl.fromTo("#s3 .headline", { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 9.75);
+      tl.fromTo(".gap-zone", { scale: 0.96, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power2.out" }, 10.45);
+      tl.fromTo("#s3 .question", { x: -18, opacity: 0 }, { x: 0, opacity: 1, duration: 0.28, stagger: 0.52, ease: "power2.out" }, 11.05);
+      tl.to(".gap-zone", { borderColor: "rgba(255,202,106,0.85)", duration: 0.34, yoyo: true, repeat: 3 }, 13.55);
+      hide("#s3", 14.82);
+
+      show("#s4", 15.0);
+      tl.fromTo("#s4 .headline", { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 15.25);
+      tl.fromTo("#s4 .subline", { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.38, ease: "power2.out" }, 15.72);
+      tl.fromTo("#router", { scale: 0.62, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.65, ease: "power3.out" }, 16.15);
+      tl.to("#router .router-ring", { rotate: 360, duration: 6.2, ease: "none" }, 16.15);
+      tl.to("#router .r2", { rotate: -300, duration: 6.2, ease: "none" }, 16.15);
+      tl.fromTo("#s4 .route-card", { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.38, stagger: 0.45, ease: "power2.out" }, 17.55);
+      tl.to("#s4 .route-card", { boxShadow: "0 0 36px rgba(0,255,155,0.20)", duration: 0.3, stagger: 0.22, yoyo: true, repeat: 1 }, 20.65);
+      hide("#s4", 21.82);
+
+      show("#s5", 22.0);
+      tl.fromTo("#s5 .headline", { y: 36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 22.2);
+      tl.fromTo("#s5 .receipt", { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: 0.48, ease: "power2.out" }, 22.95);
+      tl.fromTo("#s5 .receipt-row", { opacity: 0 }, { opacity: 1, duration: 0.18, stagger: 0.32, ease: "none" }, 23.45);
+      hide("#s5", 26.82);
+
+      show("#s6", 27.0);
+      tl.fromTo("#s6 .pre", { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 27.12);
+      tl.fromTo("#s6 .brandmark", { scale: 0.76, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "power3.out" }, 27.85);
+      tl.fromTo("#s6 .final", { y: 22, opacity: 0 }, { y: 0, opacity: 1, duration: 0.36, ease: "power2.out" }, 28.28);
+      tl.fromTo("#s6 .tagline", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "power2.out" }, 28.58);
+      tl.fromTo("#s6 .url", { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.28, ease: "power2.out" }, 28.9);
+
+      tl.set({}, {}, 30);
+    </script>
+  </body>
+</html>

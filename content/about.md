@@ -83,7 +83,7 @@ await clicks.quickStart('100', agentAddress);
 
 - [Documentation](https://clicksprotocol.xyz) — SDK reference, contract addresses, integration guides
 - [GitHub](https://github.com/clicks-protocol) — Source code, issues, contributions
-- [Discord](https://discord.gg/clicks-protocol) — Developer community
+- [Discord](https://discord.gg/FfmJGUcxfe) — Developer community
 - [MCP Server](https://www.npmjs.com/package/@clicks-protocol/mcp-server) — Agent-native tool discovery
 
 Your agent earns USDC. That USDC sits idle. Clicks fixes that.

@@ -2,38 +2,32 @@
   "version": "0.1.0",
   "protocol": "x402",
   "name": "Clicks Protocol",
-  "description": "Autonomous yield for AI agents",
+  "description": "Post-payment settlement routing for x402-style USDC revenue flows",
   "provider": {
     "name": "Clicks Protocol",
     "url": "https://clicksprotocol.xyz",
     "contact": "hello@clicksprotocol.xyz"
   },
-  "payment": {
-    "methods": [
-      {
-        "type": "crypto",
-        "chain": "base",
-        "currency": "USDC",
-        "address": "0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"
-      }
-    ],
-    "features": {
-      "auto_split": true,
-      "yield_earning": true,
-      "instant_settlement": true,
-      "zero_lockup": true
-    }
+  "status": {
+    "role": "post_payment_settlement",
+    "automatic_x402_interception": false,
+    "built_in_x402_payment_verification": false,
+    "x402_revenue_adapter": "planned"
   },
   "capabilities": {
     "split": {
       "liquid": 0.8,
       "earning": 0.2
     },
+    "settlement": {
+      "chain": "base",
+      "currency": "USDC",
+      "contract": "0xB7E0016d543bD443ED2A6f23d5008400255bf3C8"
+    },
     "yield": {
       "enabled": true,
-      "provider": "morpho",
-      "apy_range": [0.04, 0.08],
-      "compound_frequency": "daily"
+      "providers": ["aave-v3", "morpho"],
+      "rate": "variable"
     }
   },
   "integration": {
@@ -49,7 +43,7 @@
   "links": {
     "documentation": "https://clicksprotocol.xyz/docs",
     "github": "https://github.com/clicks-protocol",
-    "discord": "https://discord.gg/clicks-protocol",
+    "discord": "https://discord.gg/FfmJGUcxfe",
     "twitter": "https://x.com/ClicksProtocol"
   }
 }

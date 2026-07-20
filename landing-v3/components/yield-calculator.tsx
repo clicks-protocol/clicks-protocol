@@ -216,7 +216,7 @@ const YieldCalculator: React.FC<YieldCalculatorProps> = ({ className }) => {
           Get Started with Clicks Protocol
         </button>
         <p className="text-gray-400 text-sm mt-3">
-          Non-custodial • No lockup • x402 compatible • Base Mainnet
+          Non-custodial • No lockup • post-payment settlement • Base Mainnet
         </p>
       </div>
 

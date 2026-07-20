@@ -1,11 +1,11 @@
 /**
  * Clicks Protocol Plugin for Eliza (ai16z)
  * ==========================================
- * On-chain yield management for autonomous AI agents on Base.
+ * Treasury and settlement routing for Eliza agents on Base.
  * Powered by Clicks Protocol (clicksprotocol.xyz)
  *
- * This plugin enables Eliza agents to autonomously manage idle USDC by
- * splitting funds 80/20: 80% stays liquid, 20% earns 4-8% APY on-chain.
+ * This plugin enables Eliza agents to route USDC settlement:
+ * 80% stays liquid by default, 20% routes to on-chain yield.
  *
  * Usage:
  *   import { clicksPlugin } from "@clicks-protocol/eliza-plugin";
@@ -184,7 +184,7 @@ const activateYield: Action = {
   name: "ACTIVATE_YIELD",
   description:
     "Split idle USDC 80/20 via Clicks Protocol. 80% stays liquid for operations, " +
-    "20% earns 4-8% APY on Base. Use when the agent has idle USDC not needed immediately.",
+    "20% routes through variable treasury yield on Base. Use when the agent has idle USDC not needed immediately.",
   similes: [
     "EARN_YIELD",
     "DEPOSIT_YIELD",
@@ -493,8 +493,8 @@ const yieldInfoProvider: Provider = {
 export const clicksPlugin = {
   name: "clicks-protocol",
   description:
-    "Autonomous on-chain yield for AI agent USDC on Base. " +
-    "Splits idle funds 80/20: 80% liquid, 20% earning 4-8% APY. " +
+    "Treasury and settlement routing for AI agent USDC on Base. " +
+    "Keeps working capital liquid and routes the idle slice to yield. " +
     "Powered by Clicks Protocol (clicksprotocol.xyz)",
   actions: [activateYield, withdrawYield, checkBalance, getAPY],
   providers: [walletBalanceProvider, yieldInfoProvider],

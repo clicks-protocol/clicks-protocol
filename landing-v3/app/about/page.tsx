@@ -51,12 +51,12 @@ export default function AboutPage() {
       <section className="mb-10">
         <h2 className="text-2xl font-bold mb-4 text-foreground">The Solution</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          Clicks Protocol is an on-chain yield layer for AI agents on Base. It takes every USDC payment an agent receives and automatically splits it: 80% stays liquid in the agent&apos;s wallet for instant use, 20% gets routed into DeFi yield via Aave V3 or Morpho, whichever offers better APY at the time.
+          Clicks Protocol is an agent commerce settlement router on Base. It takes every USDC payment an agent receives and automatically splits it: 80% stays liquid in the agent&apos;s wallet for instant use, 20% gets routed into DeFi yield via Aave V3 or Morpho, whichever offers better APY at the time.
         </p>
         <CodeBlock
           code={`const clicks = new ClicksClient(signer);
 await clicks.quickStart('100', agentAddress);
-// 80 USDC → liquid, 20 USDC → earning 4-8% APY`}
+// 80 USDC → liquid, 20 USDC → treasury yield route`}
         />
         <p className="text-muted-foreground leading-relaxed mb-4">
           That&apos;s the entire integration. One SDK call. The protocol handles registration, USDC approval, payment splitting, yield routing, and rebalancing. No dashboard, no configuration, no manual steps.
@@ -65,22 +65,22 @@ await clicks.quickStart('100', agentAddress);
           There is no lockup. Agents can withdraw principal plus accumulated yield at any time. The yield split is configurable between 5% and 50%, so operators can tune the balance between liquidity and earnings based on their agent&apos;s transaction patterns. The protocol charges a 2% fee on yield only, never on principal. If an agent deposits 1,000 USDC and earns 80 USDC in yield over a year, the protocol takes 1.60 USDC. The agent keeps everything else.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          Clicks also includes an MCP server with 9 tools, so AI agents using Claude, Cursor, LangChain, or any MCP-compatible client can discover and use the protocol autonomously. The SDK is available on npm as{' '}
+          Clicks also includes an MCP server with 11 tools, so AI agents using Claude, Cursor, LangChain, or any MCP-compatible client can discover and use the protocol autonomously. The SDK is available on npm as{' '}
           <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">@clicks-protocol/sdk</code>.
         </p>
       </section>
 
       {/* Built for the x402 Economy */}
       <section className="mb-10">
-        <h2 className="text-2xl font-bold mb-4 text-foreground">Built for the x402 Economy</h2>
+        <h2 className="text-2xl font-bold mb-4 text-foreground">Built for x402 Revenue Settlement</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          The x402 payment protocol lets AI agents pay for API calls and services with USDC over HTTP. Coinbase Agentic Wallets give agents self-custody wallets on Base. Both use the same chain, same USDC contract. Clicks sits on top of both as the yield layer.
+          The x402 payment protocol lets AI agents pay for API calls and services with USDC over HTTP. Coinbase Agentic Wallets give agents self-custody wallets on Base. Clicks is designed for the next step: routing USDC after receipt into a clear settlement policy.
         </p>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          The pattern is straightforward: an agent holds USDC for x402 payments. Between transactions, that USDC is idle. Clicks routes 20% of incoming payments into yield automatically, while keeping 80% liquid for instant x402 spending. No extra chain, no bridging, no wrapped tokens. Same Base USDC contract throughout.
+          The pattern is straightforward: x402 handles authorization and payment. Once USDC is available on Base, Clicks can route it through an 80/20 treasury policy: 80% stays liquid for operations, 20% routes into treasury yield. No extra chain, no bridging, no wrapped tokens. Same Base USDC contract throughout.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          No competing protocol offers this integration. Existing yield products like apyUSD, sUSDu, or USDai don&apos;t have agent SDKs, don&apos;t support autonomous operation, and aren&apos;t designed for the payment patterns of AI agents. Clicks was built specifically for this use case from day one.
+          This is not an x402 facilitator and it does not automatically verify x402 payments today. It is a settlement layer for agent revenue and treasury policy after funds are available.
         </p>
       </section>
 
@@ -146,7 +146,7 @@ await clicks.quickStart('100', agentAddress);`}
             {' '}<span className="text-muted-foreground">— Source code, issues, contributions</span>
           </li>
           <li>
-            <a href="https://discord.gg/clicks-protocol" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+            <a href="https://discord.gg/FfmJGUcxfe" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
               Discord
             </a>
             {' '}<span className="text-muted-foreground">— Developer community</span>

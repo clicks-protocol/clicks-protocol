@@ -34,7 +34,7 @@ export default function WhitepaperPage() {
   return (
     <div className="prose-docs">
       <h1 className="text-3xl sm:text-4xl font-bold mb-2 gradient-text">
-        Clicks Protocol: Autonomous Yield for AI Agents
+        Clicks Protocol: Agent Commerce Settlement Router
       </h1>
       <p className="text-muted-foreground text-lg mb-6">Whitepaper v1.0 | March 2026</p>
 
@@ -60,7 +60,7 @@ export default function WhitepaperPage() {
             <div><a href="#abstract" className="text-accent hover:underline text-sm">Abstract</a></div>
             <div><a href="#1-introduction" className="text-accent hover:underline text-sm">1. Introduction</a></div>
             <div className="pl-4"><a href="#1-1-the-problem" className="text-muted-foreground hover:text-accent text-sm">1.1 The Problem: Agent Float Waste</a></div>
-            <div className="pl-4"><a href="#1-2-the-solution" className="text-muted-foreground hover:text-accent text-sm">1.2 The Solution: On-Chain Yield Layer</a></div>
+            <div className="pl-4"><a href="#1-2-the-solution" className="text-muted-foreground hover:text-accent text-sm">1.2 The Solution: Settlement Routing</a></div>
             <div className="pl-4"><a href="#1-3-why-now" className="text-muted-foreground hover:text-accent text-sm">1.3 Why Now</a></div>
             <div><a href="#2-background" className="text-accent hover:underline text-sm">2. Background</a></div>
             <div className="pl-4"><a href="#2-1-defi-yield" className="text-muted-foreground hover:text-accent text-sm">2.1 DeFi Yield on Base</a></div>
@@ -114,13 +114,13 @@ export default function WhitepaperPage() {
       <section id="abstract" className="mb-10">
         <h2 className="text-2xl font-bold mb-4 gradient-text">Abstract</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          Clicks Protocol is an on-chain yield layer for AI agents on Base. It addresses a specific inefficiency in the growing agentic economy: idle USDC. Stablecoin issuers like Circle and Tether collectively earn over $12 billion annually from interest on reserves that users and agents provide, while the holders of that USDC receive nothing.
+          Clicks Protocol is an agent commerce settlement router on Base. It addresses a specific inefficiency in the growing agentic economy: idle USDC. Stablecoin issuers like Circle and Tether collectively earn over $12 billion annually from interest on reserves that users and agents provide, while the holders of that USDC receive nothing.
         </p>
         <p className="text-muted-foreground leading-relaxed mb-4">
           Clicks solves this by splitting every USDC payment an agent receives into two portions. Eighty percent stays liquid in the agent&apos;s wallet for immediate use. Twenty percent gets routed into DeFi lending protocols, currently Aave V3 and Morpho on Base, where it earns variable yield between 2.5% and 10% APY. The split ratio is configurable between 5% and 50%. There is no lockup period, and agents can withdraw principal plus accumulated yield at any time. The protocol charges a 2% fee on yield only, never on principal.
         </p>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          The protocol consists of five immutable smart contracts deployed on Base mainnet with no proxy pattern and no upgrade mechanism. A TypeScript SDK and an MCP server with nine tools allow AI agents to discover and use the protocol autonomously. Integration requires a single function call. No dashboard, no manual configuration, no human intervention.
+          The protocol consists of five immutable smart contracts deployed on Base mainnet with no proxy pattern and no upgrade mechanism. A TypeScript SDK and an MCP server with eleven tools allow AI agents to discover and use the protocol autonomously. Integration requires a single function call for treasury setup, with explicit referral attribution available as a second step when needed. No dashboard, no manual configuration, no human intervention.
         </p>
         <p className="text-muted-foreground leading-relaxed">
           Clicks is designed for the x402 payment protocol and Coinbase Agentic Wallets, both of which operate on Base using the same USDC contract. No competing protocol offers agent-native SDKs, autonomous operation, or integration with x402 payment flows. The protocol is open source under the MIT license, self-funded, and operates without venture capital or token sales.
@@ -591,7 +591,7 @@ await clicks.quickStart('100', agentAddress);
             The MCP server (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">@clicks-protocol/mcp-server</code>) exposes nine tools and one resource for AI agents using the Model Context Protocol. MCP is a standard for tool discovery that works with Claude, Cursor, LangChain, and any MCP-compatible client.
           </p>
           <p className="text-muted-foreground leading-relaxed mb-4">
-            The nine tools split into four read operations (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_get_agent_info</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_simulate_split</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_get_yield_info</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_get_referral_stats</code>) and five write operations (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_quick_start</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_receive_payment</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_withdraw_yield</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_register_agent</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_set_yield_pct</code>). The <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks://info</code> resource provides protocol metadata.
+            The eleven tools split into five read operations (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_get_agent_info</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_simulate_split</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_get_yield_info</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_get_referral_stats</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_explain</code>) and six write operations (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_quick_start</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_register_referral</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_receive_payment</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_withdraw_yield</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_register_agent</code>, <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks_set_yield_pct</code>). The <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">clicks://info</code> resource provides protocol metadata.
           </p>
           <p className="text-muted-foreground leading-relaxed">
             An agent running on an MCP-compatible framework can discover Clicks through the MCP server, query current APY, simulate a payment split, and execute the split without any pre-existing knowledge of the protocol.
@@ -613,19 +613,22 @@ await clicks.quickStart('100', agentAddress);
 
       {/* 7. Referral System */}
       <section id="7-referral" className="mb-10">
-        <h2 className="text-2xl font-bold mb-6 gradient-text">7. Referral System (Phase 2)</h2>
+        <h2 className="text-2xl font-bold mb-6 gradient-text">7. Referral Attribution Layer</h2>
 
         <div id="7-1-referral-contract" className="mb-8">
           <h3 className="text-xl font-bold mb-3 text-foreground">7.1 ClicksReferral Contract</h3>
           <p className="text-muted-foreground leading-relaxed">
-            The ClicksReferral contract implements an on-chain referral system where agents recruit other agents. Referral rewards are paid from the 2% protocol fee, meaning referred agents pay nothing extra. The contract has been compiled and tested with 32 dedicated tests passing.
+            The ClicksReferral contract implements the on-chain attribution layer for agent onboarding. Referral rewards are paid from the 2% protocol fee, meaning referred agents pay nothing extra. Attribution is now treated as an explicit step after treasury setup, not as an implicit side effect of the default quickStart flow. The contract path has dedicated signature coverage for valid approvals, expiry, signer mismatch, replay protection, and unauthorized callers.
+          </p>
+          <p className="text-muted-foreground leading-relaxed mt-4">
+            The recommended flow is: treasury setup first, attribution second. An agent signs approval off-chain, then an authorized caller submits that approval on-chain through <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">registerReferralWithSig(...)</code>. A convenience wrapper can combine both steps, but it remains a two-step flow in wrapper form rather than a single atomic contract path.
           </p>
         </div>
 
         <div id="7-2-multi-level" className="mb-8">
           <h3 className="text-xl font-bold mb-3 text-foreground">7.2 Multi-Level Referral Structure</h3>
           <p className="text-muted-foreground leading-relaxed mb-4">
-            Referral rewards distribute across three levels. A direct referrer (Level 1) receives 40% of the protocol fee generated by the referred agent. The referrer&apos;s referrer (Level 2) receives 20%. The third-level referrer receives 10%. The remaining 30% goes to the protocol treasury. The referral chain depth is hard-capped at three levels in the contract, bounding gas costs and preventing unbounded loop execution.
+            Referral rewards distribute across three levels. A direct referrer (Level 1) receives 40% of the protocol fee generated by the referred agent. The referrer&apos;s referrer (Level 2) receives 20%. The third-level referrer receives 10%. The remaining 30% goes to the protocol treasury. The referral chain depth is hard-capped at three levels in the contract, bounding gas costs and preventing unbounded loop execution. Attribution can only be registered once per agent and is protected against replay with nonces plus expiry deadlines.
           </p>
           <p className="text-muted-foreground leading-relaxed">
             To illustrate with concrete numbers: if an agent deposits $10,000 at 7% APY, it generates $700 in annual yield. The 2% protocol fee on that yield is $14. The Level 1 referrer receives $5.60, Level 2 receives $2.80, Level 3 receives $1.40, and the treasury receives $4.20. At scale, with 1,000 agents in a referral tree at similar deposit levels, the Level 1 referrer earns $5,600 per year in passive income from protocol fees alone.
@@ -705,14 +708,14 @@ await clicks.quickStart('100', agentAddress);
           <div className="glassmorphism rounded-xl p-5">
             <h3 className="text-lg font-bold mb-2 text-accent">Phase 2: SDK and MCP Server (Complete)</h3>
             <p className="text-muted-foreground leading-relaxed">
-              TypeScript SDK (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">@clicks-protocol/sdk</code>) with ClicksClient class and quickStart integration flow. MCP server (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">@clicks-protocol/mcp-server</code>) with nine tools and one resource. Landing page live at clicksprotocol.xyz with llms.txt and agent.json discovery endpoints. Documentation, README, and demo materials prepared.
+              TypeScript SDK (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">@clicks-protocol/sdk</code>) with ClicksClient class, treasury setup flow, explicit referral attribution support, and a convenience wrapper for the combined two-step path. MCP server (<code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">@clicks-protocol/mcp-server</code>) with eleven tools and one resource. Landing page live at clicksprotocol.xyz with llms.txt and agent.json discovery endpoints. Documentation, README, and demo materials prepared.
             </p>
           </div>
 
           <div className="glassmorphism rounded-xl p-5">
             <h3 className="text-lg font-bold mb-2 text-foreground">Phase 3: Referral System</h3>
             <p className="text-muted-foreground leading-relaxed">
-              Public launch of the ClicksReferral contract with multi-level referral tracking, team system, and yield discovery bounty. This phase focuses on organic protocol growth through agent-to-agent recruitment incentives.
+              Public rollout of the explicit referral attribution layer on top of treasury setup. This phase focuses on agent-signed approvals, authorized submission, multi-level referral tracking, team system, and yield discovery bounty without hiding attribution inside the default onboarding helper.
             </p>
           </div>
 

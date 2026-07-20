@@ -20,6 +20,40 @@ describe("ClicksReferral", function () {
     return { referral, owner, agentA, agentB, agentC, agentD, agentE, feeContract };
   }
 
+  async function signReferralApproval(
+    referral: ClicksReferral,
+    signer: HardhatEthersSigner,
+    newAgent: string,
+    referrer: string,
+    deadline: bigint,
+  ) {
+    const nonce = await referral.referralNonces(newAgent);
+    const { chainId } = await ethers.provider.getNetwork();
+
+    return signer.signTypedData(
+      {
+        name: "ClicksReferral",
+        version: "2",
+        chainId,
+        verifyingContract: await referral.getAddress(),
+      },
+      {
+        ReferralApproval: [
+          { name: "newAgent", type: "address" },
+          { name: "referrer", type: "address" },
+          { name: "nonce", type: "uint256" },
+          { name: "deadline", type: "uint256" },
+        ],
+      },
+      {
+        newAgent,
+        referrer,
+        nonce,
+        deadline,
+      }
+    );
+  }
+
   // ═══════════════════════════════════════════════════════
   // REFERRAL REGISTRATION
   // ═══════════════════════════════════════════════════════
@@ -111,6 +145,126 @@ describe("ClicksReferral", function () {
       await referral.registerReferral(agentC.address, agentA.address);
 
       expect(await referral.totalAgentsReferred()).to.equal(2);
+    });
+  });
+
+  describe("Referral Registration With Signature", function () {
+    it("should register a referral with valid agent signature", async function () {
+      const { referral, feeContract, agentA, agentB } = await loadFixture(deployReferralFixture);
+      const deadline = BigInt((await ethers.provider.getBlock("latest"))!.timestamp + 3600);
+      const signature = await signReferralApproval(
+        referral,
+        agentB,
+        agentB.address,
+        agentA.address,
+        deadline
+      );
+
+      await referral.connect(feeContract).registerReferralWithSig(
+        agentB.address,
+        agentA.address,
+        deadline,
+        signature
+      );
+
+      const stats = await referral.getReferralStats(agentB.address);
+      expect(stats.referrer).to.equal(agentA.address);
+      expect(await referral.referralNonces(agentB.address)).to.equal(1);
+    });
+
+    it("should reject expired signature", async function () {
+      const { referral, feeContract, agentA, agentB } = await loadFixture(deployReferralFixture);
+      const latest = await ethers.provider.getBlock("latest");
+      const deadline = BigInt(latest!.timestamp + 1);
+      const signature = await signReferralApproval(
+        referral,
+        agentB,
+        agentB.address,
+        agentA.address,
+        deadline
+      );
+
+      await ethers.provider.send("evm_setNextBlockTimestamp", [Number(deadline + 1n)]);
+      await ethers.provider.send("evm_mine", []);
+
+      await expect(
+        referral.connect(feeContract).registerReferralWithSig(
+          agentB.address,
+          agentA.address,
+          deadline,
+          signature
+        )
+      ).to.be.revertedWith("Signature expired");
+    });
+
+    it("should reject signature from wrong signer", async function () {
+      const { referral, feeContract, agentA, agentB, agentC } = await loadFixture(deployReferralFixture);
+      const deadline = BigInt((await ethers.provider.getBlock("latest"))!.timestamp + 3600);
+      const signature = await signReferralApproval(
+        referral,
+        agentC,
+        agentB.address,
+        agentA.address,
+        deadline
+      );
+
+      await expect(
+        referral.connect(feeContract).registerReferralWithSig(
+          agentB.address,
+          agentA.address,
+          deadline,
+          signature
+        )
+      ).to.be.revertedWith("Invalid signature");
+    });
+
+    it("should reject replayed signature", async function () {
+      const { referral, feeContract, agentA, agentB } = await loadFixture(deployReferralFixture);
+      const deadline = BigInt((await ethers.provider.getBlock("latest"))!.timestamp + 3600);
+      const signature = await signReferralApproval(
+        referral,
+        agentB,
+        agentB.address,
+        agentA.address,
+        deadline
+      );
+
+      await referral.connect(feeContract).registerReferralWithSig(
+        agentB.address,
+        agentA.address,
+        deadline,
+        signature
+      );
+
+      await expect(
+        referral.connect(feeContract).registerReferralWithSig(
+          agentB.address,
+          agentA.address,
+          deadline,
+          signature
+        )
+      ).to.be.revertedWith("Invalid signature");
+    });
+
+    it("should reject unauthorized caller even with valid signature", async function () {
+      const { referral, agentA, agentB } = await loadFixture(deployReferralFixture);
+      const deadline = BigInt((await ethers.provider.getBlock("latest"))!.timestamp + 3600);
+      const signature = await signReferralApproval(
+        referral,
+        agentB,
+        agentB.address,
+        agentA.address,
+        deadline
+      );
+
+      await expect(
+        referral.connect(agentA).registerReferralWithSig(
+          agentB.address,
+          agentA.address,
+          deadline,
+          signature
+        )
+      ).to.be.revertedWith("Not authorized");
     });
   });
 

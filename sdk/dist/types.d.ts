@@ -17,6 +17,43 @@ export interface QuickStartResult {
     /** Transaction hashes for each step executed */
     txHashes: string[];
 }
+/** Result of registerReferralWithSig() */
+export interface ReferralRegistrationResult {
+    /** Transaction response for the referral registration */
+    tx: ContractTransactionResponse;
+}
+/** Result of quickStartWithReferral() */
+export interface QuickStartWithReferralResult {
+    /** Result of the treasury setup path */
+    treasury: QuickStartResult;
+    /** Whether referral attribution was registered successfully */
+    referralRegistered: boolean;
+    /** Referral tx hash when attribution succeeded */
+    referralTxHash?: string;
+    /** Referral error when treasury succeeded but attribution failed */
+    referralError?: string;
+}
+/** Typed data payload for referral approval signing */
+export interface ReferralApprovalTypedData {
+    domain: {
+        name: string;
+        version: string;
+        chainId: number;
+        verifyingContract: string;
+    };
+    types: {
+        ReferralApproval: Array<{
+            name: 'newAgent' | 'referrer' | 'nonce' | 'deadline';
+            type: 'address' | 'uint256';
+        }>;
+    };
+    value: {
+        newAgent: string;
+        referrer: string;
+        nonce: bigint;
+        deadline: bigint;
+    };
+}
 /** Result of simulateSplit() */
 export interface SplitPreview {
     /** Amount sent directly to the agent wallet (USDC, 6 decimals) */

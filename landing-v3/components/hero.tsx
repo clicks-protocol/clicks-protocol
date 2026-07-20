@@ -117,7 +117,7 @@ const clicks = new ClicksClient(signer);
 await clicks.quickStart('100', agentAddress);
 
 // 80 USDC → agent wallet (instant)
-// 20 USDC → DeFi yield (4-8% APY)`}
+// 20 USDC → treasury yield route`}
                 />
               </div>
             </div>

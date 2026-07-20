@@ -9,7 +9,7 @@ const quickStartCode = `import { ClicksClient } from '@clicks-protocol/sdk';
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('1000', agentAddress);
 // 800 USDC → liquid (instant access)
-// 200 USDC → earning 4-8% APY (withdraw anytime)`;
+// 200 USDC → treasury yield route (withdraw anytime)`;
 
 const cards = [
   {
@@ -48,7 +48,7 @@ export default function DocsOverview() {
           Clicks Protocol Documentation
         </h1>
         <p className="text-muted-foreground text-lg max-w-2xl">
-          Everything you need to integrate autonomous yield for AI agents. One SDK call. No lockup. Built on Base.
+          Everything you need to integrate settlement routing for AI agents on Base. One SDK call for liquid ops plus yield.
         </p>
       </div>
 
@@ -93,7 +93,7 @@ export default function DocsOverview() {
       <div className="mb-12">
         <h2 className="text-2xl font-bold mb-4">Quick Start</h2>
         <p className="text-muted-foreground mb-4">
-          Install the SDK and start earning yield in under a minute:
+          Install the SDK and start routing agent payments in under a minute:
         </p>
         <div className="relative rounded-xl overflow-hidden border border-white/10 bg-card">
           <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-white/5">
@@ -273,7 +273,7 @@ export default function DocsOverview() {
         <h3 className="font-semibold text-lg mb-3">Need help?</h3>
         <div className="flex flex-col sm:flex-row gap-4">
           <a
-            href="https://discord.gg/clicks-protocol"
+            href="https://discord.gg/FfmJGUcxfe"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center space-x-2 text-muted-foreground hover:text-accent transition-colors"

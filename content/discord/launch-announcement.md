@@ -4,7 +4,7 @@
 
 Clicks Protocol is live.
 
-One SDK call gives your AI agent a yield-earning treasury on Base. 80% liquid, 20% earning. No lockup.
+One SDK call gives your AI agent a settlement router on Base. Working capital stays liquid, the idle slice routes into yield. No lockup.
 
 **What shipped today:**
 - 5 verified contracts on Base Mainnet

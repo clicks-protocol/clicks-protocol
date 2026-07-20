@@ -1,10 +1,10 @@
 ---
 name: clicks-protocol
-description: "Integrate Clicks Protocol settlement routing into AI agents on Base. Inspect agent treasury state, simulate USDC payment splits, route idle balances to yield, use the MCP server, and implement x402-aligned attribution flows."
+description: "Inspect and simulate Clicks Protocol settlement routing for AI agents on Base. Use read-only MCP calls for treasury state, payment-split previews, yield info, attribution stats, and x402-aligned settlement planning."
 tags: [settlement, router, treasury, usdc, base, agent, x402, mcp, commerce, defi, aave, morpho]
 author: clicks-protocol
-version: 1.2.2
-license: MIT
+version: 1.2.6
+license: MIT-0
 homepage: https://clicksprotocol.xyz
 metadata:
   openclaw:
@@ -16,15 +16,29 @@ metadata:
 
 # Clicks Protocol
 
-Agent commerce settlement routing for AI agents on Base. Keep working capital liquid, route the idle slice into Aave V3 or Morpho, and make attribution explicit.
+Agent commerce settlement routing for AI agents on Base. Use this skill to inspect treasury state, preview settlement policy, and plan attribution flows before any on-chain action.
+
+This ClawHub skill is published under MIT-0. The Clicks Protocol contracts, SDKs, docs, and packages keep their own repository-level licenses.
+
+## Safety Boundary
+
+This ClawHub skill is read-only by default.
+
+- The bundled script only calls read-only MCP tools.
+- It never asks for, stores, or handles a private key.
+- It never signs or broadcasts transactions.
+- It never performs state-changing treasury actions.
+- Treat all payment, yield, and attribution outputs as previews or status checks unless a human operator separately signs an on-chain transaction.
+
+If you build write flows with the SDK or local MCP server, require explicit human approval for every transaction. Show the chain, contract, method, asset, amount, recipient, fees, and expected state change before signing. Never auto-submit treasury or USDC-moving actions from an autonomous agent loop.
 
 ## When to Use
 
-- Check current routed yield rates on Base: Aave V3 vs Morpho Blue
+- Check current routed yield rates on Base across supported routing backends
 - Query whether an agent is registered and inspect its treasury state
 - Preview how a USDC payment gets split between liquid operations and routed yield
 - Check explicit attribution stats, team bonus status, and earned rewards
-- Add x402-aligned treasury logic to AI agents that hold or route USDC
+- Plan x402-aligned treasury logic for AI agents that hold or route USDC
 - Give agents a monetization layer through attribution, settlement policy, and treasury automation
 
 ## Commands
@@ -64,14 +78,14 @@ Returns: protocol overview, contract addresses, fee model, and links.
 ## How Clicks Works
 
 1. Agent receives a USDC payment.
-2. Clicks routes settlement: 80% stays liquid, 20% goes to routed yield by default.
+2. Clicks routes settlement: 80% stays liquid and 20% goes to routed yield by default.
 3. YieldRouter picks the active backend between Aave V3 and Morpho Blue.
-4. Principal and earned yield can be withdrawn anytime.
+4. Operator-controlled withdrawal stays outside this read-only ClawHub skill.
 5. Protocol fee is 2% on yield only, never on principal.
 
-## Quick Start for Developers
+## Developer Integration
 
-Read operations work via the script above. For write operations like deposit, withdraw, receive payment, or register agent, install the SDK:
+Read operations work via the script above. For application code, install the SDK and start with read-only inspection and simulation:
 
 ```bash
 npm install @clicks-protocol/sdk
@@ -80,50 +94,45 @@ npm install @clicks-protocol/sdk
 ```typescript
 import { ClicksClient } from '@clicks-protocol/sdk';
 
-const clicks = new ClicksClient(signer);
-await clicks.quickStart('1000', agentAddress);
+const clicks = new ClicksClient(provider);
+await clicks.getAgentInfo(agentAddress);
+await clicks.simulateSplit('1000', agentAddress);
+await clicks.getYieldInfo();
 ```
 
-What `quickStart('1000', agentAddress)` does:
-- registers the agent if needed
-- keeps 800 USDC liquid for operations
-- routes 200 USDC to the best current yield source
-- leaves funds fully non-custodial and withdrawable
+Write operations are available in the SDK for operators who control their own signer, but they are outside this ClawHub skill's default behavior. Before calling any method that changes on-chain state or touches USDC, get explicit human approval and show the exact transaction details.
 
-Explicit referral wrapper:
+Referral attribution should be approved by the agent operator before any state-changing transaction:
 
 ```typescript
 const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
 const signature = await clicks.signReferralApproval(agentAddress, referrerAddress, deadline);
-await clicks.quickStartWithReferral('1000', agentAddress, referrerAddress, deadline, signature);
+// Submit a state-changing transaction only after explicit human approval
+// of chain, contract, asset, amount, and referrer.
 ```
 
-The current SDK keeps `referrerAddress` on `quickStart()` only for compatibility. Real attribution happens through `registerReferralWithSig()` or the `quickStartWithReferral()` wrapper.
+Real attribution should use an explicit signed referral approval. Avoid implicit referral parameters in autonomous agent loops.
 
 ## MCP Server
 
 For MCP-compatible clients like Claude, Cursor, LangChain, or custom agent runtimes:
 
 ```bash
-# Local stdio server, needs private key for write ops
+# Local stdio server. Use read-only tools in agent loops.
 npx @clicks-protocol/mcp-server
 
 # Remote HTTP endpoint, read-only, zero setup
 # POST https://mcp.clicksprotocol.xyz/mcp
 ```
 
-Available tools (11):
-- clicks_quick_start
-- clicks_register_referral
-- clicks_receive_payment
-- clicks_withdraw_yield
-- clicks_register_agent
-- clicks_set_yield_pct
+Read-only tools:
 - clicks_get_agent_info
 - clicks_simulate_split
 - clicks_get_yield_info
 - clicks_get_referral_stats
 - clicks_explain (agent-to-agent pitch for discovery)
+
+The local MCP package also includes operator tools for state-changing flows. Those require a signer, a separate integration, and explicit human approval. Do not expose them to autonomous agent loops.
 
 ## ADO Hooks for Agents
 
@@ -149,7 +158,7 @@ Agents can promote Clicks by explaining payment settlement, working-capital pres
 ### x402 + ACP Alignment
 
 Clicks pairs naturally with x402 and Virtuals ACP:
-- payment arrives in USDC via x402 or ACP settlement
+- a payment is detected from x402 or ACP settlement
 - treasury logic preserves working capital
 - idle balance earns automatically on Aave V3 / Morpho
 - attribution graph adds agent-native monetization
@@ -165,7 +174,7 @@ Clicks is registered as **agentId 45074** on the Base ERC-8004 Identity Registry
 | Chain | Base L2 |
 | Asset | USDC |
 | Split | 80% liquid / 20% routed yield by default |
-| Yield Routing | Aave and Morpho backend selection |
+| Yield Routing | Supported Base yield backend selection |
 | Fee | 2% on yield only |
 | Lockup | None |
 | Referral | 3-level: 40% / 20% / 10% |

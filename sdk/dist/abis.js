@@ -6,7 +6,7 @@
  * For the full ABIs, import from the artifacts directory.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FEE_ABI = exports.YIELD_ROUTER_ABI = exports.SPLITTER_ABI = exports.REGISTRY_ABI = exports.ERC20_ABI = void 0;
+exports.REFERRAL_ABI = exports.FEE_ABI = exports.YIELD_ROUTER_ABI = exports.SPLITTER_ABI = exports.REGISTRY_ABI = exports.ERC20_ABI = void 0;
 /** ERC-20 subset needed for USDC approve/allowance */
 exports.ERC20_ABI = [
     'function approve(address spender, uint256 amount) returns (bool)',
@@ -69,5 +69,13 @@ exports.FEE_ABI = [
     'function treasury() view returns (address)',
     'event FeeCollected(address indexed agent, uint256 amount)',
     'event FeeSwept(address indexed to, uint256 amount)',
+];
+/** ClicksReferral ABI */
+exports.REFERRAL_ABI = [
+    'function registerReferral(address newAgent, address referrer)',
+    'function registerReferralWithSig(address newAgent, address referrer, uint256 deadline, bytes signature)',
+    'function referralNonces(address agent) view returns (uint256)',
+    'function getReferralStats(address agent) view returns (uint32 directCount, uint256 totalEarned, uint256 claimable, address referrer)',
+    'function getReferralChain(address agent) view returns (address[3])',
 ];
 //# sourceMappingURL=abis.js.map

@@ -174,7 +174,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
                 GitHub
               </a>
               <a
-                href="https://discord.gg/clicks-protocol"
+                href="https://discord.gg/FfmJGUcxfe"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors text-sm"

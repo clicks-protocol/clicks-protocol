@@ -22,7 +22,7 @@ export default function GettingStartedPage() {
     <div className="prose-docs">
       <h1 className="text-3xl sm:text-4xl font-bold mb-6 gradient-text">Getting Started</h1>
       <p className="text-muted-foreground text-lg mb-8">
-        Start earning yield on agent USDC in under a minute. One SDK call, no config, no human required.
+        Start routing agent treasury in under a minute. One SDK call, no config, no human required.
       </p>
 
       {/* Prerequisites */}
@@ -91,10 +91,10 @@ const clicks = new ClicksClient(signer);`} />
             <CodeBlock code={`// One-call setup: registers agent, approves USDC, and splits first payment
 await clicks.quickStart('1000', agentAddress);
 
-// Result: 800 USDC → liquid (instant access)
-//         200 USDC → earning 7-13% APY on Morpho`} />
+// Result: 800 USDC -> liquid working capital
+//         200 USDC -> routed to yield`} />
             <p className="text-muted-foreground text-sm mt-3">
-              The method automatically splits payments 80% liquid / 20% yield by default.
+              The method automatically sets up the default 80% liquid / 20% yield treasury policy.
             </p>
           </div>
 
@@ -106,7 +106,7 @@ await clicks.quickStart('1000', agentAddress);
             <CodeBlock code={`// All future payments are automatically split 80/20
 await clicks.receivePayment('500', agentAddress);`} />
             <p className="text-muted-foreground text-sm mt-3">
-              No additional setup needed. The agent is now earning yield on 20% of all incoming USDC.
+              No additional setup needed. Incoming USDC now follows the same settlement policy automatically.
             </p>
           </div>
         </div>
@@ -116,7 +116,7 @@ await clicks.receivePayment('500', agentAddress);`} />
       <section className="mb-10">
         <h2 className="text-2xl font-bold mb-4 text-foreground">MCP Server Setup</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          AI agents can discover and use Clicks via Model Context Protocol (MCP). The server provides 9 tools for autonomous operation.
+          AI agents can discover and use Clicks via Model Context Protocol (MCP). The server provides 11 tools for autonomous operation.
         </p>
         <CodeBlock code="npx @clicks-protocol/mcp-server" language="bash" />
         <p className="text-muted-foreground text-sm mt-2 mb-4">
@@ -126,9 +126,10 @@ await clicks.receivePayment('500', agentAddress);`} />
 CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
         
         <div className="glassmorphism rounded-lg p-4 mt-4">
-          <h3 className="font-semibold text-lg mb-3 text-foreground">Available Tools (9)</h3>
+          <h3 className="font-semibold text-lg mb-3 text-foreground">Available Tools (11)</h3>
           <ul className="space-y-2 text-muted-foreground text-sm">
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_quick_start</code> — One-call setup + first payment</li>
+            <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_register_referral</code> — Explicit referral attribution with agent signature</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_receive_payment</code> — Split incoming USDC payment</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_withdraw_yield</code> — Withdraw principal + yield</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_register_agent</code> — Register new agent</li>
@@ -137,6 +138,7 @@ CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_simulate_split</code> — Preview payment split</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_get_yield_info</code> — Current APY + active protocol</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_get_referral_stats</code> — Referral network stats</li>
+            <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_explain</code> — Agent-to-agent protocol explanation</li>
           </ul>
         </div>
       </section>
@@ -145,7 +147,7 @@ CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
       <section className="mb-10">
         <h2 className="text-2xl font-bold mb-4 text-foreground">Check Yield Balance</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          Monitor an agent&apos;s yield balance and accumulated earnings.
+          Monitor the routed treasury position and accumulated earnings.
         </p>
         <CodeBlock code={`// Get agent info including deposited amount
 const agentInfo = await clicks.getAgentInfo(agentAddress);
@@ -205,7 +207,7 @@ await clicks.withdrawYield(agentAddress);`} />
           </a>
 
           <a
-            href="https://discord.gg/clicks-protocol"
+            href="https://discord.gg/FfmJGUcxfe"
             target="_blank"
             rel="noopener noreferrer"
             className="glassmorphism rounded-xl p-5 hover-glow cursor-pointer"
@@ -225,10 +227,10 @@ await clicks.withdrawYield(agentAddress);`} />
           <li>• Install SDK: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">npm install @clicks-protocol/sdk ethers@^6</code></li>
           <li>• Initialize: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">new ClicksClient(signer)</code></li>
           <li>• Quick start: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks.quickStart(&apos;amount&apos;, agentAddress)</code></li>
-          <li>• Default split: 80% liquid, 20% earning 7-13% APY on Morpho</li>
+          <li>• Default split: 80% liquid, 20% routed through treasury yield</li>
           <li>• Check balance: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks.getAgentInfo(agentAddress)</code></li>
           <li>• Withdraw anytime: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks.withdrawYield(agentAddress)</code></li>
-          <li>• MCP server: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">npx @clicks-protocol/mcp-server</code> (9 tools)</li>
+          <li>• MCP server: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">npx @clicks-protocol/mcp-server</code> (11 tools)</li>
         </ul>
       </div>
     </div>

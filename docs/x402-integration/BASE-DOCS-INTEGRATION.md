@@ -27,13 +27,13 @@ This document outlines how Clicks Protocol should be integrated into Base's offi
 ### Addition 1: Clicks Protocol Section in x402 Docs
 
 ```markdown
-### Clicks Protocol (Yield Layer)
+### Clicks Protocol (Post-Payment Settlement)
 
-[Clicks Protocol](https://clicksprotocol.xyz) provides **autonomous yield infrastructure** for AI agents on Base. When your agent makes x402 payments, Clicks automatically:
+[Clicks Protocol](https://clicksprotocol.xyz) provides **post-payment settlement routing** for AI agents on Base. When an x402 flow settles USDC to your agent or service wallet, Clicks can be called explicitly to apply treasury policy:
 
-- **Routes 20% to yield strategies** - Earn APY on a portion of payments
+- **Routes 20% through treasury yield** - Variable yield route on a portion of funds
 - **Keeps 80% liquid** - Immediate availability for agent operations
-- **Accumulates yield in USDC** - Compounding returns over time
+- **Produces a clear settlement path** - Payment rail first, treasury routing after receipt
 
 #### Installation
 
@@ -47,25 +47,25 @@ npx skills add clicks-protocol/skills@clicks-protocol
 
 #### Configuration
 
-Clicks works with any x402-compatible wallet. After installing the skill:
+Clicks does not intercept x402 payments automatically. After your x402 stack verifies payment and funds are available on Base:
 
 ```bash
 # 1. Configure your wallet (CDP or Sponge)
 npx skills add coinbase/agentic-wallet-skills
 
-# 2. Clicks automatically intercepts x402 payments
-# 3. 20% is routed to yield, 80% stays liquid
+# 2. Your app verifies and settles the x402 payment
+# 3. Call Clicks explicitly to apply the 80/20 settlement policy
 ```
 
 #### Usage Example
 
 ```bash
-# Make x402 payments as usual
+# Your app handles x402 payment as usual
 npx awal@latest x402 pay https://api.example.com/data
 
-# Check your yield status
+# Check treasury status
 npx skills run clicks-protocol status
-# Output: APY: 4.2%, Total Yield: 12.5 USDC
+# Output: Settlement policy, balances, variable yield route
 
 # Withdraw accumulated yield
 npx skills run clicks-protocol withdraw --amount 10.0

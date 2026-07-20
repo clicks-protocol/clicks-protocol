@@ -2,7 +2,7 @@
 
 > Read this first. 60 seconds to working state. For depth: `STATUS.md` (snapshot), `SESSION-LOG.md` (history), `strategy/*.md` (design docs).
 
-**Mission:** Agent Commerce Settlement Router auf Base. Not a yield protocol — we route x402 / ACP payments into liquid and yield, we don't operate vaults ourselves.
+**Mission:** Agent Commerce Settlement Router auf Base. Not a yield protocol. Clicks routes USDC revenue after x402-style or ACP-style payment flows into working capital, treasury policy, receipts, and optional yield routing.
 
 ## Live Contracts (Base Mainnet, owned by Safe)
 
@@ -43,23 +43,41 @@
 Messung via `scripts/scan-tier-distribution.ts` (weekly launchd cron).
 Nicht deployen bis Gate erfüllt.
 
-## Packages (npm / PyPI, alle 0.2.0 außer markiert)
+## Packages (npm / PyPI)
 
-`@clicks-protocol/sdk` · `@clicks-protocol/mcp-server` · `@clicks-protocol/eliza-plugin` · `clicks-langchain` · `agent-treasury` (0.1.0) · `clicks-crewai` (PyPI 0.1.1)
+`@clicks-protocol/sdk` (0.2.1) · `@clicks-protocol/mcp-server` (0.3.2) · `@clicks-protocol/eliza-plugin` (0.2.1) · `clicks-langchain` (0.2.0) · `agent-treasury` (0.1.1) · `clicks-crewai` (PyPI 0.1.1)
 
 ## Running Services (launchd)
 
 - `com.clicks.acp-service` — ACP Service Provider für Virtuals (blockiert durch Alchemy Paymaster Bug)
 - `com.clicks.tier-scanner` — Tier-Distribution-Scanner, Do 09:00 wöchentlich
 - `com.clicks.yield-reporter` — geparked
+- `com.clicks.x-post-{asia,eu,us}` — X-Posting täglich 06:15/13:15/20:15 (seit 20.04 launchd statt OpenClaw-Cron)
 
 ## Public Presence
 
-- Landing: https://clicksprotocol.xyz (mit ERC-8004 Badge)
+- Landing: https://clicksprotocol.xyz (Settlement-first Homepage, ERC-8004 Badge, x402 claims cleaned, Production-Deploy `8d04aefe-1bfe-4413-aa18-0d60d1628452`)
+- MCP Registry: `io.github.clicksprotocol/mcp-server` Version `1.0.3`, active/latest, npm package `@clicks-protocol/mcp-server@0.3.2`
+- ClawHub: `protogenosone/clicks-protocol` Version `1.2.6` ist latest und zeigt jetzt korrekt `Clicks Protocol`. Security `clean`, aber Verify fuer `1.2.6` faellt noch wegen `card.missing`. Letzte voll gruene Version bleibt `1.2.4` mit Card verfuegbar und Verify `decision=pass`.
 - Dev.to: https://dev.to/clicksprotocol/x402-solved-payments-who-solves-treasury-531h
 - Farcaster Mini App: https://clicksprotocol.xyz/miniapp/
 - GitHub: https://github.com/clicks-protocol/clicks-protocol
 - BaseScan Identity NFT: https://basescan.org/token/0x8004A169FB4a3325136EB29fA0ceB6D2e539a432?a=45074
+
+## x402 Revenue Settlement
+
+- x402 handles authorization/payment. Clicks handles post-payment settlement.
+- Current status: research and public claim cleanup done. Adapter is planned, not released.
+- Do not claim `supports x402`, automatic x402 interception, or built-in x402 verification before the adapter exists.
+- Build direction: x402 revenue event intake, settlement receipt ledger, SDK/MCP adapter, Cloudflare Worker example.
+
+## Current Content Asset
+
+- Hyperframes high render: `video-pipeline/x-settlement-gap/output/payment-apis-need-settlement-v1-high.mp4`
+- Hyperframes draft: `video-pipeline/x-settlement-gap/output/payment-apis-need-settlement-v1-draft.mp4`
+- Live X post: https://x.com/ClicksProtocol/status/2079267140067094640
+- Thesis: `Payment APIs Move Money. Agents Need Settlement.`
+- Strategy: category creation, not yield-first. Contrast against payment/card/banking rails: Stripe/x402/Coinbase/Open Banking/AgentCard/Meow move or custody money; Clicks handles post-payment settlement policy, treasury routing, receipts, and auditability.
 
 ## Hard Rules (für Emma)
 
@@ -69,6 +87,8 @@ Nicht deployen bis Gate erfüllt.
 4. **Reputation Registry ist 1-indexed.** Falscher Index revertet — immer bei 1 starten.
 5. **Kein MLM-Framing in externen Texten.** Intern "On-Chain Attribution Layer", nie "Referral-System" in Pitch oder Landing.
 6. **Cloudflare-Deploy + externe Posts (Dev.to, X, Farcaster, Discord DMs) brauchen explizites Go pro Aktion**, auch im Auto-Mode.
+7. **X-Pipeline: LLM = Advisor, Skript = Actor.** Externes Posting (xurl) NIE direkt aus LLM-Cron — immer launchd → `xurl-post.sh`. LLM darf nur JSON zur Auswahl/Reply-Draft zurückgeben, nicht "Tweet gepostet" melden ohne Skript-Verification (Halluzinations-Schutz, Lesson 20.04). queue.json wird durch Pipeline rotiert — manuelle Edits nur bei gestoppter Pipeline.
+8. **Vor jedem X-Post Auth pruefen:** `xurl --app clicks --auth oauth1 whoami` muss `username=ClicksProtocol` zeigen. Nicht `xurl user me` verwenden, das sucht nur den oeffentlichen User `@Me` und ist kein Auth-Check.
 
 ## Was Clicks NICHT ist
 
@@ -92,11 +112,12 @@ source /Users/davidbairaktaridis/.openclaw/workspace/.env
 npx tsx scripts/seed-attestations.ts
 ```
 
-## Bekannte Blocker
+## Bekannte Blocker (Stand 13.05.2026)
 
-- **Virtuals ACP Alchemy Paymaster Bug** — Miratisu ohne Antwort seit 16.04. Blockiert ACP Buyer-Test.
-- **AgentKit PR #1107** — @murrlincoln Review ausstehend, letzter Ping 17.04.
-- **Miratisu Tier-1 Attestor Anfrage** — Draft in `marketing/drafts/outreach/miratisu-virtuals-attestor.md`, nicht gesendet.
+- **Virtuals ACP Alchemy Paymaster Bug** — GitHub-Issue `Virtual-Protocol/dgclaw-skill#10` am 30.04. GESCHLOSSEN via Client-Side-Workaround (`wallet_sendPreparedCalls` Bypass). Upstream-Paymaster-Policy (186aaa4a) wurde NICHT gefixt. Ob der Workaround auch für den Clicks Buyer-Flow (Wallet `0x956e0...c457`) gilt: UNKLAR. Muss getestet werden.
+- **AgentKit PR #1107** — OFFEN, 0 Reviews, stale seit 26 Tagen. Letzter Ping von clicksprotocol am 17.04. ohne Reaktion. Repo ist aktiv (andere PRs werden gemerged), unsere wird ignoriert.
+- **Miratisu Tier-1 Attestor Anfrage** — DEAD END. DM seit ~26 Tagen unbeantwortet. Haym (CM) hat Kontext wiederholt verloren. Kein Fortschritt auf Virtuals-Seite sichtbar.
+- **GITHUB_PAT (clicksprotocol)** — funktioniert wieder. Am 20.07. fuer MCP Registry Login verifiziert: GitHub API `/user` = `clicksprotocol`, Scope enthaelt `read:org`.
 
 ## Verweise
 

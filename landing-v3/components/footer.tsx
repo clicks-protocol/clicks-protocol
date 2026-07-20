@@ -125,6 +125,16 @@ export function Footer({ locale = 'en' }: { locale?: Locale }) {
               </li>
               <li>
                 <a
+                  href="https://github.com/clicks-protocol/clicks"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  Skill
+                </a>
+              </li>
+              <li>
+                <a
                   href="https://github.com/clicks-protocol"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -141,7 +151,7 @@ export function Footer({ locale = 'en' }: { locale?: Locale }) {
             <ul className="space-y-3 text-muted-foreground">
               <li>
                 <a
-                  href="https://discord.gg/clicks-protocol"
+                  href="https://discord.gg/FfmJGUcxfe"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-foreground transition-colors"
@@ -262,7 +272,7 @@ export function Footer({ locale = 'en' }: { locale?: Locale }) {
               </svg>
             </a>
             <a
-              href="https://discord.gg/clicks-protocol"
+              href="https://discord.gg/FfmJGUcxfe"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-accent transition-colors"
