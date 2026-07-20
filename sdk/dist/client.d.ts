@@ -1,6 +1,6 @@
 import { Contract, type ContractTransactionResponse, type Provider, type Signer } from 'ethers';
 import { type ClicksAddresses } from './addresses';
-import type { AgentInfo, AgentYieldBalance, ClicksClientOptions, FeeInfo, QuickStartResult, SplitPreview, WithdrawResult, YieldInfo } from './types';
+import type { AgentInfo, AgentYieldBalance, ClicksClientOptions, FeeInfo, QuickStartResult, QuickStartWithReferralResult, ReferralApprovalTypedData, ReferralRegistrationResult, SplitPreview, WithdrawResult, YieldInfo } from './types';
 /**
  * High-level client for the Clicks Protocol.
  *
@@ -31,6 +31,7 @@ export declare class ClicksClient {
     private readonly splitter;
     private readonly yieldRouter;
     private readonly feeCollector;
+    private readonly referral;
     private readonly usdc;
     private readonly signerOrProvider;
     /**
@@ -48,7 +49,7 @@ export declare class ClicksClient {
      *
      * @param amount - First payment amount in USDC (human-readable, e.g. "100")
      * @param agentAddress - The agent's wallet address
-     * @param referrer - Optional referrer address for the referral program
+     * @param referrer - Deprecated. Reserved for explicit referral flows outside quickStart().
      * @returns Summary of what was executed
      *
      * @example
@@ -57,10 +58,74 @@ export declare class ClicksClient {
      * await clicks.quickStart('100', agentAddress);
      * // Agent registered, USDC approved, 80 USDC liquid + 20 USDC earning yield
      * ```
+     *
+     * @remarks
+     * The current quickStart path does not register referral attribution on-chain.
+     * Treat `referrer` as deprecated unless you are using a dedicated referral flow.
      */
     quickStart(amount: string | bigint, agentAddress: string, referrer?: string, options?: {
         gasLimit?: bigint;
     }): Promise<QuickStartResult>;
+    /**
+     * Get the current referral nonce for an agent.
+     *
+     * @param agentAddress - The agent address whose nonce should be read
+     * @returns Current nonce used for referral approval signing
+     */
+    getReferralNonce(agentAddress: string): Promise<bigint>;
+    /**
+     * Build the typed-data payload an agent signs to approve referral attribution.
+     *
+     * @param agentAddress - The agent being attributed
+     * @param referrerAddress - The referrer to attribute
+     * @param deadline - Expiry timestamp for the approval
+     * @returns EIP-712 typed data payload
+     */
+    buildReferralApprovalTypedData(agentAddress: string, referrerAddress: string, deadline: bigint): Promise<ReferralApprovalTypedData>;
+    /**
+     * Sign referral approval as the agent.
+     *
+     * @param agentAddress - The agent being attributed
+     * @param referrerAddress - The referrer to attribute
+     * @param deadline - Expiry timestamp for the approval
+     * @returns Signature bytes for registerReferralWithSig()
+     *
+     * @remarks
+     * The signer configured on this client must control `agentAddress`.
+     */
+    signReferralApproval(agentAddress: string, referrerAddress: string, deadline: bigint): Promise<string>;
+    /**
+     * Register referral attribution with an existing agent signature.
+     *
+     * @param agentAddress - The agent being attributed
+     * @param referrerAddress - The referrer to attribute
+     * @param deadline - Expiry timestamp included in the signature
+     * @param signature - Agent signature returned by signReferralApproval() or equivalent
+     * @returns Transaction response wrapper
+     *
+     * @remarks
+     * The caller configured on this client must be owner or an authorized caller on ClicksReferral.
+     */
+    registerReferralWithSig(agentAddress: string, referrerAddress: string, deadline: bigint, signature: string): Promise<ReferralRegistrationResult>;
+    /**
+     * Convenience wrapper for explicit treasury setup plus referral attribution.
+     *
+     * @param amount - First payment amount in USDC (human-readable, e.g. "100")
+     * @param agentAddress - The agent's wallet address
+     * @param referrerAddress - The referrer to attribute
+     * @param deadline - Expiry timestamp included in the signature
+     * @param signature - Agent signature approving referral attribution
+     * @param options - Optional gas settings for the treasury setup payment split
+     * @returns Treasury result plus explicit referral outcome
+     *
+     * @remarks
+     * This is intentionally not treated as one atomic on-chain operation.
+     * Treasury setup runs first. Referral attribution runs second.
+     * If referral attribution fails, treasury setup may already be complete.
+     */
+    quickStartWithReferral(amount: string | bigint, agentAddress: string, referrerAddress: string, deadline: bigint, signature: string, options?: {
+        gasLimit?: bigint;
+    }): Promise<QuickStartWithReferralResult>;
     /**
      * Register an AI agent under the caller as operator.
      *
@@ -196,7 +261,10 @@ export declare class ClicksClient {
     get yieldRouterContract(): Contract;
     /** Access the raw ClicksFee contract instance */
     get feeCollectorContract(): Contract;
+    /** Access the raw ClicksReferral contract instance */
+    get referralContract(): Contract;
     /** Access the raw USDC contract instance */
     get usdcContract(): Contract;
+    private requireSigner;
 }
 //# sourceMappingURL=client.d.ts.map

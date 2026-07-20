@@ -2,12 +2,12 @@
 /**
  * @clicks-protocol/sdk
  *
- * TypeScript SDK for the Clicks Protocol — on-chain yield for AI agents on Base.
+ * TypeScript SDK for Clicks Protocol, the agent commerce settlement router on Base.
  *
  * @packageDocumentation
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FEE_ABI = exports.YIELD_ROUTER_ABI = exports.SPLITTER_ABI = exports.REGISTRY_ABI = exports.ERC20_ABI = exports.ADDRESSES_BY_CHAIN = exports.BASE_SEPOLIA = exports.BASE_MAINNET = exports.ClicksClient = void 0;
+exports.REFERRAL_ABI = exports.FEE_ABI = exports.YIELD_ROUTER_ABI = exports.SPLITTER_ABI = exports.REGISTRY_ABI = exports.ERC20_ABI = exports.ADDRESSES_BY_CHAIN = exports.BASE_SEPOLIA = exports.BASE_MAINNET = exports.ClicksClient = void 0;
 // Main client
 var client_1 = require("./client");
 Object.defineProperty(exports, "ClicksClient", { enumerable: true, get: function () { return client_1.ClicksClient; } });
@@ -23,4 +23,5 @@ Object.defineProperty(exports, "REGISTRY_ABI", { enumerable: true, get: function
 Object.defineProperty(exports, "SPLITTER_ABI", { enumerable: true, get: function () { return abis_1.SPLITTER_ABI; } });
 Object.defineProperty(exports, "YIELD_ROUTER_ABI", { enumerable: true, get: function () { return abis_1.YIELD_ROUTER_ABI; } });
 Object.defineProperty(exports, "FEE_ABI", { enumerable: true, get: function () { return abis_1.FEE_ABI; } });
+Object.defineProperty(exports, "REFERRAL_ABI", { enumerable: true, get: function () { return abis_1.REFERRAL_ABI; } });
 //# sourceMappingURL=index.js.map

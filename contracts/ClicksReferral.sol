@@ -3,6 +3,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 /**
  * @title ClicksReferral
@@ -37,6 +38,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
  * The protocol earns LESS per agent but MORE total (exponential growth).
  */
 contract ClicksReferral is Ownable, ReentrancyGuard {
+    using ECDSA for bytes32;
 
     // ═══════════════════════════════════════════════════════
     // STRUCTS
@@ -75,6 +77,7 @@ contract ClicksReferral is Ownable, ReentrancyGuard {
     // Referral tree
     mapping(address => ReferralInfo) public referrals;
     mapping(address => address[]) public directReferralsList;
+    mapping(address => uint256) public referralNonces;
 
     // Team system
     mapping(uint256 => TeamInfo) public teams;
@@ -115,6 +118,14 @@ contract ClicksReferral is Ownable, ReentrancyGuard {
 
     // Max team size (prevent gas issues)
     uint32 public constant MAX_TEAM_SIZE = 500;
+    bytes32 public constant DOMAIN_TYPEHASH = keccak256(
+        "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
+    );
+    bytes32 public constant NAME_HASH = keccak256("ClicksReferral");
+    bytes32 public constant VERSION_HASH = keccak256("2");
+    bytes32 public constant REFERRAL_APPROVAL_TYPEHASH = keccak256(
+        "ReferralApproval(address newAgent,address referrer,uint256 nonce,uint256 deadline)"
+    );
 
     // Authorized callers (ClicksFee contract)
     mapping(address => bool) public authorized;
@@ -196,39 +207,53 @@ contract ClicksReferral is Ownable, ReentrancyGuard {
 
     /**
      * @notice Register a new agent with a referrer.
-     * @dev Called by ClicksRegistry or authorized contract when agent registers.
-     *      Can also be called directly by an agent with their referrer's address.
+     * @dev Called by an authorized contract or owner.
+     *      This path is intended for explicit or legacy attribution flows and
+     *      does not prove agent consent on its own.
      * @param newAgent The agent being registered
      * @param referrer The agent who referred them (address(0) = no referrer)
      */
     function registerReferral(address newAgent, address referrer) external onlyAuthorized {
-        require(newAgent != address(0), "Invalid agent");
-        require(newAgent != referrer, "Self-referral not allowed");
-        require(referrals[newAgent].referrer == address(0), "Already referred");
-        
-        if (referrer != address(0)) {
-            // Prevent circular referrals (check 3 levels up)
-            address check = referrer;
-            for (uint8 i = 0; i < MAX_LEVELS; i++) {
-                require(check != newAgent, "Circular referral");
-                check = referrals[check].referrer;
-                if (check == address(0)) break;
-            }
+        _registerReferral(newAgent, referrer);
+    }
 
-            referrals[newAgent] = ReferralInfo({
-                referrer: referrer,
-                referredAt: uint64(block.timestamp),
-                directReferrals: 0,
-                totalEarned: 0,
-                claimable: 0
-            });
+    /**
+     * @notice Register referral attribution with explicit agent approval.
+     * @dev Only an authorized caller can submit, but the agent must have signed
+     *      the typed approval payload. This keeps facilitated onboarding
+     *      possible without allowing silent attribution.
+     * @param newAgent The agent being attributed
+     * @param referrer The referrer address
+     * @param deadline Signature expiry timestamp
+     * @param signature EIP-712 signature by `newAgent`
+     */
+    function registerReferralWithSig(
+        address newAgent,
+        address referrer,
+        uint256 deadline,
+        bytes calldata signature
+    ) external onlyAuthorized {
+        require(referrer != address(0), "Invalid referrer");
+        require(block.timestamp <= deadline, "Signature expired");
 
-            referrals[referrer].directReferrals++;
-            directReferralsList[referrer].push(newAgent);
-            totalAgentsReferred++;
+        uint256 nonce = referralNonces[newAgent];
+        bytes32 structHash = keccak256(
+            abi.encode(
+                REFERRAL_APPROVAL_TYPEHASH,
+                newAgent,
+                referrer,
+                nonce,
+                deadline
+            )
+        );
+        bytes32 digest = keccak256(
+            abi.encodePacked("\x19\x01", _domainSeparatorV4(), structHash)
+        );
+        address signer = ECDSA.recover(digest, signature);
+        require(signer == newAgent, "Invalid signature");
 
-            emit AgentReferred(newAgent, referrer, uint64(block.timestamp));
-        }
+        referralNonces[newAgent] = nonce + 1;
+        _registerReferral(newAgent, referrer);
     }
 
     /**
@@ -577,5 +602,53 @@ contract ClicksReferral is Ownable, ReentrancyGuard {
         require(tier < 4, "Invalid tier");
         require(bonusBps <= 500, "Bonus too high"); // Max 5%
         teamTierBonusBps[tier] = bonusBps;
+    }
+
+    function domainSeparatorV4() external view returns (bytes32) {
+        return _domainSeparatorV4();
+    }
+
+    function _registerReferral(address newAgent, address referrer) internal {
+        require(newAgent != address(0), "Invalid agent");
+        require(newAgent != referrer, "Self-referral not allowed");
+        require(referrals[newAgent].referrer == address(0), "Already referred");
+
+        if (referrer == address(0)) {
+            return;
+        }
+
+        // Prevent circular referrals (check 3 levels up)
+        address check = referrer;
+        for (uint8 i = 0; i < MAX_LEVELS; i++) {
+            require(check != newAgent, "Circular referral");
+            check = referrals[check].referrer;
+            if (check == address(0)) break;
+        }
+
+        referrals[newAgent] = ReferralInfo({
+            referrer: referrer,
+            referredAt: uint64(block.timestamp),
+            directReferrals: 0,
+            totalEarned: 0,
+            claimable: 0
+        });
+
+        referrals[referrer].directReferrals++;
+        directReferralsList[referrer].push(newAgent);
+        totalAgentsReferred++;
+
+        emit AgentReferred(newAgent, referrer, uint64(block.timestamp));
+    }
+
+    function _domainSeparatorV4() internal view returns (bytes32) {
+        return keccak256(
+            abi.encode(
+                DOMAIN_TYPEHASH,
+                NAME_HASH,
+                VERSION_HASH,
+                block.chainid,
+                address(this)
+            )
+        );
     }
 }

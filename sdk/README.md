@@ -2,9 +2,9 @@
 
 ![npm version](https://img.shields.io/npm/v/@clicks-protocol/sdk) ![license](https://img.shields.io/badge/license-UNLICENSED-blue) ![Base](https://img.shields.io/badge/chain-Base-0052FF) ![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6)
 
-**Your AI agent's idle USDC earns 0% yield. Change that with one SDK call.**
+**Your AI agent's idle USDC earns 0% yield. Add treasury setup first, then optional referral attribution.**
 
-Clicks Protocol: autonomous yield for AI agents on Base. 80% liquid, 20% earning. No lockup.
+Clicks Protocol is agent treasury infrastructure on Base. Default split: 80% liquid, 20% routed to yield. Referral attribution is available as an explicit second step.
 
 ## Overview
 
@@ -82,6 +82,44 @@ Approve the splitter to spend USDC. Pass `"max"` for unlimited.
 
 #### `setOperatorYieldPct(pct)`
 Set custom yield split (5–50%). Pass `0` to revert to default.
+
+#### `buildReferralApprovalTypedData(agentAddress, referrerAddress, deadline)`
+Build the EIP-712 payload an agent signs to approve referral attribution.
+
+#### `signReferralApproval(agentAddress, referrerAddress, deadline)`
+Sign referral approval as the agent wallet itself.
+
+#### `registerReferralWithSig(agentAddress, referrerAddress, deadline, signature)`
+Register explicit referral attribution after treasury setup.
+
+#### `quickStartWithReferral(amount, agentAddress, referrerAddress, deadline, signature, options?)`
+Run treasury setup first, then attempt referral attribution as a second explicit step.
+
+```typescript
+const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
+const signature = await clicks.signReferralApproval(agentAddress, referrerAddress, deadline);
+
+const result = await clicks.quickStartWithReferral(
+  '100',
+  agentAddress,
+  referrerAddress,
+  deadline,
+  signature,
+);
+
+console.log(result.treasury.txHashes);
+console.log(result.referralRegistered);
+console.log(result.referralTxHash);
+console.log(result.referralError);
+```
+
+Important:
+- This wrapper is not atomic.
+- Treasury setup can succeed even if referral attribution fails afterward.
+- The return object reflects that split honestly.
+
+#### `quickStart(amount, agentAddress, referrer?)`
+Treasury setup only. The optional `referrer` parameter is reserved for compatibility and does not register attribution on-chain by itself.
 
 ### Read Methods (work with Provider)
 

@@ -132,7 +132,7 @@ const treasury = new AgentTreasury({
 3. **Idle Detector** compares balance snapshots over time to detect stagnant funds
 4. **Activate** (optional) connects to Clicks Protocol to deposit idle USDC into yield strategies
 
-Balance tracking and yield comparison work entirely standalone. The Clicks integration is an optional feature for agents that want automated yield activation.
+Balance tracking and yield comparison work entirely standalone. The Clicks integration is an optional feature for agents that want settlement routing for idle USDC.
 
 ## License
 

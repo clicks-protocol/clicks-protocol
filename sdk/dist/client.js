@@ -35,6 +35,7 @@ class ClicksClient {
     splitter;
     yieldRouter;
     feeCollector;
+    referral;
     usdc;
     signerOrProvider;
     /**
@@ -54,6 +55,7 @@ class ClicksClient {
         this.splitter = new ethers_1.Contract(this.addresses.splitter, abis_1.SPLITTER_ABI, signerOrProvider);
         this.yieldRouter = new ethers_1.Contract(this.addresses.yieldRouter, abis_1.YIELD_ROUTER_ABI, signerOrProvider);
         this.feeCollector = new ethers_1.Contract(this.addresses.feeCollector, abis_1.FEE_ABI, signerOrProvider);
+        this.referral = new ethers_1.Contract(this.addresses.referral, abis_1.REFERRAL_ABI, signerOrProvider);
         this.usdc = new ethers_1.Contract(this.addresses.usdc, abis_1.ERC20_ABI, signerOrProvider);
     }
     // ─── Quick Start ───────────────────────────────────────────────────────────
@@ -65,7 +67,7 @@ class ClicksClient {
      *
      * @param amount - First payment amount in USDC (human-readable, e.g. "100")
      * @param agentAddress - The agent's wallet address
-     * @param referrer - Optional referrer address for the referral program
+     * @param referrer - Deprecated. Reserved for explicit referral flows outside quickStart().
      * @returns Summary of what was executed
      *
      * @example
@@ -74,6 +76,10 @@ class ClicksClient {
      * await clicks.quickStart('100', agentAddress);
      * // Agent registered, USDC approved, 80 USDC liquid + 20 USDC earning yield
      * ```
+     *
+     * @remarks
+     * The current quickStart path does not register referral attribution on-chain.
+     * Treat `referrer` as deprecated unless you are using a dedicated referral flow.
      */
     async quickStart(amount, agentAddress, referrer, options) {
         const result = {
@@ -107,6 +113,117 @@ class ClicksClient {
         result.paymentSplit = true;
         result.txHashes.push(tx.hash);
         return result;
+    }
+    // ─── Referral Attribution ────────────────────────────────────────────────
+    /**
+     * Get the current referral nonce for an agent.
+     *
+     * @param agentAddress - The agent address whose nonce should be read
+     * @returns Current nonce used for referral approval signing
+     */
+    async getReferralNonce(agentAddress) {
+        return this.referral.referralNonces(agentAddress);
+    }
+    /**
+     * Build the typed-data payload an agent signs to approve referral attribution.
+     *
+     * @param agentAddress - The agent being attributed
+     * @param referrerAddress - The referrer to attribute
+     * @param deadline - Expiry timestamp for the approval
+     * @returns EIP-712 typed data payload
+     */
+    async buildReferralApprovalTypedData(agentAddress, referrerAddress, deadline) {
+        const nonce = await this.getReferralNonce(agentAddress);
+        return {
+            domain: {
+                name: 'ClicksReferral',
+                version: '2',
+                chainId: this.chainId,
+                verifyingContract: this.addresses.referral,
+            },
+            types: {
+                ReferralApproval: [
+                    { name: 'newAgent', type: 'address' },
+                    { name: 'referrer', type: 'address' },
+                    { name: 'nonce', type: 'uint256' },
+                    { name: 'deadline', type: 'uint256' },
+                ],
+            },
+            value: {
+                newAgent: agentAddress,
+                referrer: referrerAddress,
+                nonce,
+                deadline,
+            },
+        };
+    }
+    /**
+     * Sign referral approval as the agent.
+     *
+     * @param agentAddress - The agent being attributed
+     * @param referrerAddress - The referrer to attribute
+     * @param deadline - Expiry timestamp for the approval
+     * @returns Signature bytes for registerReferralWithSig()
+     *
+     * @remarks
+     * The signer configured on this client must control `agentAddress`.
+     */
+    async signReferralApproval(agentAddress, referrerAddress, deadline) {
+        const signer = this.requireSigner();
+        const payload = await this.buildReferralApprovalTypedData(agentAddress, referrerAddress, deadline);
+        return signer.signTypedData(payload.domain, payload.types, payload.value);
+    }
+    /**
+     * Register referral attribution with an existing agent signature.
+     *
+     * @param agentAddress - The agent being attributed
+     * @param referrerAddress - The referrer to attribute
+     * @param deadline - Expiry timestamp included in the signature
+     * @param signature - Agent signature returned by signReferralApproval() or equivalent
+     * @returns Transaction response wrapper
+     *
+     * @remarks
+     * The caller configured on this client must be owner or an authorized caller on ClicksReferral.
+     */
+    async registerReferralWithSig(agentAddress, referrerAddress, deadline, signature) {
+        const tx = await this.referral.registerReferralWithSig(agentAddress, referrerAddress, deadline, signature);
+        return { tx };
+    }
+    /**
+     * Convenience wrapper for explicit treasury setup plus referral attribution.
+     *
+     * @param amount - First payment amount in USDC (human-readable, e.g. "100")
+     * @param agentAddress - The agent's wallet address
+     * @param referrerAddress - The referrer to attribute
+     * @param deadline - Expiry timestamp included in the signature
+     * @param signature - Agent signature approving referral attribution
+     * @param options - Optional gas settings for the treasury setup payment split
+     * @returns Treasury result plus explicit referral outcome
+     *
+     * @remarks
+     * This is intentionally not treated as one atomic on-chain operation.
+     * Treasury setup runs first. Referral attribution runs second.
+     * If referral attribution fails, treasury setup may already be complete.
+     */
+    async quickStartWithReferral(amount, agentAddress, referrerAddress, deadline, signature, options) {
+        const treasury = await this.quickStart(amount, agentAddress, undefined, options);
+        try {
+            const referral = await this.registerReferralWithSig(agentAddress, referrerAddress, deadline, signature);
+            await referral.tx.wait();
+            return {
+                treasury,
+                referralRegistered: true,
+                referralTxHash: referral.tx.hash,
+            };
+        }
+        catch (error) {
+            const referralError = error instanceof Error ? error.message : String(error);
+            return {
+                treasury,
+                referralRegistered: false,
+                referralError,
+            };
+        }
     }
     // ─── Agent Registration ───────────────────────────────────────────────────
     /**
@@ -341,9 +458,20 @@ class ClicksClient {
     get feeCollectorContract() {
         return this.feeCollector;
     }
+    /** Access the raw ClicksReferral contract instance */
+    get referralContract() {
+        return this.referral;
+    }
     /** Access the raw USDC contract instance */
     get usdcContract() {
         return this.usdc;
+    }
+    requireSigner() {
+        const candidate = this.signerOrProvider;
+        if (typeof candidate.signTypedData !== 'function') {
+            throw new Error('This operation requires a Signer, but the client was created with a Provider.');
+        }
+        return candidate;
     }
 }
 exports.ClicksClient = ClicksClient;

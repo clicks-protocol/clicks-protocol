@@ -17,6 +17,9 @@ set -a
 source "$WORKSPACE_ENV"
 set +a
 
+# Force IPv4 to avoid ConnectTimeoutError on IPv6 to Virtuals API
+export NODE_OPTIONS="${NODE_OPTIONS:-} --dns-result-order=ipv4first"
+
 # Start service
 cd "$SCRIPT_DIR"
 npx tsx service.ts

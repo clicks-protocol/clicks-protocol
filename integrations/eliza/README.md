@@ -1,12 +1,12 @@
 # Clicks Protocol — Eliza Plugin
 
-On-chain yield management plugin for Eliza (ai16z) agents on Base.
+Treasury and settlement routing plugin for Eliza (ai16z) agents on Base.
 
 Powered by [Clicks Protocol](https://clicksprotocol.xyz)
 
 ## What It Does
 
-Enables Eliza agents to autonomously earn yield on idle USDC. The plugin splits funds 80/20 via Clicks Protocol: 80% stays liquid for agent operations, 20% earns 4-8% APY on-chain on Base.
+Enables Eliza agents to route USDC settlement through Clicks Protocol. By default, 80% stays liquid for agent operations and 20% routes to on-chain yield on Base.
 
 ## Installation
 
