@@ -58,9 +58,11 @@ STREAM_RECONNECT_BASE_DELAY = 5  # seconds
 STREAM_RECONNECT_MAX_DELAY = 300  # 5 minutes max backoff
 
 SCHEDULE = {
-    "post_asia": "06:00",
-    "post_europe": "13:00",
-    "post_us": "20:00",
+    # Posting moved to x-pipeline/xurl-post.sh (launchd com.clicks.x-post-*).
+    # Leaving these enabled caused duplicate tweets on 2026-05-20 and 2026-05-21.
+    # "post_asia": "06:00",
+    # "post_europe": "13:00",
+    # "post_us": "20:00",
     "mention_check": ["09:00", "14:00", "19:00"],
     "auto_reply": ["09:30", "13:30", "17:30", "21:30"],
     "account_monitor": ["08:00", "12:00", "16:00", "20:00"],
