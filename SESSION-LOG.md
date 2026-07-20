@@ -1187,7 +1187,7 @@
 
 **Verifikation:**
 - Vor PR-Erstellung gruen: `git diff --check HEAD`, `landing-v3 npm run build`, root `npm test -- --grep Referral` mit 49 passing, Builds in `sdk`, `mcp-server`, `integrations/eliza`, `agent-treasury`.
-- Nach Rebase gruen: `git diff --check HEAD`, Konfliktmarker-Scan, Secret-Pattern-Scan fuer `moltbook_sk_`.
+- Nach Rebase gruen: `git diff --check HEAD`, Konfliktmarker-Scan, Secret-Pattern-Scan fuer den Moltbook-Key-Prefix.
 - PR #32 war vor Merge `MERGEABLE`, `fileCount=100`, `commitCount=19`.
 - GitHub meldete keine CI-Checks fuer den Branch: `no checks reported`.
 - Nach Merge zeigt `origin/main` als Kopf `ac1d837 Merge settlement router cleanup`.
