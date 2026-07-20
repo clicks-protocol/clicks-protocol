@@ -57,6 +57,7 @@ x-pipeline/visuals/
 # Bot runtime state
 bots/*-state.json
 bots/*-source.json
+bots/moltbook-posts.json
 bots/x-outreach-drafts.md
 
 # Generated scanner reports

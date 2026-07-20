@@ -18,6 +18,7 @@ import requests
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "bots" / "moltbook-source.json"
 STATE = ROOT / "bots" / "moltbook-state.json"
+POSTS = ROOT / "bots" / "moltbook-posts.json"
 ROUTING = ROOT / "bots" / "submolt-routing.json"
 ENV = ROOT / ".env"
 
@@ -186,6 +187,26 @@ def save_state(idx: int):
     }, indent=2))
 
 
+def record_post(idx: int, post_id: str, submolt: str, title: str, status: str):
+    if POSTS.exists():
+        data = json.loads(POSTS.read_text())
+    else:
+        data = {"posts": []}
+
+    posts = [p for p in data.get("posts", []) if p.get("id") != post_id]
+    posts.append({
+        "idx": idx,
+        "id": post_id,
+        "url": f"https://www.moltbook.com/p/{post_id}",
+        "submolt": submolt,
+        "title": title,
+        "status": status,
+        "createdAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    })
+    data["posts"] = posts
+    POSTS.write_text(json.dumps(data, indent=2) + "\n")
+
+
 def main():
     key = load_key()
     headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
@@ -225,6 +246,7 @@ def main():
 
     verification = data.get("post", {}).get("verification") or data.get("verification")
     if not verification:
+        record_post(idx, post_id, submolt, title, "posted")
         save_state(idx + 1)
         print(f"  No verification needed. URL: https://www.moltbook.com/p/{post_id}")
         return 0
@@ -241,6 +263,7 @@ def main():
         headers=headers,
     )
     if vr.status_code in (200, 201) and vr.json().get("success"):
+        record_post(idx, post_id, submolt, title, "verified")
         save_state(idx + 1)
         print(f"  Verified! URL: https://www.moltbook.com/p/{post_id}")
         return 0
