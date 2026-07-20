@@ -12,6 +12,8 @@ out/
 .env
 .env.local
 .env.*.local
+.mcpregistry_github_token
+.mcpregistry_registry_token
 
 # IDE
 .vscode/
@@ -26,6 +28,7 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+bots/logs/
 
 # Test
 coverage/
@@ -45,8 +48,16 @@ cache/
 x-pipeline/config.json
 x-pipeline/post-log.json
 x-pipeline/queue.json
+x-pipeline/queue.json.*
+x-pipeline/mentions-log.json
 x-pipeline/replied-mentions.json
 x-pipeline/seen-mentions.json
+x-pipeline/visuals/
+
+# Bot runtime state
+bots/*-state.json
+bots/*-source.json
+bots/x-outreach-drafts.md
 
 # Generated scanner reports
 marketing/reports/tier-distribution/
@@ -66,6 +77,15 @@ video-pipeline/index.html
 video-pipeline/render-log.json
 video-pipeline/.snapshot.html
 video-pipeline/.thumbnails/
+video-pipeline/**/output/
+video-pipeline/**/snapshots/
+video-pipeline/tweet-visuals/
+
+# Local backups
+backups/
+*.backup-*
+*.bak
+*.tgz
 
 # Outreach — local-only (drafts, tracker, DM strategy stay off-repo)
 marketing/drafts/outreach/
