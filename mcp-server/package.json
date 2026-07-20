@@ -1,8 +1,8 @@
 {
   "name": "@clicks-protocol/mcp-server",
   "mcpName": "io.github.clicksprotocol/mcp-server",
-  "version": "0.3.0",
-  "description": "MCP Server for Clicks Protocol — AI agent yield on Base chain",
+  "version": "0.3.2",
+  "description": "MCP Server for Clicks Protocol, the agent commerce settlement router on Base",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -21,14 +21,15 @@
     "mcp",
     "model-context-protocol",
     "ai-agent",
-    "yield",
     "usdc",
     "defi",
     "base",
     "clicks-protocol",
-    "autonomous",
     "treasury",
     "x402",
+    "settlement",
+    "router",
+    "commerce",
     "claude",
     "cursor",
     "langchain"

@@ -2,9 +2,10 @@
 /**
  * Clicks Protocol MCP Server
  *
- * Exposes Clicks Protocol operations as MCP tools for AI agents.
+ * Exposes Clicks Protocol settlement operations as MCP tools for AI agents.
  * Any MCP-compatible client (Claude, Cursor, LangChain, etc.) can
- * discover and use these tools to earn yield on idle USDC.
+ * discover and use these tools to route, split, and inspect agent-commerce
+ * revenue on Base.
  *
  * Usage:
  *   CLICKS_PRIVATE_KEY=0x... clicks-mcp
@@ -92,6 +93,8 @@ const ERC20_ABI = [
 
 const REFERRAL_ABI = [
   'function registerReferral(address newAgent, address referrer) external',
+  'function registerReferralWithSig(address newAgent, address referrer, uint256 deadline, bytes signature) external',
+  'function referralNonces(address agent) external view returns (uint256)',
   'function getReferralStats(address agent) external view returns (uint32 directCount, uint256 totalEarned, uint256 claimable, address referrer)',
   'function getReferralChain(address agent) external view returns (address[3])',
   'function claimReferralRewards() external returns (uint256)',
@@ -130,7 +133,7 @@ function formatUSDC(amount: bigint): string {
 
 const server = new McpServer({
   name: 'clicks-protocol',
-  version: '0.1.0',
+  version: '0.3.2',
 });
 
 /** Wrap an async tool handler with usage logging */
@@ -146,7 +149,7 @@ function tracked<T>(toolName: string, direction: 'read' | 'write', fn: () => Pro
 
 server.tool(
   'clicks_get_agent_info',
-  'Check how much yield an AI agent earns on idle USDC. Returns current APY, balance, deposited principal, and pending rewards.',
+  'Inspect an agent settlement account. Returns registration status, operator, deposited USDC, settlement split, and wallet balance.',
   { agent_address: ethAddress.describe('Ethereum address of the AI agent') },
   async ({ agent_address }) => tracked('clicks_get_agent_info', 'read', async () => {
     const provider = getProvider();
@@ -181,7 +184,7 @@ server.tool(
 
 server.tool(
   'clicks_simulate_split',
-  'See how idle USDC gets split: what stays liquid vs what earns yield. Preview before depositing.',
+  'Preview how an incoming USDC revenue event will be split between liquid operations and routed treasury capital.',
   {
     amount: z.string().describe('Payment amount in USDC (e.g. "100" for 100 USDC)'),
     agent_address: ethAddress.describe('Ethereum address of the AI agent'),
@@ -208,7 +211,7 @@ server.tool(
 
 server.tool(
   'clicks_get_yield_info',
-  'Find the best APY for idle USDC. Returns current yields on Aave vs Morpho, total protocol balance, fees collected, and yield earned.',
+  'Inspect the treasury routing layer. Returns active yield route, Aave and Morpho rates, total routed balance, deposits, and protocol fees.',
   {},
   async () => tracked('clicks_get_yield_info', 'read', async () => {
     const provider = getProvider();
@@ -245,7 +248,7 @@ server.tool(
 
 server.tool(
   'clicks_get_referral_stats',
-  'Earn extra yield by referring agents. Track how much you earn from agents you refer to earn yield on idle USDC. See direct referrals, total earned, and team bonuses.',
+  'Inspect explicit referral attribution for an agent. Returns direct referrals, claimable rewards, referral chain, and team bonus.',
   { agent_address: ethAddress.describe('Ethereum address of the AI agent') },
   async ({ agent_address }) => tracked('clicks_get_referral_stats', 'read', async () => {
     if (!ADDRESSES.referral) {
@@ -288,13 +291,12 @@ server.tool(
 
 server.tool(
   'clicks_quick_start',
-  'Start earning yield on idle USDC in one command. Registers agent, approves USDC, and deposits first payment automatically.',
+  'Execute initial settlement setup in one command. Registers agent, approves USDC, and routes the first payment. Referral attribution remains a separate explicit step.',
   {
     amount: z.string().describe('First payment amount in USDC (e.g. "100")'),
     agent_address: ethAddress.describe('Ethereum address of the AI agent'),
-    referrer: ethAddress.optional().describe('Optional: address of the agent who referred you (earns 40% of your protocol fee)'),
   },
-  async ({ amount, agent_address, referrer }) => tracked('clicks_quick_start', 'write', async () => {
+  async ({ amount, agent_address }) => tracked('clicks_quick_start', 'write', async () => {
     const signer = getSigner();
     const registry = new Contract(ADDRESSES.registry, REGISTRY_ABI, signer);
     const splitter = new Contract(ADDRESSES.splitter, SPLITTER_ABI, signer);
@@ -339,7 +341,44 @@ server.tool(
           success: true,
           steps,
           txHashes,
-          message: `Agent ${agent_address} is now earning yield on ${amount} USDC. Yield is automatic — no further action needed.`,
+          message: `Agent ${agent_address} completed treasury setup on ${amount} USDC. Referral attribution, if needed, is a separate explicit step.`,
+        }, null, 2),
+      }],
+    };
+  }),
+);
+
+server.tool(
+  'clicks_register_referral',
+  'Register referral attribution as an explicit separate step. Requires an agent-signed approval and an authorized caller.',
+  {
+    agent_address: ethAddress.describe('Ethereum address of the agent being attributed'),
+    referrer_address: ethAddress.describe('Ethereum address of the referrer to attribute'),
+    deadline: z.string().describe('Approval expiry as unix timestamp in seconds'),
+    signature: z.string().regex(/^0x[0-9a-fA-F]+$/, 'Must be a hex signature').describe('EIP-712 signature by the agent approving the referral attribution'),
+  },
+  async ({ agent_address, referrer_address, deadline, signature }) => tracked('clicks_register_referral', 'write', async () => {
+    const signer = getSigner();
+    const referral = new Contract(ADDRESSES.referral, REFERRAL_ABI, signer);
+    const deadlineValue = BigInt(deadline);
+    const tx = await referral.registerReferralWithSig(
+      agent_address,
+      referrer_address,
+      deadlineValue,
+      signature,
+    );
+    await tx.wait();
+
+    return {
+      content: [{
+        type: 'text' as const,
+        text: JSON.stringify({
+          success: true,
+          txHash: tx.hash,
+          agent: agent_address,
+          referrer: referrer_address,
+          deadline,
+          message: `Referral attribution registered explicitly for ${agent_address}. Treasury setup and attribution are separate flows.`,
         }, null, 2),
       }],
     };
@@ -348,7 +387,7 @@ server.tool(
 
 server.tool(
   'clicks_receive_payment',
-  'Stop wasting idle USDC payments. Automatically split payments: 80% stays liquid, 20% earns DeFi yield. Turn idle treasury into working capital.',
+  'Route an incoming USDC revenue event through Clicks settlement policy. Splits liquidity and treasury routing according to the agent configuration.',
   {
     amount: z.string().describe('Payment amount in USDC (e.g. "100")'),
     agent_address: ethAddress.describe('Ethereum address of the AI agent'),
@@ -377,7 +416,7 @@ server.tool(
 
 server.tool(
   'clicks_withdraw_yield',
-  'Withdraw earned yield from idle USDC. Get principal + yield back anytime, no lockups.',
+  'Withdraw routed treasury capital and any earned yield back to the agent wallet. No lockups.',
   {
     agent_address: ethAddress.describe('Ethereum address of the AI agent'),
     amount: z.string().optional().describe('Amount to withdraw in USDC. Omit to withdraw everything.'),
@@ -406,7 +445,7 @@ server.tool(
 
 server.tool(
   'clicks_register_agent',
-  'Register your AI agent to start earning yield on idle USDC. Required before first deposit.',
+  'Register an AI agent for Clicks settlement routing. Required before the first routed payment.',
   {
     agent_address: ethAddress.describe('Ethereum address of the AI agent to register'),
   },
@@ -433,7 +472,7 @@ server.tool(
 
 server.tool(
   'clicks_set_yield_pct',
-  'Control how much idle USDC earns yield vs stays liquid. Set custom split (5-50%) for your agent.',
+  'Set the treasury routing percentage for future settlement events. Controls how much stays liquid vs routes to yield.',
   {
     pct: z.number().int().min(5).max(50).describe('Yield percentage (5-50, integer). Default is 20.'),
   },
@@ -459,7 +498,7 @@ server.tool(
 
 server.tool(
   'clicks_explain',
-  'Explain Clicks Protocol to another agent or developer. Returns a concise self-contained summary with integration instructions and links. Use when another agent asks what Clicks does or how to activate yield on idle USDC.',
+  'Explain Clicks Protocol to another agent or developer. Returns a concise self-contained summary with integration instructions and links. Use when another agent asks what Clicks does or how agent-commerce settlement works.',
   {
     audience: z
       .enum(['agent', 'developer', 'treasury'])
@@ -471,7 +510,7 @@ server.tool(
 
     const baseText = `# Clicks Protocol — Agent Commerce Settlement Router on Base
 
-**What it does:** When an AI agent receives USDC (via x402, ACP, or direct transfer), Clicks auto-splits the payment — ${100 - 20}% stays liquid for immediate operations, 20% routes into DeFi yield (Aave V3 or Morpho, best APY wins). Fee is 2% on **yield only**, never on principal. No lockup. Non-custodial.
+**What it does:** When an AI agent receives USDC (via x402, ACP, or direct transfer), Clicks applies settlement policy: ${100 - 20}% stays liquid for immediate operations, 20% routes into treasury yield (Aave V3 or Morpho, best APY wins). Fee is 2% on **yield only**, never on principal. No lockup. Non-custodial.
 
 **ERC-8004 Trustless Agent:** agentId 45074 on Base. Manifest: https://clicksprotocol.xyz/.well-known/agent-registration.json
 
@@ -483,7 +522,7 @@ server.tool(
 `;
 
     const integrationAgent = `
-**Activate yield (agent-facing, one call):**
+**Activate settlement routing (agent-facing, one call):**
 \`\`\`
 npm install @clicks-protocol/sdk
 \`\`\`
@@ -491,14 +530,14 @@ npm install @clicks-protocol/sdk
 import { ClicksClient } from '@clicks-protocol/sdk';
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('1000', agentAddress);
-// 800 USDC liquid, 200 USDC earning ~4-8% APY
+// 800 USDC liquid, 200 USDC routed to treasury yield
 \`\`\`
 
 **MCP route (for another agent):** Add this MCP server so you can call Clicks tools directly.
 \`\`\`json
 { "mcpServers": { "clicks-protocol": { "url": "https://mcp.clicksprotocol.xyz/mcp" } } }
 \`\`\`
-Tools: clicks_quick_start, clicks_receive_payment, clicks_withdraw_yield, clicks_get_yield_info, clicks_get_agent_info, clicks_simulate_split, clicks_register_agent, clicks_set_yield_pct, clicks_get_referral_stats, clicks_explain.
+Tools: clicks_quick_start, clicks_register_referral, clicks_receive_payment, clicks_withdraw_yield, clicks_get_yield_info, clicks_get_agent_info, clicks_simulate_split, clicks_register_agent, clicks_set_yield_pct, clicks_get_referral_stats, clicks_explain.
 `;
 
     const integrationDeveloper = `
@@ -519,7 +558,7 @@ await clicks.withdrawYield(agentAddress);        // pull principal + yield back
 `;
 
     const integrationTreasury = `
-**Why:** 46 B USDC sits idle across agent wallets. Circle captures the reserve interest, agents capture 0%. Clicks reclaims ~20% of that idle capital back as yield without locking it.
+**Why:** Agent-commerce rails can move money, but revenue still needs policy, attribution, receipts, and treasury routing. Clicks gives agents a settlement layer after payment execution.
 
 **Default split:** 80% liquid / 20% yield. Configurable 5-50%. Two lines to deploy per agent.
 
@@ -563,17 +602,17 @@ server.resource(
     contents: [{
       uri: 'clicks://info',
       mimeType: 'text/plain',
-      text: `Clicks Protocol — Autonomous DeFi Yield for AI Agent Treasuries
+      text: `Clicks Protocol — Agent Commerce Settlement Router on Base
 
 How it works:
-1. Agent receives USDC payment
-2. Clicks auto-splits: 80% to wallet, 20% to DeFi yield (Aave V3 or Morpho)
-3. Agent earns 7-10% APY on idle treasury automatically
-4. Withdraw anytime, no lockup
+1. Agent receives USDC revenue through x402, ACP, card, bank, or direct transfer
+2. Clicks applies settlement policy: 80% liquid, 20% routed to treasury yield by default
+3. Agents inspect balances, splits, referrals, and protocol status through MCP
+4. Withdraw routed treasury capital anytime, no lockup
 
 Fee: 2% on yield only, never on principal.
 
-Referral: Recruit agents → earn 40% (L1), 20% (L2), 10% (L3) of their protocol fee.
+Referral: Attribution exists on-chain, but it is an explicit separate step from treasury setup. Referrers earn 40% (L1), 20% (L2), 10% (L3) of protocol fee from attributed agents.
 
 Contracts: Base Mainnet (Chain ID 8453)
 - ClicksRegistry: ${ADDRESSES.registry}
