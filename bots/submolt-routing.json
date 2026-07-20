@@ -1,20 +1,20 @@
 {
-  "_comment": "Per-tweet submolt routing for moltbook-crosspost. Index matches moltbook-source.json. Fallback: agent-treasury.",
-  "_strategy": "Tier-1 communities (agentfinance/agenteconomy/agents) get the highest-conversion tweets. Niche fits (mcp/defi/usdc/buildlogs/aisafety) get the topical ones. Rotation prevents being seen as a single-submolt spammer.",
+  "_comment": "Per-post submolt routing for moltbook-crosspost. Index matches moltbook-source.json. Fallback: agent-treasury.",
+  "_strategy": "Settlement-first refill after x402 repositioning. No URLs, no hard x402 support claim, no APY pitch. Route by buyer, seller, MCP, audit, and buildlog fit.",
   "routes": [
-    {"idx": 0, "submolt": "agenteconomy", "reason": "Brian Armstrong hook + agentic-economy framing"},
-    {"idx": 1, "submolt": "agentfinance", "reason": "Real agent = manages treasury, earns yield"},
-    {"idx": 2, "submolt": "agentfinance", "reason": "Idle USDC between x402 calls"},
-    {"idx": 3, "submolt": "agents", "reason": "Virtuals Protocol / agent-to-agent communication"},
-    {"idx": 4, "submolt": "buildlogs", "reason": "Algorithm research, building in public"},
-    {"idx": 5, "submolt": "agentinfra", "reason": "On-chain reputation + ERC-8004 identity infra"},
-    {"idx": 6, "submolt": "mcp", "reason": "9 MCP tools for treasury management — perfect fit"},
-    {"idx": 7, "submolt": "aisafety", "reason": "EU AI Act compliance + auditability"},
-    {"idx": 8, "submolt": "defi", "reason": "DeFi-safety for agents, tests, non-custodial"},
-    {"idx": 9, "submolt": "agenteconomy", "reason": "1000-agent thought experiment, scale math"},
-    {"idx": 10, "submolt": "agentcommerce", "reason": "x402 on AWS, payment rails for agent commerce"},
-    {"idx": 11, "submolt": "agents", "reason": "What makes a system an agent — broad agent question"},
-    {"idx": 12, "submolt": "buildlogs", "reason": "Week 5 building-in-public, ship metrics"},
-    {"idx": 13, "submolt": "usdc", "reason": "Circle $12B float + USDC yield punchline"}
+    {"idx": 0, "submolt": "agentcommerce", "reason": "x402 payment versus settlement framing"},
+    {"idx": 1, "submolt": "agentfinance", "reason": "post-payment seller revenue operations"},
+    {"idx": 2, "submolt": "agentinfra", "reason": "money memory and receipt infrastructure"},
+    {"idx": 3, "submolt": "aisafety", "reason": "auditability and receipt schema"},
+    {"idx": 4, "submolt": "agenteconomy", "reason": "seller-side agent commerce"},
+    {"idx": 5, "submolt": "agents", "reason": "autonomy definition and settlement"},
+    {"idx": 6, "submolt": "usdc", "reason": "USDC revenue handling after earned payment"},
+    {"idx": 7, "submolt": "mcp", "reason": "queryable revenue and receipts for agents"},
+    {"idx": 8, "submolt": "agentfinance", "reason": "wallet state and treasury policy"},
+    {"idx": 9, "submolt": "finance", "reason": "reconciliation automation for tiny payments"},
+    {"idx": 10, "submolt": "buildlogs", "reason": "payment logs versus accountability"},
+    {"idx": 11, "submolt": "agentcommerce", "reason": "buyer-side versus seller-side infrastructure"},
+    {"idx": 12, "submolt": "agentinfra", "reason": "receipts as first-class objects"},
+    {"idx": 13, "submolt": "agenteconomy", "reason": "recurring agent revenue trust"}
   ]
 }
