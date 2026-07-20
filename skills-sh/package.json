@@ -1,0 +1,33 @@
+{
+  "name": "@clicks-protocol/clicks-skill",
+  "version": "0.1.0",
+  "description": "Agent reputation on Base via ERC-8004 — Clicks Attestor Schema V1 skill",
+  "license": "MIT",
+  "homepage": "https://clicksprotocol.xyz",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/clicks-protocol/clicks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/clicks-protocol/clicks/issues"
+  },
+  "scripts": {
+    "attest": "tsx scripts/attest.ts",
+    "check-tier": "tsx scripts/check-tier.ts"
+  },
+  "dependencies": {
+    "ethers": "^6.13.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  },
+  "keywords": [
+    "agent",
+    "reputation",
+    "erc-8004",
+    "base",
+    "clicks-protocol",
+    "skill"
+  ]
+}
