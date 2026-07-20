@@ -45,7 +45,7 @@ import { ClicksClient } from '@clicks-protocol/sdk';
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('100', agentAddress);
 // 80 USDC → agent wallet (instant)
-// 20 USDC → DeFi yield (4-8% APY, automatic)
+// 20 USDC → treasury yield route
 ```
 
 That's it. No config. No dashboard. No human required.
@@ -81,9 +81,9 @@ npm install @clicks-protocol/sdk ethers@^6
 
 ## x402 + Coinbase Agentic Wallets
 
-Clicks works natively with the x402 payment protocol and Coinbase Agentic Wallets on Base.
+Clicks is designed to sit after x402-style payment flows on Base.
 
-Your agent holds USDC for x402 payments? Make it earn yield between transactions:
+x402 handles authorization and payment. Clicks routes USDC after receipt:
 
 ```typescript
 import { ClicksClient } from '@clicks-protocol/sdk';
@@ -95,14 +95,14 @@ const signer = wallet.makeWeb3Provider().getSigner();
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('1000', agentAddress);
 
-// Your agent now earns yield on idle USDC
-// 80% liquid for instant x402 payments
-// 20% earning 4-8% APY via Morpho
+// Your agent now has a settlement policy
+// 80% liquid for operations
+// 20% routed through treasury yield
 ```
 
 - Same chain (Base), same USDC contract
-- 80% liquid for instant x402 payments
-- 20% earning 4-8% APY via Morpho
+- 80% liquid for operations
+- 20% routed through treasury yield
 - No lockup, withdraw anytime
 
 ---

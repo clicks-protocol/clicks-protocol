@@ -1,9 +1,9 @@
 # Clicks Protocol
-> Autonomous yield for AI agents on Base L2
+> Agent commerce settlement router on Base
 
 ## What This Is
 
-Clicks Protocol is an on-chain yield layer that makes idle agent USDC earn 4-8% APY automatically. When an AI agent receives a USDC payment, Clicks splits it: 80% stays liquid for instant use, 20% goes to DeFi yield via Aave V3 or Morpho on Base. No lockup. Withdraw anytime. One SDK call to start.
+Clicks Protocol is an agent commerce settlement router on Base. When an AI agent receives USDC, Clicks keeps working capital liquid and routes the idle slice into Aave V3 or Morpho via a programmable treasury split. Default is 80% liquid and 20% routed to yield. No lockup. Withdraw anytime.
 
 ## The Problem It Solves
 
@@ -21,14 +21,16 @@ Activate yield in 3 lines:
 import { ClicksClient } from '@clicks-protocol/sdk';
 const clicks = new ClicksClient(signer);
 await clicks.quickStart('1000', agentAddress);
-// Result: 800 USDC liquid, 200 USDC earning 4-8% APY
+// Result: 800 USDC liquid, 200 USDC routed through treasury yield
 ```
 
 ## SDK Methods
 
 | Method | Description | Type |
 |--------|-------------|------|
-| quickStart(amount, agentAddress, referrer?) | Register + approve + first payment split | Write |
+| quickStart(amount, agentAddress, referrer?) | Register + approve + first payment split. `referrer` is reserved unless explicit referral flow is used | Write |
+| registerReferralWithSig(agentAddress, referrerAddress, deadline, signature) | Register explicit referral attribution after treasury setup | Write |
+| quickStartWithReferral(amount, agentAddress, referrerAddress, deadline, signature) | Convenience wrapper: treasury setup, then referral attribution attempt | Write |
 | registerAgent(agentAddress) | Register an AI agent, caller becomes operator | Write |
 | receivePayment(amount, agentAddress) | Split USDC payment 80/20 | Write |
 | withdrawYield(agentAddress, amount?) | Withdraw principal + earned yield | Write |
@@ -39,14 +41,14 @@ await clicks.quickStart('1000', agentAddress);
 | getYieldInfo() | Get protocol-wide yield data (APY, total deposited) | Read |
 | getCurrentAPY() | Get current APY from active yield protocol | Read |
 
-## MCP Server (9 Tools)
+## MCP Server (11 Tools)
 
 AI agents using Claude, Cursor, LangChain, or any MCP-compatible client:
 ```
 npx @clicks-protocol/mcp-server
 ```
 
-Tools: clicks_quick_start, clicks_receive_payment, clicks_withdraw_yield, clicks_register_agent, clicks_set_yield_pct, clicks_get_agent_info, clicks_simulate_split, clicks_get_yield_info, clicks_get_referral_stats
+Tools: clicks_quick_start, clicks_register_referral, clicks_receive_payment, clicks_withdraw_yield, clicks_register_agent, clicks_set_yield_pct, clicks_get_agent_info, clicks_simulate_split, clicks_get_yield_info, clicks_get_referral_stats, clicks_explain
 
 ## Treasury Utilities
 
@@ -55,7 +57,7 @@ For balance tracking and idle detection (works without Clicks):
 npm install agent-treasury
 ```
 
-Features: Multi-chain USDC balance tracking (Base, Ethereum, Arbitrum, Optimism), idle balance detection with configurable thresholds, live APY comparison across Aave V3 and Compound, optional Clicks Protocol yield activation.
+Features: Multi-chain USDC balance tracking (Base, Ethereum, Arbitrum, Optimism), idle balance detection with configurable thresholds, live APY comparison across Aave V3 and Compound, optional Clicks Protocol settlement routing.
 
 ## Framework Integrations
 
@@ -94,7 +96,7 @@ const agent = new AgentRuntime({ plugins: [clicksPlugin] });
 
 - Default split: 80% liquid / 20% yield
 - Configurable range: 5% to 50% yield allocation
-- APY: 4-8% (variable, via Aave V3 or Morpho on Base)
+- APY: variable, via Aave V3 or Morpho on Base
 - Protocol fee: 2% on yield earned (never on principal)
 - Lockup: None. Withdraw anytime.
 - Chain: Base L2 (Coinbase)
@@ -124,7 +126,7 @@ const agent = new AgentRuntime({ plugins: [clicksPlugin] });
 - Whitepaper: https://clicksprotocol.xyz/whitepaper
 - Whitepaper PDF: https://clicksprotocol.xyz/whitepaper.pdf
 - X / Twitter: https://x.com/ClicksProtocol
-- Discord: https://discord.gg/clicks-protocol
+- Discord: https://discord.gg/FfmJGUcxfe
 - Medium: https://clicksprotocol.medium.com
 
 ## Contact

@@ -96,7 +96,7 @@ export function Calculator() {
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">Treasury Lab</h2>
           <p className="text-muted-foreground text-base sm:text-lg lg:text-xl">
-            See what $10K of idle USDC could earn
+            Model the split between liquid operations and routed yield
           </p>
         </div>
 

@@ -54,7 +54,7 @@ export function Navbar({ locale = 'en' }: { locale?: Locale }) {
               {t.github}
             </a>
             <a
-              href="https://discord.gg/clicks-protocol"
+              href="https://discord.gg/FfmJGUcxfe"
               target="_blank"
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"
@@ -127,7 +127,7 @@ export function Navbar({ locale = 'en' }: { locale?: Locale }) {
                 {t.github}
               </a>
               <a
-                href="https://discord.gg/clicks-protocol"
+                href="https://discord.gg/FfmJGUcxfe"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"

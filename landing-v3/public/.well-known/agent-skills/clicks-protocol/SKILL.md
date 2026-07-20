@@ -1,6 +1,6 @@
 ---
 name: clicks-protocol
-description: Integrate autonomous USDC yield into AI agent projects on Base. Use when building agents that hold, earn, or transfer USDC, when asked about agent treasury management, DeFi yield for agents, x402 payment optimization, idle USDC strategies, or agent referral monetization.
+description: Integrate Clicks Protocol settlement routing into AI agent projects on Base. Use when building agents that hold, earn, receive, or transfer USDC, when asked about agent treasury management, x402 payment settlement, idle USDC routing, or agent referral attribution.
 license: MIT
 metadata:
   author: clicks-protocol
@@ -10,7 +10,7 @@ metadata:
 
 # Clicks Protocol Integration
 
-Add autonomous yield to any AI agent that holds USDC on Base. 80% stays liquid for operations, 20% earns variable yield via Aave V3 or Morpho. Non-custodial, no lockup, withdraw anytime.
+Add settlement routing to any AI agent that holds USDC on Base. 80% stays liquid for operations, 20% routes to variable yield via Aave V3 or Morpho. Non-custodial, no lockup, withdraw anytime.
 
 ## Before Starting
 
@@ -118,9 +118,9 @@ For MCP-compatible agents (Claude, Cursor, LangChain, CrewAI):
 npx @clicks-protocol/mcp-server
 ```
 
-Provides 9 tools:
-- **Read:** `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_get_referral_stats`
-- **Write:** `clicks_quick_start`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`
+Provides 11 tools:
+- **Read:** `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_get_referral_stats`, `clicks_explain`
+- **Write:** `clicks_quick_start`, `clicks_register_referral`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`
 
 Read-only MCP usage works without a private key. Write tools require `CLICKS_PRIVATE_KEY`.
 
@@ -170,9 +170,10 @@ Verify on Basescan: https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA609315
 Agents can refer other agents and earn a share of the protocol fee. When a referred agent earns yield and the 2% fee is collected, it is automatically distributed to the referral chain via ClicksFeeV2.
 
 **How it works:**
-1. Register with a referrer: `quickStart('1000', agentAddress, referrerAddress)`
-2. Referred agent earns yield → 2% fee collected → fee split to referral chain
-3. Referrers claim USDC rewards from ClicksFeeV2
+1. Run treasury setup first
+2. Register referral attribution through a dedicated referral flow
+3. Referred agent earns yield → 2% fee collected → fee split to referral chain
+4. Referrers claim USDC rewards from ClicksFeeV2
 
 **Referral Tiers:**
 
@@ -184,8 +185,8 @@ Agents can refer other agents and earn a share of the protocol fee. When a refer
 | Treasury | 30% | Protocol |
 
 ```typescript
-// Register with a referrer
-await clicks.quickStart('1000', agentAddress, referrerAddress);
+// Register explicit referral attribution after treasury setup
+await clicks.registerReferralWithSig(agentAddress, referrerAddress, deadline, signature);
 
 // Query referral stats
 // MCP tool: clicks_get_referral_stats
@@ -206,7 +207,7 @@ If the user asks for distribution, growth, or monetization strategy around the i
 
 - All contracts are immutable (no proxy, no admin upgrade)
 - ReentrancyGuard on all state-changing functions
-- 58/58 tests passing, Slither v0.11.5 reviewed
+- 227/227 tests passing, Slither v0.11.5 reviewed
 - Non-custodial: protocol never takes custody of principal
 - Fee only on yield earned, never on deposits or withdrawals
 - Open source: https://github.com/clicks-protocol

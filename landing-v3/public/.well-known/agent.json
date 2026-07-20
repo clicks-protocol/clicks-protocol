@@ -1,6 +1,6 @@
 {
   "name": "Clicks Protocol",
-  "description": "On-chain yield layer for AI agents on Base L2. Split USDC payments 80/20: 80% liquid, 20% earning 4-8% APY via Aave V3 or Morpho. No lockup. One SDK call.",
+  "description": "Agent commerce settlement router on Base. Split incoming USDC into liquid operations and routed yield with programmable treasury policy, explicit referral attribution, and no lockup.",
   "version": "1.0.0",
   "url": "https://clicksprotocol.xyz",
   "protocol": "x402",
@@ -41,13 +41,13 @@
   "mcp": {
     "npm": "@clicks-protocol/mcp-server",
     "run": "npx @clicks-protocol/mcp-server",
-    "tools": 9,
-    "toolNames": ["clicks_quick_start", "clicks_receive_payment", "clicks_withdraw_yield", "clicks_register_agent", "clicks_set_yield_pct", "clicks_get_agent_info", "clicks_simulate_split", "clicks_get_yield_info", "clicks_get_referral_stats"]
+    "tools": 11,
+    "toolNames": ["clicks_quick_start", "clicks_register_referral", "clicks_receive_payment", "clicks_withdraw_yield", "clicks_register_agent", "clicks_set_yield_pct", "clicks_get_agent_info", "clicks_simulate_split", "clicks_get_yield_info", "clicks_get_referral_stats", "clicks_explain"]
   },
   "treasury": {
     "npm": "agent-treasury",
     "install": "npm install agent-treasury",
-    "features": ["Multi-chain USDC balance tracking", "Idle balance detection", "APY comparison", "Clicks Protocol yield activation"]
+    "features": ["Multi-chain USDC balance tracking", "Idle balance detection", "APY comparison", "Clicks Protocol settlement routing"]
   },
   "frameworkIntegrations": {
     "langchain": { "language": "python", "package": "clicks-langchain" },
@@ -70,7 +70,7 @@
     "whitepaper": "https://clicksprotocol.xyz/whitepaper",
     "whitepaperPdf": "https://clicksprotocol.xyz/whitepaper.pdf",
     "github": "https://github.com/clicks-protocol",
-    "discord": "https://discord.gg/clicks-protocol",
+    "discord": "https://discord.gg/FfmJGUcxfe",
     "twitter": "https://x.com/ClicksProtocol",
     "medium": "https://clicksprotocol.medium.com",
     "npm": "https://www.npmjs.com/org/clicks-protocol"

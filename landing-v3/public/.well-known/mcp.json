@@ -2,20 +2,20 @@
   "schema_version": "1.0",
   "name": "clicks-protocol",
   "version": "1.0.0",
-  "description": "MCP tool server for Clicks Protocol - autonomous yield for AI agents. Earn 4-8% APY on idle USDC with zero lockup on Base L2.",
+  "description": "MCP tool server for Clicks Protocol, the agent commerce settlement router on Base. Treasury setup, payment splitting, routed yield, explicit referral attribution, and agent-facing protocol explanation.",
   "author": "Clicks Protocol",
   "homepage": "https://clicksprotocol.xyz",
   "repository": "https://github.com/clicks-protocol/clicks-protocol",
   "license": "MIT",
   "capabilities": {
     "tools": true,
-    "resources": false,
+    "resources": true,
     "prompts": false
   },
   "tools": [
     {
       "name": "clicks_get_agent_info",
-      "description": "Check how much yield an AI agent earns on idle USDC. Returns current APY, balance, deposited principal, and pending rewards.",
+            "description": "Check an agent treasury position. Returns registration status, operator, deposited principal, and current yield configuration.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -47,7 +47,7 @@
     },
     {
       "name": "clicks_get_yield_info",
-      "description": "Find the best APY for idle USDC. Returns current yields on Aave vs Morpho, total protocol balance, fees collected, and yield earned.",
+      "description": "Get current routing context across Aave and Morpho, total protocol balance, pending fees, and the active yield venue.",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -84,10 +84,36 @@
           },
           "referrer": {
             "type": "string",
-            "description": "Optional: address of the agent who referred you (earns 40% of your protocol fee)"
+            "description": "No longer used here. Referral attribution is an explicit separate step."
           }
         },
         "required": ["amount", "agent_address"]
+      }
+    },
+    {
+      "name": "clicks_register_referral",
+      "description": "Register explicit referral attribution after treasury setup using an agent-signed approval and an authorized caller.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "agent_address": {
+            "type": "string",
+            "description": "Ethereum address of the AI agent being attributed"
+          },
+          "referrer_address": {
+            "type": "string",
+            "description": "Ethereum address of the referrer"
+          },
+          "deadline": {
+            "type": "string",
+            "description": "Unix timestamp after which the referral approval expires"
+          },
+          "signature": {
+            "type": "string",
+            "description": "EIP-712 signature from the agent wallet approving attribution"
+          }
+        },
+        "required": ["agent_address", "referrer_address", "deadline", "signature"]
       }
     },
     {
@@ -155,6 +181,20 @@
         },
         "required": ["pct"]
       }
+    },
+    {
+      "name": "clicks_explain",
+      "description": "Return a compact protocol explanation for agent-to-agent discovery and integration planning.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "audience": {
+            "type": "string",
+            "description": "Optional target audience such as developer, operator, or partner"
+          }
+        },
+        "required": []
+      }
     }
   ],
   "metadata": {
@@ -167,8 +207,8 @@
       "ClicksReferral": "0x1E5Ab896D3b3A542C5E91852e221b2D849944ccC"
     },
     "contract_status": "deployed",
-    "audit_url": "https://clicksprotocol.xyz/audits/trail-of-bits-2026.pdf",
-    "docs_url": "https://docs.clicksprotocol.xyz",
+    "audit_url": "https://clicksprotocol.xyz/security",
+    "docs_url": "https://clicksprotocol.xyz/docs",
     "api_spec_url": "https://clicksprotocol.xyz/.well-known/clicks-protocol.json",
     "hosted_endpoint": "https://mcp.clicksprotocol.xyz/mcp",
     "transport": ["stdio", "streamable-http"]

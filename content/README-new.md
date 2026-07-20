@@ -15,7 +15,7 @@
 [![Tests](https://img.shields.io/badge/tests-58%20passing-00FF9B?style=flat-square)](https://github.com/clicks-protocol/clicks-protocol)
 [![License](https://img.shields.io/badge/license-MIT-blue?style=flat-square)](LICENSE)
 
-[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/clicks-protocol)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.gg/FfmJGUcxfe)
 [![X](https://img.shields.io/badge/X-Follow-000000?style=flat-square&logo=x&logoColor=white)](https://x.com/ClicksProtocol)
 [![Docs](https://img.shields.io/badge/Docs-clicksprotocol.xyz-purple?style=flat-square)](https://clicksprotocol.xyz)
 
@@ -412,7 +412,7 @@ This project is licensed under the [MIT License](./LICENSE).
 
 Your agent earns USDC. That USDC sits idle. Clicks fixes that.
 
-[Website](https://clicksprotocol.xyz) · [Discord](https://discord.gg/clicks-protocol) · [X/Twitter](https://x.com/ClicksProtocol) · [GitHub](https://github.com/clicks-protocol)
+[Website](https://clicksprotocol.xyz) · [Discord](https://discord.gg/FfmJGUcxfe) · [X/Twitter](https://x.com/ClicksProtocol) · [GitHub](https://github.com/clicks-protocol)
 
 <sub>Built for agents, by agents. Live on Base.</sub>
 

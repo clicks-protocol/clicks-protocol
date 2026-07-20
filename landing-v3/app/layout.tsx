@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Analytics } from '@/components/analytics';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://clicksprotocol.xyz'),
-  title: 'Clicks Protocol — Autonomous Yield for AI Agents',
+  title: 'Clicks Protocol — Agent Commerce Settlement Router',
   description:
-    "Your AI agent's USDC shouldn't sit idle. Earn 4–8% APY in one SDK call. No lockup. Built on Base.",
+    'Settlement routing for AI agents on Base. Keep working capital liquid and route the idle slice into yield with one SDK call.',
   alternates: {
     canonical: '/',
     languages: {
@@ -30,9 +31,9 @@ export const metadata: Metadata = {
   ],
   robots: 'index, follow',
   openGraph: {
-    title: 'Clicks Protocol — Autonomous Yield for AI Agents',
+    title: 'Clicks Protocol — Agent Commerce Settlement Router',
     description:
-      "Your AI agent's USDC shouldn't sit idle. Earn 4–8% APY in one SDK call. No lockup. Built on Base.",
+      'Settlement routing for AI agents on Base. Keep working capital liquid and route the idle slice into yield with one SDK call.',
     url: 'https://clicksprotocol.xyz',
     type: 'website',
     images: [
@@ -46,9 +47,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Clicks Protocol — Autonomous Yield for AI Agents',
+    title: 'Clicks Protocol — Agent Commerce Settlement Router',
     description:
-      'Autonomous yield for AI agents. One SDK call. No lockup. Built on Base.',
+      'Settlement routing for AI agents on Base. Liquid ops plus yield in one programmable flow.',
     images: ['https://clicksprotocol.xyz/og-image.png'],
   },
   icons: {
@@ -99,14 +100,14 @@ export default function RootLayout({
               '@type': 'FinancialProduct',
               name: 'Clicks Protocol',
               description:
-                'Agent Commerce Settlement Router on Base. Earn 4–8% APY on the yield portion of USDC deposits with zero lockup and a configurable 80/20 split. ERC-8004 Trustless Agent.',
+                'Agent commerce settlement router on Base. Split incoming USDC into liquid operations and yield routing with programmable treasury policy and ERC-8004 identity.',
               url: 'https://clicksprotocol.xyz',
               provider: {
                 '@type': 'Organization',
                 name: 'Clicks Protocol',
                 url: 'https://clicksprotocol.xyz',
               },
-              category: 'DeFi Yield Protocol',
+              category: 'Agent Treasury Infrastructure',
               feesAndCommissionsSpecification:
                 'No deposit/withdrawal fees. Standard Base L2 gas costs apply (~$0.01-0.05/tx).',
               interestRate: {
@@ -172,7 +173,7 @@ export default function RootLayout({
               url: 'https://clicksprotocol.xyz',
               logo: 'https://clicksprotocol.xyz/icon-1024.png',
               description:
-                'Agent Commerce Settlement Router on Base. Autonomous USDC yield infrastructure for AI agents. ERC-8004 Trustless Agent agentId 45074.',
+                'Agent commerce settlement router on Base with programmable treasury flows, ERC-8004 identity, and non-custodial yield routing.',
               sameAs: [
                 'https://github.com/clicks-protocol',
                 'https://x.com/ClicksProtocol',
@@ -200,7 +201,7 @@ export default function RootLayout({
                   name: 'What is Clicks Protocol?',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'Clicks Protocol is an agent commerce settlement router on Base. It splits USDC deposits 80/20 by default: 80% stays liquid for payments, 20% earns 4–8% APY (market-dependent) via Aave V3 or Morpho. Non-custodial, no lockup, withdraw anytime. Registered as ERC-8004 agentId 45074.',
+                    text: 'Clicks Protocol is an agent commerce settlement router on Base. It keeps agent working capital liquid and routes the idle slice into Aave V3 or Morpho using a programmable split. Non-custodial, withdraw anytime, ERC-8004 agentId 45074.',
                   },
                 },
                 {
@@ -208,7 +209,7 @@ export default function RootLayout({
                   name: 'How do I integrate Clicks Protocol?',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'Install the SDK with npm install @clicks-protocol/sdk, then call clicks.quickStart(amount, agentAddress). For MCP-compatible agents, use npx @clicks-protocol/mcp-server with 10 built-in tools (including clicks_explain for agent-to-agent discovery).',
+                    text: 'Install the SDK with npm install @clicks-protocol/sdk, then call clicks.quickStart(amount, agentAddress). For MCP-compatible agents, use npx @clicks-protocol/mcp-server with 11 built-in tools, including clicks_register_referral and clicks_explain.',
                   },
                 },
                 {
@@ -281,6 +282,7 @@ twq('config','rbppe');
         />
         {/* Base App ID */}
         <meta name="base:app_id" content="69dfad464322f9228ea82e1b" />
+        <Analytics />
       </head>
       <body className={inter.className}>
         <a
