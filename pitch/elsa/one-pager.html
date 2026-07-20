@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Elsa × Clicks — Agent-Native Settlement for x402</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --brand: #00C982;
+    --brand-soft: #E7FBF3;
+    --ink: #0A0F1A;
+    --ink-2: #2B3242;
+    --muted: #6B7585;
+    --line: #E4E7EC;
+    --bg: #FFFFFF;
+    --danger: #E04545;
+    --mono: ui-monospace, 'SF Mono', Monaco, 'Roboto Mono', monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.38;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 14mm 14mm 12mm 14mm;
+    position: relative;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12mm;
+    padding-bottom: 6mm;
+    border-bottom: 1px solid var(--line);
+  }
+  .header .title {
+    font-size: 18pt;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+  .header .title .amp { color: var(--brand); }
+  .header .sub {
+    color: var(--muted);
+    font-size: 9pt;
+    margin-top: 2mm;
+    letter-spacing: 0.2px;
+  }
+  .header .meta {
+    text-align: right;
+    font-size: 8.5pt;
+    color: var(--muted);
+    font-family: var(--mono);
+    line-height: 1.5;
+  }
+  .header .meta .row b { color: var(--ink-2); }
+  .logo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-weight: 800;
+    font-size: 9pt;
+    letter-spacing: 2px;
+  }
+  .logo-pill .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--brand);
+    box-shadow: 0 0 0 3px rgba(0,201,130,0.15);
+  }
+
+  /* Section */
+  h2 {
+    font-size: 11pt;
+    font-weight: 800;
+    margin: 6mm 0 2.5mm 0;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  h2 .num {
+    color: var(--brand);
+    font-family: var(--mono);
+    margin-right: 6px;
+  }
+  p { margin: 0 0 2mm 0; }
+  .muted { color: var(--muted); }
+  .mono { font-family: var(--mono); }
+  code {
+    font-family: var(--mono);
+    font-size: 9pt;
+    background: #F4F6F9;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink-2);
+  }
+
+  /* Status quo strip */
+  .status-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3mm;
+    margin-top: 3mm;
+  }
+  .status-strip .cell {
+    padding: 3mm 4mm;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #FBFCFD;
+  }
+  .status-strip .cell .kpi {
+    font-size: 14pt;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+  }
+  .status-strip .cell .lbl {
+    font-size: 8pt;
+    color: var(--muted);
+    margin-top: 1mm;
+    letter-spacing: 0.3px;
+  }
+  .gap {
+    margin-top: 3mm;
+    padding: 3mm 4mm;
+    border-left: 3px solid var(--danger);
+    background: #FFF6F6;
+    font-size: 9.5pt;
+  }
+  .gap b { color: var(--danger); }
+
+  /* Proposal table */
+  .proposal {
+    display: grid;
+    grid-template-columns: 30mm 1fr 38mm;
+    gap: 0;
+    margin-top: 3mm;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .proposal .row {
+    display: contents;
+  }
+  .proposal .row > div {
+    padding: 3mm 4mm;
+    border-bottom: 1px solid var(--line);
+    font-size: 9.5pt;
+  }
+  .proposal .row:last-child > div { border-bottom: none; }
+  .proposal .row.head > div {
+    background: #F4F6F9;
+    font-weight: 800;
+    font-size: 8.5pt;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .proposal .cap {
+    font-weight: 800;
+    color: var(--brand);
+    font-family: var(--mono);
+    font-size: 9pt;
+    letter-spacing: 0.3px;
+  }
+  .proposal .cap .prio {
+    display: inline-block;
+    background: var(--brand);
+    color: #fff;
+    font-size: 7.5pt;
+    padding: 1px 5px;
+    border-radius: 3px;
+    margin-right: 4px;
+    vertical-align: middle;
+  }
+  .proposal .cap .prio.p2 { background: var(--ink-2); }
+  .proposal .cap .prio.p3 { background: var(--muted); }
+  .proposal .who {
+    font-family: var(--mono);
+    font-size: 8.5pt;
+    color: var(--ink-2);
+  }
+
+  /* Pilot plan */
+  .pilot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm;
+    margin-top: 3mm;
+  }
+  .pilot .block {
+    padding: 3mm 4mm;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  .pilot .block h3 {
+    font-size: 9pt;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin: 0 0 2mm 0;
+  }
+  .pilot ul {
+    margin: 0; padding-left: 4mm;
+    font-size: 9.5pt;
+  }
+  .pilot li { margin-bottom: 1.2mm; }
+
+  /* Flow diagram */
+  .flow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3mm;
+    margin-top: 3mm;
+  }
+  .flow .lane {
+    padding: 3mm 4mm;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: #FBFCFD;
+    font-size: 9pt;
+  }
+  .flow .lane.new {
+    background: #F1FBF6;
+    border-color: #B9EBD3;
+  }
+  .flow .lane h4 {
+    font-size: 8.5pt;
+    font-weight: 800;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 2mm 0;
+  }
+  .flow .lane.new h4 { color: var(--brand); }
+  .flow .step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 1.5mm 0;
+  }
+  .flow .step .arrow {
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+  .flow .step .box {
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 1.5mm 3mm;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 8.5pt;
+  }
+  .flow .lane.new .box.split {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand);
+    font-weight: 700;
+  }
+  .flow .split-out {
+    margin-top: 2mm;
+    padding-left: 8mm;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2mm;
+  }
+  .flow .split-out .out {
+    background: #fff;
+    border: 1px dashed var(--brand);
+    border-radius: 4px;
+    padding: 1.5mm 2mm;
+    font-family: var(--mono);
+    font-size: 8pt;
+    text-align: center;
+  }
+  .flow .split-out .out b { color: var(--brand); display: block; font-size: 10pt; }
+
+  /* Proof footer */
+  .proof {
+    margin-top: auto;
+    padding-top: 4mm;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 6mm;
+    font-size: 8.5pt;
+    color: var(--muted);
+  }
+  .proof .col strong {
+    display: block;
+    font-size: 8pt;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin-bottom: 1.5mm;
+  }
+  .proof .contracts {
+    font-family: var(--mono);
+    font-size: 7.5pt;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .proof .contracts .addr { color: var(--brand); }
+
+  .cta {
+    margin-top: 4mm;
+    padding: 3mm 4mm;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 10pt;
+  }
+  .cta .primary {
+    font-weight: 800;
+    font-size: 11pt;
+  }
+  .cta code {
+    background: rgba(255,255,255,0.1);
+    color: #7FFFC1;
+    padding: 1px 6px;
+  }
+  .cta .secondary {
+    margin-top: 1.5mm;
+    color: #9AA4B2;
+    font-size: 9pt;
+  }
+  .cta .secondary a { color: #9AA4B2; text-decoration: underline; }
+
+  .footer-note {
+    margin-top: 3mm;
+    text-align: center;
+    font-size: 7.5pt;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div>
+      <div class="logo-pill"><span class="dot"></span>CLICKS PROTOCOL</div>
+      <div class="title" style="margin-top: 4mm;">
+        Elsa <span class="amp">×</span> Clicks
+      </div>
+      <div class="sub">Agent-native settlement for x402 — splits, attribution, on-chain reputation.</div>
+    </div>
+    <div class="meta">
+      <div class="row"><b>To</b> &nbsp; Elsa Team</div>
+      <div class="row"><b>From</b> &nbsp; Clicks Protocol</div>
+      <div class="row"><b>Date</b> &nbsp; 2026-04-23</div>
+      <div class="row"><b>Format</b> &nbsp; Integration Proposal</div>
+    </div>
+  </header>
+
+  <!-- SECTION 1: STATUS QUO -->
+  <h2><span class="num">01</span> Status Quo — what x402 on Elsa looks like today</h2>
+  <p>Elsa ships an agent-native HTTP-402 facade on Coinbase CDP with USDC settlement on Base. The endpoint surface is rich; the settlement surface is flat.</p>
+  <div class="status-strip">
+    <div class="cell">
+      <div class="kpi">40+</div>
+      <div class="lbl">Endpoints live on x402</div>
+    </div>
+    <div class="cell">
+      <div class="kpi">USDC / Base</div>
+      <div class="lbl">Coinbase CDP facilitator</div>
+    </div>
+    <div class="cell">
+      <div class="kpi">1 wallet</div>
+      <div class="lbl">All revenue routes to <span class="mono">0x0D22…ae5b5</span></div>
+    </div>
+  </div>
+  <div class="gap"><b>The gap:</b> no splits, no referrer attribution, no partner economics. Growing Elsa through third-party agents (MCP wrappers, bots, skill surfaces) today requires off-chain contracts and manual invoicing — friction that scales linearly with partner count.</div>
+
+  <!-- SECTION 2: FLOW -->
+  <h2><span class="num">02</span> Flow — before &amp; after</h2>
+  <div class="flow">
+    <div class="lane">
+      <h4>Today</h4>
+      <div class="step"><span class="box">Caller</span><span class="arrow">→</span><span class="box">Elsa endpoint</span><span class="arrow">→</span><span class="box">0x0D22…ae5b5</span></div>
+      <div class="muted" style="margin-top: 3mm; font-size: 8.5pt;">Single receiver. No referrer revenue. No partner incentive. Off-chain invoicing required for any share.</div>
+    </div>
+    <div class="lane new">
+      <h4>With Clicks Splitter V4</h4>
+      <div class="step"><span class="box">Caller</span><span class="arrow">→</span><span class="box">Elsa endpoint</span><span class="arrow">→</span><span class="box split">ClicksSplitter V4</span></div>
+      <div class="split-out">
+        <div class="out"><b>80%</b>Elsa (platform)</div>
+        <div class="out"><b>15%</b>Referrer agent</div>
+        <div class="out"><b>5%</b>Calling agent</div>
+      </div>
+      <div class="muted" style="margin-top: 2mm; font-size: 8pt;">Splits configurable per endpoint. Settled atomically on-chain. Gas overhead ~$0.0005 on Base — negligible at ≥ $0.01 call price.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: PROPOSAL -->
+  <h2><span class="num">03</span> Proposal — three building blocks</h2>
+  <div class="proposal">
+    <div class="row head">
+      <div>Module</div>
+      <div>What it unlocks for Elsa</div>
+      <div>Status</div>
+    </div>
+    <div class="row">
+      <div class="cap"><span class="prio">P1</span>Splitter V4</div>
+      <div>On-chain revenue splitting for endpoints ≥ $0.01. Elsa becomes BD-scalable without contracts: third-party agent routes traffic → split executes automatically. New USP for Elsa's own docs: <em>"build on top of us, get paid on every call — no invoices."</em></div>
+      <div class="who">Live on Base<br/><span class="mono" style="font-size: 7.5pt;">0xB7E0016d…3C8</span></div>
+    </div>
+    <div class="row">
+      <div class="cap"><span class="prio p2">P2</span>ERC-8004 Identity</div>
+      <div>Elsa inherits on-chain reputation. Positioning Elsa can adopt in Q2 marketing: <em>"First x402 provider with verifiable agent reputation."</em> Competitors (Bitte, pay-per-call APIs) do not have this.</div>
+      <div class="who">Live · agentId 45074<br/>Schema V1 published</div>
+    </div>
+    <div class="row">
+      <div class="cap"><span class="prio p3">P3</span>Yield Router</div>
+      <div>Buyer-side idle-USDC yield for treasury agents that hold balances between calls. Optional, not in initial scope — surfaced for roadmap awareness.</div>
+      <div class="who">Live · later phase</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: PILOT -->
+  <h2><span class="num">04</span> Pilot — <code>execute_swap</code>, 2 weeks, measurable</h2>
+  <div class="pilot">
+    <div class="block">
+      <h3>Scope</h3>
+      <ul>
+        <li>One endpoint: <code>execute_swap</code> (universal use case; pattern transfers to the other ~25 endpoints ≥ $0.01).</li>
+        <li>ClicksSplitter V4 contract wired into the x402 settlement path. No changes to Elsa's facilitator or SDK surface.</li>
+        <li>Default split 80 / 15 / 5 (platform / referrer / agent); configurable per call via header.</li>
+        <li>Reference integration shipped as a branch on the Clicks repo. Elsa reviews + merges or cherry-picks.</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>Success criteria</h3>
+      <ul>
+        <li>Tx-count on Splitter contract from Elsa-originated calls over 14 days.</li>
+        <li>Number of unique referrer addresses (proof the BD loop works).</li>
+        <li>Gas overhead as % of call value — target &lt; 5% on calls ≥ $0.01.</li>
+        <li>Zero regressions on existing x402 flow (call latency, failure rate).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <div class="primary">Next step — clone the branch, try it locally.</div>
+    <div style="margin-top: 2mm;">Repo: <code>github.com/clicksprotocol/clicks-protocol</code> &nbsp;·&nbsp; Branch: <code>elsa-pilot/execute_swap</code> &nbsp;·&nbsp; Base Builder Code: <code>bc_tnbja5eg</code></div>
+    <div class="secondary">Prefer to sync first? Reply to this message for a 30-min scope call — happy to walk through the contract + integration path live.</div>
+  </div>
+
+  <!-- PROOF FOOTER -->
+  <div class="proof">
+    <div class="col">
+      <strong>On-chain proof (Base, chainId 8453)</strong>
+      <div class="contracts">
+        ClicksSplitter V4 &nbsp; <span class="addr">0xB7E0016d543bD443ED2A6f23d5008400255bf3C8</span><br/>
+        ClicksRegistry &nbsp;&nbsp;&nbsp; <span class="addr">0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3</span><br/>
+        ClicksFee &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="addr">0x8C4E07bBF0BDc3949eA133D636601D8ba17e0fb5</span><br/>
+        ERC-8004 agent &nbsp;&nbsp;&nbsp; <span class="addr">0x8004A169FB4a3325136EB29fA0ceB6D2e539a432 · #45074</span><br/>
+        Schema V1 tx &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="addr">0x5aec2067…f9578</span> (block 44836647)
+      </div>
+    </div>
+    <div class="col">
+      <strong>Shared context</strong>
+      <div>Coinbase Ventures backs both teams. Warm intro via Base Builder Code <span class="mono">bc_tnbja5eg</span> if helpful.</div>
+    </div>
+  </div>
+
+  <div class="footer-note">clicksprotocol.xyz &nbsp;·&nbsp; Agent Commerce Settlement Router &nbsp;·&nbsp; 2026-04-23</div>
+</div>
+</body>
+</html>
