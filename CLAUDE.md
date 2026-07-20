@@ -57,6 +57,7 @@ Nicht deployen bis Gate erfüllt.
 ## Public Presence
 
 - Landing: https://clicksprotocol.xyz (Settlement-first Homepage, ERC-8004 Badge, x402 claims cleaned, Production-Deploy `8d04aefe-1bfe-4413-aa18-0d60d1628452`)
+- GitHub main: PR #32 `chore: align Clicks settlement router state` merged, merge commit `ac1d837d103d22d0d10d035f0c4c49d4e6274df9`
 - MCP Registry: `io.github.clicksprotocol/mcp-server` Version `1.0.3`, active/latest, npm package `@clicks-protocol/mcp-server@0.3.2`
 - ClawHub: `protogenosone/clicks-protocol` Version `1.2.6` ist latest und zeigt jetzt korrekt `Clicks Protocol`. Security `clean`, aber Verify fuer `1.2.6` faellt noch wegen `card.missing`. Letzte voll gruene Version bleibt `1.2.4` mit Card verfuegbar und Verify `decision=pass`.
 - Dev.to: https://dev.to/clicksprotocol/x402-solved-payments-who-solves-treasury-531h
@@ -70,6 +71,8 @@ Nicht deployen bis Gate erfüllt.
 - Current status: research and public claim cleanup done. Adapter is planned, not released.
 - Do not claim `supports x402`, automatic x402 interception, or built-in x402 verification before the adapter exists.
 - Build direction: x402 revenue event intake, settlement receipt ledger, SDK/MCP adapter, Cloudflare Worker example.
+- Glama still stale after main merge: old Yield description, `tools=0`, `updatedAt=null`. Needs UI `Repository -> Sync Server` or support.
+- Security note: a Moltbook API key was briefly exposed in the PR branch and removed before merge. Rotate the Moltbook key.
 
 ## Current Content Asset
 

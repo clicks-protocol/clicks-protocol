@@ -1161,3 +1161,44 @@
 - Glama UI/Support bleibt offen.
 - Repo ist weiter stark dirty und muss in sinnvolle Commits/PRs aufgeteilt werden.
 - x402 Adapter ist noch nicht gebaut. Bis dahin kein harter x402-Support-Claim.
+
+---
+
+## 2026-07-21 - Settlement Router Cleanup PR gemerged
+
+**Trigger:** David gab Go, den aufgeraeumten lokalen Repo-Stand ordentlich remote zu sichern und danach Glama erneut zu pruefen.
+
+**Geliefert:**
+- GitHub-Auth vor schreibenden Aktionen geprueft: `GITHUB_PAT` und `gh` laufen als Account `clicksprotocol`, Scope enthaelt `repo` und `workflow`.
+- Branch `feat/video-pipeline-hyperframes` gepusht und PR #32 erstellt: `https://github.com/clicks-protocol/clicks-protocol/pull/32`.
+- PR war initial wegen Drift zu `main` nicht mergebar. Rebase auf `origin/main` durchgefuehrt.
+- Lokale ignorierte Outreach-Dateien vor Rebase gesichert und danach wiederhergestellt:
+  - `/tmp/clicks-rebase-local-backup-20260721-0005/marketing/drafts/outreach/cambrian-landscape-inclusion.md`
+  - `/tmp/clicks-rebase-local-backup-20260721-0005/marketing/outreach-tracker.json`
+- Rebase-Konflikt in `clawhub-skill/SKILL.md` geloest. Behalten wurde die Settlement-first, MIT-0, read-only Safety-Boundary-Version fuer ClawHub `1.2.6`.
+- PR nach Rebase erfolgreich gemerged. Merge-Commit: `ac1d837d103d22d0d10d035f0c4c49d4e6274df9`, Subject `Merge settlement router cleanup`.
+- Lokaler `main` wurde per Fast-Forward auf `origin/main` gezogen.
+
+**Security-Fund:**
+- Beim PR-Audit wurde ein Moltbook API-Key in `x-pipeline/moltbook_post.py` gefunden.
+- Der Key wurde aus dem Code entfernt, Branch-History wurde per autosquash/rebase bereinigt und per `--force-with-lease` neu gepusht.
+- Finaler PR-Diff und `origin/main` enthalten den Key nicht.
+- Der Key war kurz auf GitHub im Branch sichtbar. Der Moltbook-Key muss rotiert werden.
+
+**Verifikation:**
+- Vor PR-Erstellung gruen: `git diff --check HEAD`, `landing-v3 npm run build`, root `npm test -- --grep Referral` mit 49 passing, Builds in `sdk`, `mcp-server`, `integrations/eliza`, `agent-treasury`.
+- Nach Rebase gruen: `git diff --check HEAD`, Konfliktmarker-Scan, Secret-Pattern-Scan fuer `moltbook_sk_`.
+- PR #32 war vor Merge `MERGEABLE`, `fileCount=100`, `commitCount=19`.
+- GitHub meldete keine CI-Checks fuer den Branch: `no checks reported`.
+- Nach Merge zeigt `origin/main` als Kopf `ac1d837 Merge settlement router cleanup`.
+
+**Glama Nachcheck:**
+- Glama Server `nzxrrz4y5c` bleibt auch nach Main-Merge stale.
+- API zeigt weiter alte Yield-Description, `tools=0`, `updatedAt=null`.
+- GitHub `main/glama.json` ist korrekt Settlement-first.
+- Naechster Schritt: Glama UI `Repository -> Sync Server` oder Support/Rescan.
+
+**Weiter offen:**
+- Moltbook-Key rotieren.
+- Glama UI/Support anstossen.
+- Danach P1 starten: x402 Revenue Settlement Adapter als Prototyp.

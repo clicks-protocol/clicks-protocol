@@ -1,6 +1,6 @@
 # Clicks Protocol Status
 
-> Stand: 2026-07-20 (Berlin, npm Patch-Releases, MCP Registry 1.0.3, Landing-Claim-Cleanup, Discord-Core-Posts, ClawHub 1.2.6 und X-Hyperframes-Post live verifiziert)
+> Stand: 2026-07-21 (Berlin, PR #32 gemerged, Main sauber auf Settlement-first, Glama weiter stale)
 > Priorität: P0
 > Update-Rule: **Jede Session endet mit Aktualisierung dieser Datei, bevor Emma/Claude die Arbeit niederlegt.** Staleness > 48 h = Drift-Risiko.
 > ⚠️ **Diese Datei war zwischen 13.05. und 13.07. veraltet. Heute auf Stand gezogen.**
@@ -17,6 +17,10 @@
 **Positionierung:** Agent Commerce Settlement Router (nicht Yield-Protokoll). Router zwischen x402/ACP und DeFi-Vaults. Die 17 Yield Agents auf Cambrians Landscape sind Kunden, nicht Konkurrenten.
 
 **Landing live:** `https://clicksprotocol.xyz` und `https://www.clicksprotocol.xyz` zeigen den Settlement-Router-Stand mit Cloudflare Web Analytics Beacon. Neuester Production-Deploy `8d04aefe-1bfe-4413-aa18-0d60d1628452`, Cloudflare Pages Environment `production`.
+
+**GitHub main:** PR #32 `chore: align Clicks settlement router state` ist gemerged. Merge-Commit `ac1d837d103d22d0d10d035f0c4c49d4e6274df9`. Der bereinigte Settlement-first Stand ist damit remote auf `main`.
+
+**Security note:** Beim PR-Audit wurde ein Moltbook API-Key in einem Branch-Commit entdeckt. Der Commit wurde vor Merge aus der Branch-History entfernt und `main` enthaelt den Key nicht. Der Key war aber kurz auf GitHub sichtbar und muss rotiert werden.
 
 **Live auf Base Mainnet:**
 - V4 Contracts: siehe CLAUDE.md (Safe Multisig `0xaD8228fE...`)
