@@ -12,7 +12,7 @@
   "type": "module",
   "private": "true",
   "devDependencies": {
-    "hyperframes": "^0.4.11",
+    "hyperframes": "^0.6.41",
     "tsx": "^4.21.0"
   }
 }

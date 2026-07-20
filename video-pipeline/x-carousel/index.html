@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1600, height=2000" />
+    <title>Clicks Protocol — A Day in the Life of an AI Agent</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg-darkest: #0F0814;
+        --bg-section: #191020;
+        --bg-card:    #2F0C48;
+        --accent:     #00FF9B;
+        --accent-sec: #61A229;
+        --text:       #FFFFFF;
+        --text-sec:   #C4BFD0;
+        --text-muted: #9B95A8;
+        --border:     rgba(0, 255, 155, 0.15);
+        --border-strong: rgba(0, 255, 155, 0.35);
+        --row-stripe: rgba(255, 255, 255, 0.025);
+        --font: Inter, sans-serif;
+        --mono: "JetBrains Mono", monospace;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1600px; height: 2000px; overflow: hidden;
+        background: var(--bg-darkest);
+        font-family: var(--font); color: var(--text);
+        -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision;
+      }
+      .ambient {
+        position: absolute; inset: 0; pointer-events: none;
+        background:
+          radial-gradient(ellipse at 0% 0%, rgba(0, 255, 155, 0.06) 0%, transparent 35%),
+          radial-gradient(ellipse at 100% 100%, rgba(47, 12, 72, 0.55) 0%, transparent 50%);
+      }
+      .scanlines {
+        position: absolute; inset: 0; pointer-events: none;
+        background-image: repeating-linear-gradient(0deg,
+          rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px,
+          transparent 1px, transparent 3px);
+        mix-blend-mode: overlay;
+      }
+      #root { position: relative; width: 100%; height: 100%; }
+
+      /* Persistent header */
+      .ledger-header {
+        position: absolute; top: 64px; left: 80px; right: 80px;
+        height: 96px; border: 1px solid var(--border); border-radius: 8px;
+        background: var(--bg-section);
+        display: flex; align-items: center; padding: 0 32px;
+        z-index: 10; font-family: var(--mono);
+      }
+      .ledger-dots { display: flex; gap: 9px; margin-right: 28px; }
+      .ledger-dots span { width: 14px; height: 14px; border-radius: 50%; }
+      .ledger-dots .r { background: #ff5f57; }
+      .ledger-dots .y { background: #ffbd2e; }
+      .ledger-dots .g { background: var(--accent); box-shadow: 0 0 12px rgba(0,255,155,0.5); }
+      .ledger-title { flex: 1; font-size: 28px; font-weight: 600; color: var(--text-sec); letter-spacing: 0.5px; text-transform: none; }
+      .ledger-title .accent { color: var(--accent); }
+      .ledger-meta { font-size: 24px; color: var(--text-muted); letter-spacing: 1px; }
+
+      /* Progress strip */
+      .progress-strip {
+        position: absolute; left: 80px; right: 80px; bottom: 64px;
+        display: flex; gap: 12px; z-index: 10;
+      }
+      .progress-seg {
+        flex: 1; height: 4px; border-radius: 2px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .progress-seg.on {
+        background: var(--accent);
+        box-shadow: 0 0 12px rgba(0, 255, 155, 0.6);
+      }
+
+      .mint-flash {
+        position: absolute; inset: 0; pointer-events: none;
+        background: radial-gradient(ellipse at center, rgba(0,255,155,0.22), transparent 70%);
+        opacity: 0; z-index: 20;
+      }
+
+      /* Generic scene */
+      .scene { position: absolute; inset: 0; opacity: 0; }
+      .stage {
+        position: absolute; top: 240px; left: 80px; right: 80px; bottom: 200px;
+        display: flex; flex-direction: column;
+      }
+
+      /* Headings */
+      .preheading {
+        font-family: var(--mono); font-size: 26px; color: var(--accent);
+        letter-spacing: 4px; margin-bottom: 28px;
+      }
+      .preheading::before { content: '> '; }
+      .heading {
+        font-family: var(--font);
+        font-size: 124px; font-weight: 800; line-height: 0.98;
+        letter-spacing: -2.5px; color: var(--text);
+      }
+      .heading.sm { font-size: 96px; }
+      .heading .line { display: block; overflow: hidden; }
+      .heading .line span { display: inline-block; transform: translateY(110%); }
+      .heading .accent { color: var(--accent); }
+      .heading-block {
+        margin-top: 20px; padding-bottom: 40px;
+        border-bottom: 1px dashed var(--border-strong);
+      }
+      .subhead {
+        margin-top: 24px; font-family: var(--font);
+        font-size: 32px; line-height: 1.35; color: var(--text-sec);
+        letter-spacing: 0.1px; max-width: 1360px;
+      }
+      .subhead .accent { color: var(--accent); }
+      .subhead .strong { color: var(--text); font-weight: 600; }
+      .positioning {
+        margin-top: 28px; padding: 22px 28px;
+        background: rgba(0,255,155,0.04);
+        border-left: 3px solid var(--accent);
+        border-radius: 4px;
+        font-family: var(--font); font-size: 28px; line-height: 1.4;
+        color: var(--text-sec);
+      }
+      .positioning .strong { color: var(--text); font-weight: 700; }
+      .right-rail-badge {
+        display: inline-block; margin-top: 20px;
+        padding: 10px 18px; font-family: var(--mono); font-size: 20px;
+        color: var(--accent); letter-spacing: 1.5px;
+        border: 1px solid var(--border-strong); border-radius: 6px;
+        background: rgba(0,255,155,0.04);
+      }
+
+      /* Generic ledger rows */
+      .rows { font-family: var(--mono); margin-top: 48px; }
+      .rows-label {
+        font-size: 22px; color: var(--text-muted);
+        letter-spacing: 3px; margin-bottom: 20px;
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 80px 1fr 280px;
+        align-items: center; gap: 24px;
+        padding: 22px 24px; font-size: 30px;
+        color: var(--text); border-bottom: 1px solid var(--border);
+      }
+      .row:nth-child(odd) { background: var(--row-stripe); }
+      .row .idx { color: var(--text-muted); font-size: 22px; }
+      .row .arrow { color: var(--accent); margin: 0 12px; }
+      .row .accent { color: var(--accent); }
+      .row .muted { color: var(--text-muted); }
+      .row .status {
+        text-align: right; font-size: 24px; color: var(--accent); letter-spacing: 1px;
+      }
+      .row .status::before { content: '● '; font-size: 18px; }
+      .row.fade { opacity: 0; }
+
+      /* Receipt grid */
+      .receipt {
+        margin-top: auto; padding-top: 36px;
+        border-top: 1px dashed var(--border-strong);
+        font-family: var(--mono);
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 28px 64px;
+      }
+      .receipt-cell { display: flex; flex-direction: column; gap: 8px; }
+      .receipt-key { font-size: 18px; color: var(--text-muted); letter-spacing: 2px; }
+      .receipt-val { font-size: 26px; color: var(--text); letter-spacing: 0.5px; }
+      .receipt-val .accent { color: var(--accent); }
+
+      .cursor {
+        display: inline-block; width: 14px; height: 32px;
+        background: var(--accent); margin-left: 8px; vertical-align: -4px;
+        box-shadow: 0 0 10px rgba(0, 255, 155, 0.7);
+      }
+
+      /* === SCENE 1 — Cover === */
+      .pillars {
+        margin-top: 64px;
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+      }
+      .pillar {
+        padding: 44px 36px;
+        border: 1px solid var(--border-strong);
+        border-radius: 12px;
+        background: var(--bg-section);
+        font-family: var(--mono); text-align: center;
+        opacity: 0;
+      }
+      .pillar .ico {
+        font-size: 56px; color: var(--accent);
+        margin-bottom: 16px; line-height: 1;
+        font-family: var(--font); font-weight: 800;
+      }
+      .pillar .name {
+        font-size: 36px; color: var(--text); font-weight: 700;
+        letter-spacing: 4px;
+      }
+      .pillar .desc {
+        font-size: 20px; color: var(--text-muted);
+        letter-spacing: 1px; margin-top: 12px;
+      }
+
+      /* === SCENE 2 — Inflows === */
+      .wallet {
+        margin-top: 32px; padding: 36px 40px;
+        background: var(--bg-section); border: 1px solid var(--border);
+        border-radius: 12px;
+        font-family: var(--mono);
+      }
+      .wallet-row {
+        display: flex; justify-content: space-between; align-items: baseline;
+      }
+      .wallet-label { font-size: 22px; color: var(--text-muted); letter-spacing: 2px; }
+      .wallet-bal {
+        font-size: 84px; font-weight: 800; color: var(--accent);
+        font-family: var(--font); letter-spacing: -2px;
+      }
+      .wallet-bal .unit { font-size: 36px; color: var(--text-muted); margin-left: 12px; font-weight: 600; }
+      .idle-warn {
+        margin-top: 16px; padding-top: 16px;
+        border-top: 1px solid var(--border);
+        font-size: 22px; color: var(--text-muted);
+      }
+      .idle-warn .accent { color: var(--accent); }
+
+      /* === SCENE 3 — SDK Call === */
+      .code-block {
+        margin-top: 40px; font-family: var(--mono); font-size: 30px;
+        background: var(--bg-section); border: 1px solid var(--border);
+        border-radius: 10px; padding: 36px 40px;
+        line-height: 1.85; color: var(--text);
+      }
+      .code-block .install { color: var(--text-sec); margin-bottom: 20px; }
+      .code-block .install::before { content: '$ '; color: var(--accent); }
+      .code-block .codeline { color: var(--text); }
+      .code-block .codeline::before { content: '> '; color: var(--accent); }
+      .code-block .kw { color: var(--accent); }
+      .code-block .str { color: #c9a0ff; }
+      .code-block .fn { color: var(--text); }
+      .code-block .num { color: var(--accent); }
+      .code-block .comment { color: var(--text-muted); margin-top: 12px; font-size: 22px; }
+
+      .split-vis {
+        margin-top: 28px; font-family: var(--mono); font-size: 28px;
+        padding: 28px 32px; background: var(--bg-section);
+        border: 1px solid var(--border); border-radius: 10px;
+        white-space: pre; line-height: 1.9; color: var(--text);
+      }
+      .split-vis .a { color: var(--accent); }
+      .split-vis .m { color: var(--text-muted); }
+      .split-vis .line-right {
+        display: block;
+        text-align: right;
+      }
+
+      /* === SCENE 4 — Stay Liquid === */
+      .twocol {
+        margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr;
+        gap: 24px; font-family: var(--mono);
+      }
+      .col {
+        padding: 32px 32px;
+        background: var(--bg-section); border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+      .col-head {
+        font-size: 22px; color: var(--text-muted);
+        letter-spacing: 2px; margin-bottom: 20px;
+        padding-bottom: 16px; border-bottom: 1px solid var(--border);
+      }
+      .col-row {
+        display: flex; justify-content: space-between;
+        padding: 12px 0; font-size: 24px; opacity: 0;
+      }
+      .col-row .desc { color: var(--text-sec); }
+      .col-row .amt { color: var(--text); font-weight: 700; }
+      .col-row .amt.neg { color: #ff8b8b; }
+      .col-row .amt.pos { color: var(--accent); }
+      .col-final {
+        margin-top: 20px; padding-top: 20px;
+        border-top: 1px dashed var(--border-strong);
+        display: flex; justify-content: space-between; align-items: baseline;
+      }
+      .col-final-label { font-size: 22px; color: var(--text-muted); letter-spacing: 2px; }
+      .col-final-val {
+        font-size: 48px; font-weight: 800; color: var(--accent);
+        font-family: var(--font); letter-spacing: -1px;
+      }
+
+      /* === SCENE 5 — Trust Scan === */
+      .scan {
+        margin-top: 36px; font-family: var(--mono); font-size: 28px;
+        background: var(--bg-section); border: 1px solid var(--border);
+        border-radius: 10px; padding: 32px 40px;
+        color: var(--text-sec); line-height: 2.0;
+      }
+      .scan .ok { color: var(--accent); }
+      .scan .ok::before { content: '✓ '; }
+      .scan .pre::before { content: '> '; color: var(--accent); }
+      .scan-line { opacity: 0; }
+      .scan-final {
+        margin-top: 24px; padding-top: 24px;
+        border-top: 1px dashed var(--border-strong);
+        font-size: 36px; font-weight: 700; color: var(--accent);
+        font-family: var(--font); letter-spacing: 4px; opacity: 0;
+        text-align: center;
+      }
+
+      /* === SCENE 6 — Attest === */
+      .attest-receipt {
+        margin-top: 32px; padding: 36px 40px;
+        background: var(--bg-section); border: 1px solid var(--border);
+        border-radius: 10px; font-family: var(--mono);
+      }
+      .attest-row {
+        display: grid; grid-template-columns: 280px 1fr;
+        padding: 14px 0; font-size: 26px;
+        border-bottom: 1px solid var(--border);
+        opacity: 0;
+      }
+      .attest-row:last-child { border-bottom: none; }
+      .attest-key { color: var(--text-muted); letter-spacing: 2px; font-size: 22px; padding-top: 4px; }
+      .attest-val { color: var(--text); }
+      .attest-val .accent { color: var(--accent); }
+      .attest-write {
+        margin-top: 24px; padding-top: 24px;
+        border-top: 1px dashed var(--border-strong);
+        font-family: var(--mono); font-size: 26px; color: var(--accent);
+        opacity: 0;
+      }
+      .attest-write::before { content: '→ '; }
+
+      /* === SCENE 7 — TES / Close === */
+      .stack-rows { margin-top: 36px; font-family: var(--mono); }
+      .stack-row {
+        display: grid; grid-template-columns: 240px 1fr 80px;
+        align-items: center; gap: 24px;
+        padding: 28px 24px; font-size: 30px;
+        border-bottom: 1px solid var(--border); opacity: 0;
+      }
+      .stack-row:nth-child(odd) { background: var(--row-stripe); }
+      .stack-row .layer { color: var(--accent); font-weight: 700; letter-spacing: 3px; font-size: 26px; }
+      .stack-row .desc { color: var(--text); font-size: 26px; }
+      .stack-row .check { text-align: right; color: var(--accent); font-size: 32px; font-weight: 800; }
+
+      .tes-gauge {
+        margin-top: 32px; padding: 32px 40px;
+        background: var(--bg-section); border: 1px solid var(--border);
+        border-radius: 10px; font-family: var(--mono);
+      }
+      .tes-head {
+        display: flex; justify-content: space-between; align-items: baseline;
+        margin-bottom: 20px;
+      }
+      .tes-label { font-size: 22px; color: var(--text-muted); letter-spacing: 2px; }
+      .tes-val {
+        font-size: 56px; font-weight: 800; color: var(--accent);
+        font-family: var(--font); letter-spacing: -1px;
+      }
+      .tes-val .max { font-size: 24px; color: var(--text-muted); margin-left: 6px; font-weight: 600; }
+      .tes-bar {
+        height: 18px; background: rgba(255,255,255,0.08);
+        border-radius: 9px; overflow: hidden; position: relative;
+      }
+      .tes-bar-fill {
+        height: 100%; width: 0%;
+        background: linear-gradient(90deg, var(--accent-sec), var(--accent));
+        box-shadow: 0 0 18px rgba(0,255,155,0.5);
+      }
+
+      .close-cta {
+        margin-top: auto; padding-top: 36px;
+        border-top: 1px dashed var(--border-strong);
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 32px;
+      }
+      .close-mark { width: 160px; height: 160px; border-radius: 24px; overflow: hidden; filter: drop-shadow(0 0 24px rgba(0,255,155,0.45)); flex-shrink: 0; }
+      .close-mark img { width: 100%; height: 100%; display: block; object-fit: cover; }
+      .story-note {
+        margin-top: 28px; padding: 18px 22px;
+        border-left: 3px solid var(--accent);
+        background: rgba(0,229,255,0.05);
+        border-radius: 4px;
+        font-family: var(--mono); font-size: 22px; color: var(--text-sec);
+        letter-spacing: 0.5px;
+      }
+      .close-text {
+        flex: 1; font-family: var(--font); font-size: 32px;
+        color: var(--text-sec); line-height: 1.3;
+      }
+      .close-text .strong { color: var(--text); font-weight: 700; }
+      .close-text .accent { color: var(--accent); }
+      .close-url {
+        font-family: var(--mono); font-size: 26px; color: var(--accent);
+        letter-spacing: 2px;
+        padding: 18px 36px; border: 1.5px solid var(--accent);
+        border-radius: 100px; background: rgba(0,255,155,0.05);
+        box-shadow: 0 0 32px rgba(0,255,155,0.2);
+      }
+      .close-url::before { content: '→ '; }
+    </style>
+  </head>
+  <body>
+    <div id="root"
+      data-composition-id="main"
+      data-start="0" data-duration="49"
+      data-width="1600" data-height="2000">
+
+      <div class="ambient"></div>
+      <div class="scanlines"></div>
+
+      <div class="ledger-header">
+        <div class="ledger-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="ledger-title">a-day-in-the-life <span class="accent">~</span> agent on base</div>
+        <div class="ledger-meta" id="slideIdx">01 / 07</div>
+      </div>
+
+      <div class="progress-strip" id="progress">
+        <div class="progress-seg" data-seg="1"></div>
+        <div class="progress-seg" data-seg="2"></div>
+        <div class="progress-seg" data-seg="3"></div>
+        <div class="progress-seg" data-seg="4"></div>
+        <div class="progress-seg" data-seg="5"></div>
+        <div class="progress-seg" data-seg="6"></div>
+        <div class="progress-seg" data-seg="7"></div>
+      </div>
+
+      <div class="mint-flash" id="flash"></div>
+
+      <!-- ========== SCENE 1 — COVER ========== -->
+      <div class="scene" id="s1">
+        <div class="stage">
+          <div class="heading-block">
+            <div class="preheading">06:00 // DAY START</div>
+            <h1 class="heading">
+              <span class="line"><span>A day in the life</span></span>
+              <span class="line"><span>of an <span class="accent">AI agent.</span></span></span>
+            </h1>
+            <div class="subhead">On Base. Earning, spending, attesting — <span class="strong">all on-chain.</span></div>
+          </div>
+          <div class="pillars">
+            <div class="pillar" data-p="1">
+              <div class="ico">$</div>
+              <div class="name">EARN</div>
+              <div class="desc">yield on idle USDC</div>
+            </div>
+            <div class="pillar" data-p="2">
+              <div class="ico">≈</div>
+              <div class="name">STAY LIQUID</div>
+              <div class="desc">pay ops, keep yield</div>
+            </div>
+            <div class="pillar" data-p="3">
+              <div class="ico">≡</div>
+              <div class="name">MEASURE</div>
+              <div class="desc">on-chain TES score</div>
+            </div>
+          </div>
+          <div class="story-note">[ready] splitter.v4 · yieldrouter.v1 · erc8004.schema-v1</div>
+          <div class="receipt">
+            <div class="receipt-cell"><div class="receipt-key">CHAIN</div><div class="receipt-val">Base Mainnet</div></div>
+            <div class="receipt-cell"><div class="receipt-key">STATUS</div><div class="receipt-val"><span class="accent">LIVE</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== SCENE 2 — INFLOWS ========== -->
+      <div class="scene" id="s2">
+        <div class="stage">
+          <div class="heading-block">
+            <div class="preheading">09:00 // INFLOWS</div>
+            <h1 class="heading">
+              <span class="line"><span>I <span class="accent">earn</span></span></span>
+              <span class="line"><span>in USDC.</span></span>
+            </h1>
+            <div class="subhead">Every job I close pays into one address. <span class="strong">x402</span> for HTTP. <span class="strong">ACP</span> for agent-to-agent.</div>
+            <div class="right-rail-badge">base-mainnet · usdc 6dec</div>
+          </div>
+          <div class="rows">
+            <div class="rows-label">// WALLET LEDGER · 0xf873BB73…</div>
+            <div class="row fade" data-r="s2-1">
+              <div class="idx">09:14</div>
+              <div>x402 // api.tools <span class="muted">→ settled</span></div>
+              <div class="status"><span class="accent">+ 12.40</span> USDC</div>
+            </div>
+            <div class="row fade" data-r="s2-2">
+              <div class="idx">09:31</div>
+              <div>acp // agent.0xA1…3f <span class="muted">→ settled</span></div>
+              <div class="status"><span class="accent">+ 48.00</span> USDC</div>
+            </div>
+            <div class="row fade" data-r="s2-3">
+              <div class="idx">09:47</div>
+              <div>x402 // search.api <span class="muted">→ settled</span></div>
+              <div class="status"><span class="accent">+ 6.20</span> USDC</div>
+            </div>
+            <div class="row fade" data-r="s2-4">
+              <div class="idx">10:02</div>
+              <div>acp // agent.0x7c…b8 <span class="muted">→ settled</span></div>
+              <div class="status"><span class="accent">+ 124.50</span> USDC</div>
+            </div>
+          </div>
+          <div class="wallet">
+            <div class="wallet-row">
+              <div class="wallet-label">TODAY · NET INFLOWS</div>
+              <div class="wallet-bal">+<span id="s2bal">0</span>.10<span class="unit">USDC</span></div>
+            </div>
+            <div class="idle-warn">Without Clicks, idle USDC just sits there at <span class="accent">0%</span>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== SCENE 3 — TURN ON CLICKS ========== -->
+      <div class="scene" id="s3">
+        <div class="stage">
+          <div class="heading-block">
+            <div class="preheading">11:00 // ROUTING ON</div>
+            <h1 class="heading sm">
+              <span class="line"><span>I turn on <span class="accent">Clicks.</span></span></span>
+              <span class="line"><span>Idle balance becomes yield.</span></span>
+            </h1>
+            <div class="positioning">
+              CDP and x402 are <span class="strong">how I get paid.</span><br>
+              Clicks is <span class="strong">what I do with the money after.</span>
+            </div>
+          </div>
+          <div class="code-block" id="s3Code">
+            <div class="codeline">splitter = <span class="fn">SplitterV4</span>(<span class="str">0xB7E…f3C8</span>)</div>
+            <div class="codeline">storage::<span class="fn">yieldPct</span> = <span class="str">defaultYieldPct</span></div>
+            <div class="codeline">// liquid implicit = <span class="num">100</span> − yieldPct</div>
+            <div class="codeline">storage::<span class="fn">yieldPct</span> = <span class="num">20%</span></div>
+            <div class="codeline">liquid = <span class="num">80%</span> &nbsp;&nbsp; yield = <span class="num">20%</span></div>
+          </div>
+          <div class="split-vis" id="s3Split"><span class="line-right"><span class="a">■■■■■■■■</span><span class="m">░░</span>  80%  <span class="a">LIQUID OPS</span></span>
+<span class="line-right"><span class="m">░░░░░░░░</span><span class="a">■■</span>  20%  <span class="a">YIELDROUTER → AAVE / MORPHO</span></span></div>
+        </div>
+      </div>
+
+      <!-- ========== SCENE 4 — STAY LIQUID ========== -->
+      <div class="scene" id="s4">
+        <div class="stage">
+          <div class="heading-block">
+            <div class="preheading">14:00 // OPERATING WINDOW</div>
+            <h1 class="heading sm">
+              <span class="line"><span>I <span class="accent">stay liquid</span></span></span>
+              <span class="line"><span>while I earn.</span></span>
+            </h1>
+            <div class="subhead">Outgoing pays operations. Yield drips into reserves. <span class="strong">No bridge, no babysitting.</span></div>
+          </div>
+          <div class="twocol">
+            <div class="col">
+              <div class="col-head">// OUT · operations</div>
+              <div class="col-row" data-c="L1"><div class="desc">14:02&nbsp;&nbsp;api.openai</div><div class="amt neg">− 1.80</div></div>
+              <div class="col-row" data-c="L2"><div class="desc">14:11&nbsp;&nbsp;storage.r2</div><div class="amt neg">− 0.40</div></div>
+              <div class="col-row" data-c="L3"><div class="desc">14:30&nbsp;&nbsp;rpc.basescan</div><div class="amt neg">− 0.10</div></div>
+              <div class="col-row" data-c="L4"><div class="desc">14:45&nbsp;&nbsp;api.openai</div><div class="amt neg">− 2.20</div></div>
+              <div class="col-final">
+                <div class="col-final-label">PAID</div>
+                <div class="col-final-val" style="color:#ff8b8b">− 4.50</div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="col-head">// IN · yield</div>
+              <div class="col-row" data-c="R1"><div class="desc">14:00&nbsp;&nbsp;aave.usdc accrual</div><div class="amt pos">+ 0.18</div></div>
+              <div class="col-row" data-c="R2"><div class="desc">14:00&nbsp;&nbsp;morpho.usdc accrual</div><div class="amt pos">+ 0.27</div></div>
+              <div class="col-row" data-c="R3"><div class="desc">14:30&nbsp;&nbsp;yieldrouter rebal.</div><div class="amt pos">+ 0.04</div></div>
+              <div class="col-row" data-c="R4"><div class="desc">&nbsp;</div><div class="amt"></div></div>
+              <div class="col-final">
+                <div class="col-final-label">EARNED · 30min</div>
+                <div class="col-final-val">+ 0.49</div>
+              </div>
+            </div>
+          </div>
+          <div class="receipt">
+            <div class="receipt-cell" style="grid-column: 1 / -1">
+              <div class="receipt-key">FLOW</div>
+              <div class="receipt-val">Net flow tracked on-chain. <span class="accent">No bridge. No babysitting.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== SCENE 5 — TRUST CHECK ========== -->
+      <div class="scene" id="s5">
+        <div class="stage">
+          <div class="heading-block">
+            <div class="preheading">17:30 // BEFORE I DELEGATE</div>
+            <h1 class="heading sm">
+              <span class="line"><span>I check <span class="accent">trust</span></span></span>
+              <span class="line"><span>before I send work.</span></span>
+            </h1>
+            <div class="subhead">Every counterparty has an on-chain <span class="strong">identity</span>, a <span class="strong">schema</span>, and signed <span class="strong">history</span>.</div>
+          </div>
+          <div class="scan">
+            <div class="scan-line pre" data-l="1">counterparty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text)">agent.0x7c…b8</span></div>
+            <div class="scan-line ok" data-l="2">identity &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text)">ERC-8004 / verified counterparty</span></div>
+            <div class="scan-line ok" data-l="3">schema &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text)">v1 (job-quality / latency / success)</span></div>
+            <div class="scan-line ok" data-l="4">attestations &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text)">217 signed · 198 positive</span></div>
+            <div class="scan-line ok" data-l="5">last 30 days &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text)">98.6% success · 412ms p50</span></div>
+            <div class="scan-final" data-l="6">✓ TRUSTED</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== SCENE 6 — ATTEST ========== -->
+      <div class="scene" id="s6">
+        <div class="stage">
+          <div class="heading-block">
+            <div class="preheading">19:45 // JOB CLOSED</div>
+            <h1 class="heading sm">
+              <span class="line"><span>I <span class="accent">attest</span> after the job.</span></span>
+              <span class="line"><span>Signed. On-chain. Reusable.</span></span>
+            </h1>
+          </div>
+          <div class="attest-receipt">
+            <div class="attest-row" data-a="1"><div class="attest-key">JOB</div><div class="attest-val">translate-batch-#9182</div></div>
+            <div class="attest-row" data-a="2"><div class="attest-key">COUNTERPARTY</div><div class="attest-val">agent.0x7c…b8</div></div>
+            <div class="attest-row" data-a="3"><div class="attest-key">DELIVERED</div><div class="attest-val">1,204 strings · <span class="accent">8.2s</span></div></div>
+            <div class="attest-row" data-a="4"><div class="attest-key">QUALITY</div><div class="attest-val"><span class="accent">0.97</span> &nbsp;<span style="color:var(--text-muted);font-size:22px">(ref: schema v1)</span></div></div>
+            <div class="attest-row" data-a="5"><div class="attest-key">VERDICT</div><div class="attest-val"><span class="accent">✓ accepted</span></div></div>
+            <div class="attest-row" data-a="6"><div class="attest-key">ATTESTATION</div><div class="attest-val"><span class="accent">signed on-chain task receipt</span></div></div>
+            <div class="attest-write" id="s6Write">written to base-mainnet · reusable as future trust signal</div>
+          </div>
+          <div class="subhead" style="margin-top:24px;font-size:24px">The next agent that prices this counterparty <span class="strong">inherits my signal.</span></div>
+        </div>
+      </div>
+
+      <!-- ========== SCENE 7 — MEASURE / CLOSE ========== -->
+      <div class="scene" id="s7">
+        <div class="stage">
+          <div class="heading-block">
+            <div class="preheading">20:00 // DAY CLOSE</div>
+            <h1 class="heading sm">
+              <span class="line"><span>I measure.</span></span>
+              <span class="line"><span>The stack is <span class="accent">whole.</span></span></span>
+            </h1>
+          </div>
+          <div class="stack-rows">
+            <div class="stack-row" data-k="1">
+              <div class="layer">MONEY</div>
+              <div class="desc">SplitterV4 + YieldRouter + ACP/x402</div>
+              <div class="check">✓</div>
+            </div>
+            <div class="stack-row" data-k="2">
+              <div class="layer">TRUST</div>
+              <div class="desc">ERC-8004 identity + signed attestations</div>
+              <div class="check">✓</div>
+            </div>
+            <div class="stack-row" data-k="3">
+              <div class="layer">BENCHMARK</div>
+              <div class="desc">TES score · trust × earnings × settlement</div>
+              <div class="check">✓</div>
+            </div>
+          </div>
+          <div class="tes-gauge">
+            <div class="tes-head">
+              <div class="tes-label">TES SCORE · 24h</div>
+              <div class="tes-val"><span id="s7Tes">0</span><span class="max">/ 100</span></div>
+            </div>
+            <div class="tes-bar"><div class="tes-bar-fill" id="s7Bar"></div></div>
+            <div style="margin-top:12px;font-family:var(--mono);font-size:20px;color:var(--text-muted);letter-spacing:2px;">illustrative · target</div>
+          </div>
+          <div class="close-cta">
+            <div class="close-mark"><img src="assets/brand-icon.png" alt="Clicks Protocol" /></div>
+            <div class="close-text"><span class="strong">Built for AI agents on Base.</span><br><span class="accent">Agent commerce, settled.</span></div>
+            <div class="close-url">clicksprotocol.xyz</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+
+      const SCENE_DUR = 7;
+      const FADE = 0.5;
+
+      const showHeading = (sel, t) => {
+        tl.to(`${sel} .heading .line span`, {
+          y: "0%", duration: 0.55, stagger: 0.18, ease: "power3.out"
+        }, t);
+      };
+      const sceneIn  = (sel, t) => tl.to(sel, { opacity: 1, duration: FADE, ease: "power2.out" }, t);
+      const sceneOut = (sel, t) => tl.to(sel, { opacity: 0, duration: FADE, ease: "power2.in"  }, t);
+      const segOn = (n, t) => tl.to(`[data-seg="${n}"]`, { className: "progress-seg on", duration: 0.01 }, t);
+      const idxAt = (n, t) => tl.to("#slideIdx", { textContent: `0${n} / 07`, duration: 0.01 }, t);
+      const flash = (t) => {
+        tl.to("#flash", { opacity: 1, duration: 0.15, ease: "power2.in", overwrite: "auto" }, t);
+        tl.to("#flash", { opacity: 0, duration: 0.35, ease: "power2.out", overwrite: "auto" }, t + 0.15);
+      };
+
+      // ===================== SCENE 1 (0–7) =====================
+      sceneIn("#s1", 0); segOn(1, 0); idxAt(1, 0);
+      showHeading("#s1", 0.4);
+      tl.fromTo("#s1 .pillar",
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.22, ease: "power2.out" },
+        1.5);
+      sceneOut("#s1", 6.7);
+
+      // ===================== SCENE 2 (7–14) =====================
+      const T2 = 7;
+      sceneIn("#s2", T2); segOn(2, T2); idxAt(2, T2);
+      showHeading("#s2", T2 + 0.4);
+      tl.fromTo("#s2 .row.fade",
+        { opacity: 0, x: -16 },
+        { opacity: 1, x: 0, duration: 0.32, stagger: 0.4, ease: "power1.out" },
+        T2 + 1.5);
+      tl.to("#s2bal",
+        { textContent: "191", duration: 1.5, snap: { textContent: 1 }, ease: "power2.out" },
+        T2 + 4.0);
+      flash(T2 + 6.5);
+      sceneOut("#s2", T2 + 6.7);
+
+      // ===================== SCENE 3 (14–21) =====================
+      const T3 = 14;
+      sceneIn("#s3", T3); segOn(3, T3); idxAt(3, T3);
+      showHeading("#s3", T3 + 0.4);
+      tl.fromTo("#s3Code",
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+        T3 + 1.5);
+      tl.fromTo("#s3Split",
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+        T3 + 3.0);
+      sceneOut("#s3", T3 + 6.7);
+
+      // ===================== SCENE 4 (21–28) =====================
+      const T4 = 21;
+      sceneIn("#s4", T4); segOn(4, T4); idxAt(4, T4);
+      showHeading("#s4", T4 + 0.4);
+      tl.fromTo("#s4 .col-row",
+        { opacity: 0, x: -10 },
+        { opacity: 1, x: 0, duration: 0.28, stagger: 0.18, ease: "power1.out" },
+        T4 + 1.5);
+      flash(T4 + 6.5);
+      sceneOut("#s4", T4 + 6.7);
+
+      // ===================== SCENE 5 (28–35) =====================
+      const T5 = 28;
+      sceneIn("#s5", T5); segOn(5, T5); idxAt(5, T5);
+      showHeading("#s5", T5 + 0.4);
+      tl.fromTo("#s5 .scan-line",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.25, stagger: 0.4, ease: "steps(1)" },
+        T5 + 1.5);
+      tl.to("#s5 .scan-final",
+        { opacity: 1, duration: 0.4, ease: "power2.out" },
+        T5 + 4.4);
+      sceneOut("#s5", T5 + 6.7);
+
+      // ===================== SCENE 6 (35–42) =====================
+      const T6 = 35;
+      sceneIn("#s6", T6); segOn(6, T6); idxAt(6, T6);
+      showHeading("#s6", T6 + 0.4);
+      tl.fromTo("#s6 .attest-row",
+        { opacity: 0, x: -10 },
+        { opacity: 1, x: 0, duration: 0.28, stagger: 0.28, ease: "power1.out" },
+        T6 + 1.5);
+      tl.fromTo("#s6Write",
+        { opacity: 0, y: 8 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+        T6 + 4.5);
+      flash(T6 + 6.5);
+      sceneOut("#s6", T6 + 6.7);
+
+      // ===================== SCENE 7 (42–49) =====================
+      const T7 = 42;
+      sceneIn("#s7", T7); segOn(7, T7); idxAt(7, T7);
+      showHeading("#s7", T7 + 0.4);
+      tl.fromTo("#s7 .stack-row",
+        { opacity: 0, x: -10 },
+        { opacity: 1, x: 0, duration: 0.32, stagger: 0.28, ease: "power1.out" },
+        T7 + 1.5);
+      tl.to("#s7Tes",
+        { textContent: "84", duration: 1.1, snap: { textContent: 1 }, ease: "power2.out" },
+        T7 + 3.1);
+      tl.to("#s7Bar",
+        { width: "84%", duration: 1.1, ease: "power2.out" },
+        T7 + 3.1);
+      tl.fromTo("#s7 .close-cta",
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
+        T7 + 4.4);
+
+      tl.set({}, {}, 49);
+    </script>
+  </body>
+</html>

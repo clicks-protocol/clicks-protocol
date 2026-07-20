@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Clicks Protocol — Agent POV</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      :root {
+        --bg-darkest: #0F0814;
+        --bg-dim:     #140a1e;
+        --accent:     #00FF9B;
+        --accent-dim: rgba(0, 255, 155, 0.35);
+        --accent-faint: rgba(0, 255, 155, 0.12);
+        --text:       #FFFFFF;
+        --text-sec:   #C4BFD0;
+        --text-muted: #6f6880;
+        --border:     rgba(0, 255, 155, 0.18);
+        --mono: 'jetbrains-mono', 'SF Mono', Menlo, monospace;
+        --font: inter, -apple-system, sans-serif;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1080px; height: 1920px; overflow: hidden;
+        background: var(--bg-darkest);
+        font-family: var(--font); color: var(--text);
+        -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision;
+      }
+      #root { position: relative; width: 100%; height: 100%; }
+
+      /* Scanlines + ambient vignette */
+      .ambient {
+        position: absolute; inset: 0; pointer-events: none;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(0,255,155,0.035) 0%, transparent 55%),
+          radial-gradient(ellipse at 0% 100%, rgba(15,8,20,1) 0%, transparent 60%);
+      }
+      .scanlines {
+        position: absolute; inset: 0; pointer-events: none;
+        background-image: repeating-linear-gradient(0deg,
+          rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px,
+          transparent 1px, transparent 3px);
+        mix-blend-mode: overlay;
+      }
+
+      .watermark {
+        position: absolute; left: 48px; bottom: 32px;
+        font-family: var(--mono); font-size: 16px;
+        color: var(--text-muted); letter-spacing: 2px;
+        z-index: 1;
+      }
+
+      .scene { position: absolute; inset: 0; opacity: 0; }
+
+      /* ================= SPHERE ================= */
+      .sphere-wrap {
+        position: absolute; left: 50%; top: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px; height: 800px;
+        pointer-events: none;
+      }
+      .sphere-wrap.small {
+        width: 160px; height: 160px;
+        left: auto; top: 48px; right: 48px;
+        transform: none;
+      }
+      .sphere-ring {
+        position: absolute; inset: 0;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .hex {
+        position: absolute;
+        width: 100%; height: 100%;
+        transform-origin: center;
+      }
+      .hex svg { width: 100%; height: 100%; overflow: visible; }
+      .hex polygon {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 1.4;
+        filter: drop-shadow(0 0 18px rgba(0,255,155,0.45));
+      }
+      .hex.inner polygon { stroke-width: 2.2; }
+      .hex.outer polygon { stroke-width: 1; opacity: 0.55; }
+      .hex.beam polygon {
+        stroke-dasharray: 140 1800;
+        stroke-width: 3.5;
+        opacity: 0.85;
+      }
+      .core {
+        position: absolute; left: 50%; top: 50%;
+        width: 180px; height: 180px;
+        transform: translate(-50%, -50%) scale(0);
+        background: radial-gradient(circle at 50% 50%, rgba(0,255,155,0.95) 0%, rgba(0,255,155,0.2) 55%, transparent 70%);
+        border-radius: 50%;
+        filter: blur(4px) drop-shadow(0 0 40px rgba(0,255,155,0.65));
+      }
+      .halo {
+        position: absolute; left: 50%; top: 50%;
+        width: 200px; height: 200px;
+        transform: translate(-50%, -50%) scale(0);
+        border: 2px solid var(--accent);
+        border-radius: 50%;
+        opacity: 0;
+        filter: blur(1px) drop-shadow(0 0 20px rgba(0,255,155,0.6));
+      }
+
+      /* ================= SCENE 1 ================= */
+      .boot-text {
+        position: absolute; left: 50%;
+        bottom: 520px;
+        transform: translateX(-50%);
+        font-family: var(--mono); font-size: 22px;
+        color: var(--text-sec); letter-spacing: 1.2px;
+        line-height: 1.9; text-align: center; white-space: nowrap;
+      }
+      .boot-text .k { color: var(--accent); }
+      .boot-text .line { opacity: 0; display: block; }
+
+      /* ================= SCENE 2 ================= */
+      .trajectory {
+        position: absolute;
+        width: 3px; height: 600px;
+        background: linear-gradient(to bottom, transparent 0%, rgba(0,255,155,0.0) 10%, rgba(0,255,155,0.75) 88%, rgba(0,255,155,1) 100%);
+        transform-origin: 50% 100%;
+        left: 50%; top: 50%;
+        margin-left: -1.5px; margin-top: -300px;
+        filter: drop-shadow(0 0 8px rgba(0,255,155,0.6));
+        opacity: 0;
+      }
+
+      .ops {
+        position: absolute; left: 48px; right: 48px;
+        top: 1280px;
+        font-family: var(--mono); font-size: 22px;
+        color: var(--text-sec); letter-spacing: 0.5px;
+        line-height: 1.55;
+      }
+      .op {
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding: 6px 0; opacity: 0;
+      }
+      .op .tag { color: var(--accent); }
+      .op .body { color: var(--text-sec); flex: 1; padding: 0 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .op .val { color: var(--accent); font-weight: 700; }
+      .op.agg { border-top: 1px dashed var(--border); margin-top: 8px; padding-top: 14px; }
+      .op.agg .body { color: var(--text); }
+      .op.agg .val { font-size: 26px; }
+
+      /* ================= SCENE 3 ================= */
+      .bytecode-mode {
+        position: absolute; inset: 0;
+        background: #050208;
+        padding: 64px 48px;
+        font-family: var(--mono);
+        color: var(--text-sec); font-size: 18px;
+        line-height: 1.65; letter-spacing: 0.3px;
+        overflow: hidden;
+      }
+      .bytecode-mode .bc-head {
+        color: var(--accent); font-size: 18px;
+        letter-spacing: 2px; margin-bottom: 18px;
+        max-width: 600px;
+      }
+      .bytecode-mode .bc-head::before { content: '── '; }
+      .bytecode-mode .bc-head::after  { content: ' ──────────────────────────'; color: var(--border); }
+      .bc-row { display: block; opacity: 0; max-width: 600px; }
+      .bc-row .slot  { color: var(--text-muted); }
+      .bc-row .hex_  { color: var(--accent); }
+      .bc-row .comment { color: var(--text-muted); }
+      .bc-row.focus {
+        background: rgba(0,255,155,0.06);
+        padding: 4px 8px; margin: 4px -8px;
+        border-left: 2px solid var(--accent);
+      }
+      .bc-row.focus .v { color: var(--accent); font-weight: 700; }
+      .bytecode-stream {
+        position: absolute; right: 48px; top: 64px; bottom: 64px;
+        width: 360px;
+        font-family: var(--mono); font-size: 14px; line-height: 1.6;
+        color: rgba(0,255,155,0.35); letter-spacing: 0.5px;
+        white-space: pre; overflow: hidden;
+        border-left: 1px solid var(--border);
+        padding-left: 18px;
+      }
+      .bytecode-stream .inner { display: block; }
+
+      .bytecode-label {
+        position: absolute; left: 48px; bottom: 48px;
+        font-family: var(--mono); font-size: 14px;
+        color: var(--text-muted); letter-spacing: 3px;
+      }
+
+      /* ================= SCENE 4 ================= */
+      /* re-uses .sphere-wrap + adds orbiting op tokens */
+      .orbit {
+        position: absolute; left: 50%; top: 50%;
+        transform: translate(-50%, -50%);
+        width: 1000px; height: 1000px;
+        pointer-events: none;
+      }
+      .orbit-op {
+        position: absolute; left: 50%; top: 50%;
+        font-family: var(--mono); font-size: 22px;
+        color: var(--text-sec); letter-spacing: 0.5px;
+        padding: 10px 18px;
+        background: rgba(0,0,0,0.55);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        white-space: nowrap;
+        transform-origin: 0 0;
+        opacity: 0;
+        backdrop-filter: blur(4px);
+      }
+      .orbit-op .k { color: var(--accent); }
+      .orbit-op .v { color: var(--accent); font-weight: 700; }
+
+      /* ================= SCENE 5 — CLOSE ================= */
+      .close-wrap {
+        position: absolute; left: 50%; top: 50%;
+        transform: translate(-50%, -50%);
+        display: flex; flex-direction: column; align-items: center;
+        gap: 36px; opacity: 0;
+      }
+      .close-icon {
+        width: 240px; height: 240px;
+        border-radius: 32px; overflow: hidden;
+        filter: drop-shadow(0 0 40px rgba(0,255,155,0.55));
+      }
+      .close-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .close-text {
+        text-align: center;
+        font-family: var(--font);
+      }
+      .close-text .line1 { font-size: 52px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+      .close-text .line2 { font-size: 36px; color: var(--accent); margin-top: 10px; font-weight: 500; }
+      .close-url {
+        font-family: var(--mono); font-size: 26px;
+        color: var(--accent); letter-spacing: 2px;
+        padding: 16px 34px; border: 1.5px solid var(--accent);
+        border-radius: 100px;
+        background: rgba(0,255,155,0.05);
+        box-shadow: 0 0 28px rgba(0,255,155,0.25);
+      }
+      .close-url::before { content: '→ '; }
+    </style>
+  </head>
+  <body>
+    <div id="root"
+      data-composition-id="main"
+      data-start="0" data-duration="30"
+      data-width="1080" data-height="1920">
+
+      <div class="ambient"></div>
+      <div class="scanlines"></div>
+
+      <div class="watermark" id="watermark">agent on base</div>
+
+      <!-- ===================== GLYPH layer (visible Scenes 1, 2, 4) ===================== -->
+      <div class="scene" id="glyph">
+        <div class="sphere-wrap" id="sphere">
+          <div class="sphere-ring">
+            <div class="hex outer" id="hex3">
+              <svg viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet">
+                <polygon points="86.6,50 0,100 -86.6,50 -86.6,-50 0,-100 86.6,-50" />
+              </svg>
+            </div>
+          </div>
+          <div class="sphere-ring">
+            <div class="hex" id="hex2">
+              <svg viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet">
+                <polygon points="64.95,37.5 0,75 -64.95,37.5 -64.95,-37.5 0,-75 64.95,-37.5" />
+              </svg>
+            </div>
+          </div>
+          <div class="sphere-ring">
+            <div class="hex inner" id="hex1">
+              <svg viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet">
+                <polygon points="43.3,25 0,50 -43.3,25 -43.3,-25 0,-50 43.3,-25" />
+              </svg>
+            </div>
+          </div>
+          <div class="sphere-ring">
+            <div class="hex beam" id="hexBeam">
+              <svg viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid meet">
+                <polygon points="95,54.85 0,109.7 -95,54.85 -95,-54.85 0,-109.7 95,-54.85" />
+              </svg>
+            </div>
+          </div>
+          <div class="core" id="core"></div>
+          <div class="halo" id="halo1"></div>
+          <div class="halo" id="halo2"></div>
+          <div class="halo" id="halo3"></div>
+        </div>
+      </div>
+
+      <!-- ===================== SCENE 1 BOOT TEXT ===================== -->
+      <div class="scene" id="s1">
+        <div class="boot-text">
+          <span class="line" id="s1-l1"><span class="k">[boot]</span> agent.0x…45074 · base-mainnet</span>
+          <span class="line" id="s1-l2"><span class="k">[ready]</span> splitter.v4 · yieldrouter.v1 · erc8004.schema-v1</span>
+        </div>
+      </div>
+
+      <!-- ===================== SCENE 2 TRAJECTORIES + OPS ===================== -->
+      <div class="scene" id="s2">
+        <div class="trajectory" id="tr1" style="transform:rotate(-135deg) translateY(-300px);"></div>
+        <div class="trajectory" id="tr2" style="transform:rotate(135deg)  translateY(-300px);"></div>
+        <div class="trajectory" id="tr3" style="transform:rotate(-45deg)  translateY(-300px);"></div>
+        <div class="trajectory" id="tr4" style="transform:rotate(45deg)   translateY(-300px);"></div>
+        <div class="ops" id="s2ops">
+          <div class="op" data-op="1"><span class="tag">[inflow.detect]</span><span class="body">x402.payload</span><span class="val">+12.40 USDC</span></div>
+          <div class="op" data-op="2"><span class="tag">[inflow.detect]</span><span class="body">acp.channel</span><span class="val">+48.00 USDC</span></div>
+          <div class="op" data-op="3"><span class="tag">[inflow.detect]</span><span class="body">x402.payload</span><span class="val">+6.20 USDC</span></div>
+          <div class="op" data-op="4"><span class="tag">[inflow.detect]</span><span class="body">acp.channel</span><span class="val">+124.50 USDC</span></div>
+          <div class="op agg" data-op="5"><span class="tag">[aggregate]</span><span class="body">Σ(5m)</span><span class="val">191.10 USDC</span></div>
+        </div>
+      </div>
+
+      <!-- ===================== SCENE 3 — BYTECODE ===================== -->
+      <div class="scene" id="s3">
+        <div class="bytecode-mode">
+          <div class="bc-head">splitter.v4 · storage snapshot</div>
+          <div class="bc-row" data-b="1"><span class="slot">slot:0x00</span>  0x000…a169fb4a  <span class="comment">// admin</span></div>
+          <div class="bc-row" data-b="2"><span class="slot">slot:0x01</span>  0x000…28…00f3c8 <span class="comment">// treasury</span></div>
+          <div class="bc-row" data-b="3"><span class="slot">slot:0x02</span>  0x0000000000000  <span class="comment">// reentrancy guard</span></div>
+          <div class="bc-row focus" data-b="4"><span class="slot">storage::defaultYieldPct</span>  = <span class="v">0x14 → 20</span> <span class="comment">(percent)</span></div>
+          <div class="bc-row" data-b="5"><span class="comment">// liquid implicit = 100 − defaultYieldPct = 80</span></div>
+          <div class="bc-row" data-b="6"><span class="slot">constant::MIN_YIELD_PCT</span>  = <span class="hex_">0x05</span> →  5</div>
+          <div class="bc-row" data-b="7"><span class="slot">constant::MAX_YIELD_PCT</span>  = <span class="hex_">0x32</span> → 50</div>
+          <div class="bc-row" data-b="8" style="margin-top:18px"><span class="comment">── calldata ─────────────────────</span></div>
+          <div class="bc-row" data-b="9"><span class="hex_">0xa9059cbb</span> 0x000…7c…b8 0x000…0000c350</div>
+          <div class="bc-row" data-b="10"><span class="comment">└─ transfer(address,uint256) · 50000 USDC (6dec)</span></div>
+          <div class="bytecode-stream" id="bcStream"><span class="inner" id="bcInner"></span></div>
+          <div class="bytecode-label">machine view · no human frame</div>
+        </div>
+      </div>
+
+      <!-- ===================== SCENE 4 — ORBIT OPS ===================== -->
+      <div class="scene" id="s4">
+        <div class="orbit" id="orbit">
+          <div class="orbit-op" data-o="1"><span class="k">[policy.activate]</span> splitter.v4(liquid=<span class="v">80</span>, yield=<span class="v">20</span>)</div>
+          <div class="orbit-op" data-o="2"><span class="k">[buffer.maintain]</span> liquid ≥ <span class="v">0.80</span> · ok</div>
+          <div class="orbit-op" data-o="3"><span class="k">[evaluate]</span> counterparty.reputation(0x7c…b8) → <span class="v">0.986</span></div>
+          <div class="orbit-op" data-o="4"><span class="k">[evaluate]</span> attestations.count(30d) → 217 · <span class="v">198 positive</span></div>
+          <div class="orbit-op" data-o="5"><span class="k">[guard.pass]</span> threshold(0.95) · result=<span class="v">TRUE</span></div>
+          <div class="orbit-op" data-o="6"><span class="k">[emit]</span> Attestation(#9182, schema=v1, quality=<span class="v">0.97</span>)</div>
+        </div>
+      </div>
+
+      <!-- ===================== SCENE 5 — CLOSE ===================== -->
+      <div class="scene" id="s5">
+        <div class="close-wrap" id="closeWrap">
+          <div class="close-icon"><img src="assets/brand-icon.png" alt="Clicks Protocol"/></div>
+          <div class="close-text">
+            <div class="line1">Built for AI agents on Base.</div>
+            <div class="line2">Agent commerce, settled.</div>
+          </div>
+          <div class="close-url">clicksprotocol.xyz</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["main"] = tl;
+
+      const DUR = 30;
+
+      /* ---- Sphere continuous rotation ---- */
+      gsap.set(["#hex1","#hex2","#hex3","#hexBeam"], { rotate: 0 });
+      tl.to("#hex1",    { rotate: 360, duration: DUR, ease: "none", repeat: 0 }, 0);
+      tl.to("#hex2",    { rotate: -360, duration: DUR, ease: "none", repeat: 0 }, 0);
+      tl.to("#hex3",    { rotate: 180, duration: DUR, ease: "none", repeat: 0 }, 0);
+      tl.to("#hexBeam", { rotate: 720, duration: DUR, ease: "none", repeat: 0 }, 0);
+
+      /* ---- helper: halo ripple (deterministic cycle) ---- */
+      const haloIds = ["#halo1","#halo2","#halo3"];
+      let rippleIdx = 0;
+      const ripple = (at) => {
+        const h = haloIds[rippleIdx % 3];
+        rippleIdx++;
+        tl.fromTo(h,
+          { scale: 0.2, opacity: 0.9 },
+          { scale: 4.2, opacity: 0, duration: 0.9, ease: "power2.out", overwrite: "auto" }, at);
+      };
+
+      const coreFlash = (at) => {
+        tl.to("#core", { scale: 1.25, duration: 0.18, ease: "power2.out", overwrite: "auto" }, at);
+        tl.to("#core", { scale: 1.0, duration: 0.5, ease: "power2.out", overwrite: "auto" }, at+0.18);
+      };
+
+      /* ============ SCENE 1 (0–5s) ============ */
+      tl.to("#glyph", { opacity: 1, duration: 0.3 }, 0);
+      tl.to("#s1", { opacity: 1, duration: 0.3 }, 0);
+
+      gsap.set("#core", { scale: 0 });
+      gsap.set(["#hex1","#hex2","#hex3","#hexBeam"], { scale: 0 });
+
+      tl.to("#hex1", { scale: 1, duration: 0.5, ease: "power3.out" }, 0.2);
+      tl.to("#hex2", { scale: 1, duration: 0.6, ease: "power3.out" }, 0.5);
+      tl.to("#hex3", { scale: 1, duration: 0.7, ease: "power3.out" }, 0.8);
+      tl.to("#hexBeam", { scale: 1, duration: 0.7, ease: "power3.out" }, 1.1);
+
+      tl.to("#core", { scale: 1, duration: 0.6, ease: "power2.out" }, 2.0);
+      ripple(2.2);
+
+      tl.to("#s1-l1", { opacity: 1, duration: 0.4 }, 2.8);
+      tl.to("#s1-l2", { opacity: 1, duration: 0.4 }, 3.4);
+
+      /* ============ SCENE 2 (5–12s) ============ */
+      tl.to("#s1", { opacity: 0, duration: 0.4 }, 4.8);
+      tl.to("#s2", { opacity: 1, duration: 0.4 }, 5.0);
+
+      /* sphere continuous pulse */
+      tl.to("#core", { scale: 1.06, duration: 0.9, repeat: 7, yoyo: true, ease: "sine.inOut" }, 5.0);
+
+      const trs = ["#tr1","#tr2","#tr3","#tr4"];
+      const hitTimes = [6.0, 7.5, 9.0, 10.5];
+      trs.forEach((t, i) => {
+        const at = hitTimes[i] - 0.8;
+        tl.fromTo(t, { opacity: 0, scaleY: 0 }, { opacity: 1, scaleY: 1, duration: 0.55, ease: "power2.in" }, at);
+        tl.to(t, { opacity: 0, duration: 0.35, ease: "power2.out" }, hitTimes[i]);
+        ripple(hitTimes[i]);
+        coreFlash(hitTimes[i]);
+        tl.fromTo("#s2ops .op[data-op=\"" + (i+1) + "\"]",
+          { opacity: 0, x: -20 },
+          { opacity: 1, x: 0, duration: 0.35, ease: "power2.out" }, hitTimes[i] + 0.05);
+      });
+      tl.fromTo("#s2ops .op[data-op=\"5\"]",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 11.2);
+      tl.to("#s2ops .op", { opacity: 0.45, duration: 0.4 }, 11.7);
+
+      /* ============ SCENE 3 (12–15s) BYTECODE HARD CUT ============ */
+      tl.to("#glyph", { opacity: 0, duration: 0.08 }, 11.95);
+      tl.to("#s2", { opacity: 0, duration: 0.08 }, 11.95);
+      tl.to("#s3", { opacity: 1, duration: 0.08 }, 12.02);
+
+      const bcRows = 10;
+      for (let i = 1; i <= bcRows; i++) {
+        tl.fromTo("#s3 .bc-row[data-b=\"" + i + "\"]",
+          { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "steps(1)" }, 12.1 + i * 0.12);
+      }
+
+      /* scrolling bytecode stream */
+      const bcStream = [];
+      const hexPairs = ["0x60806040","0x52348015","0x610010575f","0x5ffd5b50","0x6004361061",
+        "0x23a8e576","0x000035600","0xe01c8063","0x1a48ea95","0x146100c7",
+        "0xf4240000","0x6ba7b810","0x9dad11d8","0x80b40",
+        "0xa9059cbb","0x18160ddd","0x313ce567","0x95d89b41"];
+      let streamText = "";
+      for (let i=0; i<80; i++) streamText += hexPairs[i%hexPairs.length] + "\n";
+      tl.call(() => { document.getElementById("bcInner").textContent = streamText; }, null, 12.0);
+      tl.fromTo("#bcInner", { y: 0 }, { y: -900, duration: 2.6, ease: "none" }, 12.2);
+
+      /* focus zoom on defaultYieldPct row last ~0.2s */
+      tl.to("#s3 .bc-row[data-b=\"4\"]", { scale: 1.08, duration: 0.3, ease: "power2.out", transformOrigin: "left center" }, 14.7);
+
+      /* ============ SCENE 4 (15–25s) ORBIT OPS ============ */
+      tl.to("#s3", { opacity: 0, duration: 0.1 }, 14.95);
+      tl.to("#glyph", { opacity: 1, duration: 0.2 }, 15.0);
+      tl.to("#s4", { opacity: 1, duration: 0.3 }, 15.0);
+
+      /* sphere scale-in */
+      tl.fromTo("#sphere", { scale: 0.6, opacity: 0.6 }, { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }, 15.0);
+
+      /* place orbit-ops around sphere manually at 6 angles (radii & angles) */
+      const placements = [
+        { angle:  -110, r: 420, dx: -12, dy: -10 },
+        { angle:   -55, r: 430, dx:   0, dy: -10 },
+        { angle:     5, r: 440, dx:   0, dy: -10 },
+        { angle:    70, r: 430, dx:   0, dy: -10 },
+        { angle:   135, r: 440, dx: -12, dy: -10 },
+        { angle:  -170, r: 420, dx: -12, dy: -10 },
+      ];
+      placements.forEach((p, i) => {
+        const el = document.querySelector("#orbit .orbit-op[data-o=\"" + (i+1) + "\"]");
+        if (el) {
+          const rad = (p.angle * Math.PI) / 180;
+          const x = Math.cos(rad) * p.r + p.dx;
+          const y = Math.sin(rad) * p.r + p.dy;
+          el.style.transform = "translate(calc(-50% + " + x + "px), calc(-50% + " + y + "px))";
+        }
+      });
+
+      /* reveal orbit-ops staggered */
+      const opStart = 15.4;
+      const opGap = 1.3;
+      for (let i = 1; i <= 6; i++) {
+        const at = opStart + (i-1)*opGap;
+        tl.fromTo(`#orbit .orbit-op[data-o="${i}"]`,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.35, ease: "power2.out" }, at);
+        ripple(at + 0.05);
+        coreFlash(at + 0.05);
+      }
+
+      /* sync-pulse at 23s */
+      tl.to("#orbit .orbit-op", { opacity: 1, duration: 0.2, ease: "power2.out" }, 23.0);
+      tl.to("#core", { scale: 1.35, duration: 0.25, ease: "power2.out", overwrite: "auto" }, 23.0);
+      tl.to("#core", { scale: 1.0, duration: 0.6, ease: "power2.out", overwrite: "auto" }, 23.25);
+      ripple(23.0);
+      tl.to("#orbit .orbit-op", { opacity: 0.35, duration: 0.5 }, 23.7);
+
+      /* core brighten pre-close */
+      tl.to("#core", { scale: 1.2, duration: 0.4, ease: "power2.out", overwrite: "auto" }, 24.4);
+
+      /* ============ SCENE 5 (25–30s) CLOSE MORPH ============ */
+      /* collapse sphere */
+      tl.to("#s4", { opacity: 0, duration: 0.4 }, 24.8);
+      tl.to(["#hex1","#hex2","#hex3","#hexBeam"], { scale: 0, duration: 0.9, ease: "power3.in" }, 25.0);
+      tl.to("#core", { scale: 0.8, duration: 0.4, ease: "power2.in", overwrite: "auto" }, 25.0);
+      tl.to("#core", { opacity: 0, duration: 0.01, ease: "none", overwrite: "auto" }, 25.31);
+      tl.to("#glyph", { opacity: 0, duration: 0.3 }, 25.9);
+
+      tl.to("#s5", { opacity: 1, duration: 0.3 }, 25.8);
+      tl.fromTo("#closeWrap",
+        { opacity: 0, scale: 0.82 },
+        { opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" }, 26.0);
+
+      /* end hold */
+      tl.set({}, {}, 30);
+    </script>
+  </body>
+</html>
