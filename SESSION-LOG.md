@@ -1307,3 +1307,15 @@
 - `launchctl print gui/501/com.clicks.x-activity-monitor`: `state=running`.
 - Prozessbaum verifiziert: Python-Monitor plus `xurl` Filtered Stream aktiv.
 - Error-Log leer.
+
+### Nachpruefung 16:13
+
+- Davids Rueckfrage zur sichtbaren Bash-Warnung aus dem manuellen Stream-Test zum Anlass fuer eine erneute Live-Pruefung genommen.
+- Echten Parserfehler gefunden: `xurl` liefert Stream-Events und Fehler mehrzeilig, der erste Parser behandelte einzelne `{`-Zeilen als vollstaendiges JSON.
+- Parser auf akkumuliertes Mehrzeilen-JSON plus SSE-`data:` umgestellt und mit realistischem Payload getestet.
+- Weiterer Live-Befund: X meldet `TooManyConnections`; ein zuvor beendeter Stream-Slot ist serverseitig noch belegt.
+- Reconnect-Backoff korrigiert. Fehler-JSON setzt den Backoff nicht mehr zurueck. Maximum 300 Sekunden.
+- 60-Sekunden-Polling ueber `/2/users/2033251448105115649/mentions` als Ausfallsicherung eingebaut.
+- Erstlauf-Baseline verhindert Alerts fuer alte Mentions. Polling-Health wird im lokalen State protokolliert.
+- Polling live verifiziert: `last_poll_status=ok`. LaunchAgent laeuft. Stream reconnectet weiter, bis X den Slot freigibt.
+- Fix-Commit: `afa8e90 fix(bots): harden X stream reconnect and polling fallback`.
