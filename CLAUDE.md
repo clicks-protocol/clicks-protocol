@@ -53,7 +53,7 @@ Nicht deployen bis Gate erfüllt.
 - `com.clicks.tier-scanner` — Tier-Distribution-Scanner, Do 09:00 wöchentlich
 - `com.clicks.yield-reporter` — geparked
 - `com.clicks.x-post-{asia,eu,us}` — X-Posting täglich 06:15/13:15/20:15 (seit 20.04 launchd statt OpenClaw-Cron)
-- `com.clicks.x-activity-monitor` — Mention-Monitor fuer `@ClicksProtocol`; Filtered Stream mit Reconnect, bei Stream-Ausfall 60-Sekunden-Polling; Telegram-Alert plus faktenfester Reply-Vorschlag, keine automatische X-Antwort
+- `com.clicks.x-activity-monitor` — Mention-Monitor fuer `@ClicksProtocol`; End-to-End mit echter Mention `2079572038650397050` verifiziert. Filtered Stream mit Reconnect, aktuell wegen X `TooManyConnections` auf 60-Sekunden-Polling-Fallback; Telegram-Alert plus faktenfester Reply-Vorschlag, keine automatische X-Antwort
 
 ## Public Presence
 

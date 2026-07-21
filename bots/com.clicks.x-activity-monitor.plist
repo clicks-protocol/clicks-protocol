@@ -11,6 +11,11 @@
   </array>
   <key>WorkingDirectory</key>
   <string>/Users/davidbairaktaridis/.openclaw/workspace/projects/clicks-protocol</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>

@@ -1319,3 +1319,14 @@
 - Erstlauf-Baseline verhindert Alerts fuer alte Mentions. Polling-Health wird im lokalen State protokolliert.
 - Polling live verifiziert: `last_poll_status=ok`. LaunchAgent laeuft. Stream reconnectet weiter, bis X den Slot freigibt.
 - Fix-Commit: `afa8e90 fix(bots): harden X stream reconnect and polling fallback`.
+
+### End-to-End-Test 16:23
+
+- David postete von `@CRYPTO_DAVIDSKI`: `@ClicksProtocol monitoring test`.
+- Mention-ID `2079572038650397050` wurde ueber die Mentions-API erkannt.
+- LaunchAgent-Umgebung korrigiert: PATH enthaelt jetzt `/opt/homebrew/opt/node@22/bin`, damit `openclaw message send` Node findet.
+- Polling in separaten Thread verschoben, damit ein blockierter Stream den 60-Sekunden-Fallback nicht anhaelt.
+- State-Writes mit Lock plus einzigartiger atomarer Temp-Datei gegen Stream/Polling-Races gesichert.
+- End-to-End verifiziert: Mention erkannt, Autor/Text aufgeloest, Telegram-Alert mit Reply-Vorschlag erfolgreich gesendet, danach erst als gesehen gespeichert.
+- State-Beweis: `poll_since_id=2079572038650397050`, `last_poll_status=ok`, `last_event_at=2026-07-21T14:23:47Z`, `seen_count=1`.
+- Filtered Stream bleibt wegen X `TooManyConnections` noch im Reconnect. Zuverlaessige Delivery ist aktuell per Polling mit maximal 60 Sekunden Verzoegerung bestaetigt.

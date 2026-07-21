@@ -8,6 +8,8 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
+import threading
 import time
 from pathlib import Path
 from typing import Any
@@ -21,6 +23,7 @@ X_APP = "clicks"
 TELEGRAM_CHAT = "-1003840791947"
 TELEGRAM_TOPIC = "49"
 CLICKS_USER_ID = "2033251448105115649"
+STATE_LOCK = threading.RLock()
 
 
 def load_state() -> dict[str, Any]:
@@ -32,7 +35,12 @@ def load_state() -> dict[str, Any]:
 
 
 def save_state(state: dict[str, Any]) -> None:
-    STATE_PATH.write_text(json.dumps(state, indent=2) + "\n")
+    with tempfile.NamedTemporaryFile(
+        mode="w", dir=STATE_PATH.parent, prefix="x-activity-state-", suffix=".tmp", delete=False
+    ) as handle:
+        handle.write(json.dumps(state, indent=2) + "\n")
+        temporary = Path(handle.name)
+    os.replace(temporary, STATE_PATH)
 
 
 def run_json(command: list[str], timeout: int = 90) -> dict[str, Any]:
@@ -166,6 +174,11 @@ def send_telegram(message: str) -> None:
 
 
 def process_event(event: dict[str, Any], dry_run: bool = False, no_ai: bool = False) -> bool:
+    with STATE_LOCK:
+        return _process_event(event, dry_run=dry_run, no_ai=no_ai)
+
+
+def _process_event(event: dict[str, Any], dry_run: bool = False, no_ai: bool = False) -> bool:
     item = extract_event(event)
     if item["event_type"] != "post.mention.create":
         return False
@@ -189,6 +202,11 @@ def process_event(event: dict[str, Any], dry_run: bool = False, no_ai: bool = Fa
 
 
 def poll_mentions() -> int:
+    with STATE_LOCK:
+        return _poll_mentions()
+
+
+def _poll_mentions() -> int:
     endpoint = (
         f"/2/users/{CLICKS_USER_ID}/mentions?max_results=10"
         "&tweet.fields=created_at,author_id&expansions=author_id&user.fields=username,name"
@@ -268,7 +286,6 @@ def iter_stream_lines(process: subprocess.Popen[str]):
 
 def monitor() -> None:
     delay = 2
-    last_poll = 0.0
     while True:
         process = subprocess.Popen(
             [
@@ -302,22 +319,27 @@ def monitor() -> None:
                 _, stderr = process.communicate()
             if stderr.strip():
                 print(stderr.strip(), file=sys.stderr, flush=True)
-                state = load_state()
-                state["last_stream_exit_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-                state["last_stream_error"] = stderr.strip()[-500:]
-                save_state(state)
-        if time.monotonic() - last_poll >= 60:
-            try:
-                poll_mentions()
-            except Exception as exc:
-                print(f"mention polling failed: {exc}", file=sys.stderr, flush=True)
+                with STATE_LOCK:
+                    state = load_state()
+                    state["last_stream_exit_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+                    state["last_stream_error"] = stderr.strip()[-500:]
+                    save_state(state)
+        time.sleep(delay)
+        delay = min(delay * 2, 300)
+
+
+def polling_loop() -> None:
+    while True:
+        try:
+            poll_mentions()
+        except Exception as exc:
+            print(f"mention polling failed: {exc}", file=sys.stderr, flush=True)
+            with STATE_LOCK:
                 state = load_state()
                 state["last_poll_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
                 state["last_poll_status"] = f"error: {exc}"[-500:]
                 save_state(state)
-            last_poll = time.monotonic()
-        time.sleep(delay)
-        delay = min(delay * 2, 300)
+        time.sleep(60)
 
 
 def main() -> None:
@@ -329,6 +351,7 @@ def main() -> None:
     if args.process_json:
         process_event(json.loads(args.process_json.read_text()), args.dry_run, args.no_ai)
         return
+    threading.Thread(target=polling_loop, name="x-mention-poller", daemon=True).start()
     monitor()
 
 
