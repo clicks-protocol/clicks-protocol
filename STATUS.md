@@ -461,3 +461,10 @@ Three permissionless tracks built today (no Conway-Research-Buy-In erforderlich)
 - Wrapper-Verifikation:
   - `npx tsc --noEmit --module commonjs --target ES2020 --esModuleInterop --strict --skipLibCheck sdk/src/*.ts` gruen
   - `npm run build` in `sdk/` gruen
+## External releases, 2026-07-21
+
+- X explainer `Payment is not settlement` published and pinned: https://x.com/ClicksProtocol/status/2079647031191122072
+- Settlement claim cleanup deployed to production: https://clicksprotocol.xyz
+- Cloudflare Pages deployment: https://4cec05c2.clicks-protocol.pages.dev
+- ClawHub `protogenosone/clicks-protocol` 1.2.7 published. Security scan is asynchronous.
+- GitHub `main` pushed through commit `9bace6796e0b39594369087fe1bb7a30083ab6a4`.

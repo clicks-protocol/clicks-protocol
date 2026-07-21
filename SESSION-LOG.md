@@ -1374,3 +1374,12 @@
 - Alle vier Package-Builds gruen. Referral-Testauswahl 49 passing. `git diff --check` gruen.
 - Nebenbefund: `com.clicks.acp-service` loopt mit Exit 127, weil launchd `npx` nicht findet. Kein Restart oder produktiver Service-Fix ohne separate Freigabe.
 - Lokaler Sicherungscommit mit Subject `feat: add settlement analytics and receipt model`. Kein Push ausgefuehrt.
+## 2026-07-21: Settlement public release
+
+- David approved the four external actions: X explainer plus pin, landing deploy, ClawHub 1.2.7 publish and GitHub push.
+- Published the branded `Payment is not settlement` visual post as `@ClicksProtocol` and pinned tweet `2079647031191122072` to the profile.
+- X API readback confirms `pinned_tweet_id=2079647031191122072`.
+- Built and deployed the corrected landing page to Cloudflare Pages. Production custom domain returned HTTP 200 with the corrected settlement, reputation-prototype and public-test wording.
+- Production deployment URL: `https://4cec05c2.clicks-protocol.pages.dev`.
+- Published ClawHub skill `protogenosone/clicks-protocol` version 1.2.7 with settlement-first text and explicit undeployed boundaries.
+- Pushed `main` to GitHub and verified remote commit `9bace6796e0b39594369087fe1bb7a30083ab6a4` before the documentation follow-up.

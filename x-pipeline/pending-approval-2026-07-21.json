@@ -2,7 +2,10 @@
   {
     "slot": "pinned-explainer",
     "format": "visual-post",
-    "status": "pending-David-approval",
+    "status": "published-and-pinned",
+    "tweet_id": "2079647031191122072",
+    "url": "https://x.com/ClicksProtocol/status/2079647031191122072",
+    "media_path": "assets/x/payment-is-not-settlement-1600x900.png",
     "text": "Payment is not settlement.\n\nPayment rails answer: did USDC move?\n\nSettlement has to answer: which policy applied, where did revenue go, and can another system verify the result?\n\nClicks is building that post-payment layer for AI agents on Base.",
     "visual_brief": "One incoming USDC payment on the left. A Clicks policy router in the center. Working capital, treasury route and verifiable receipt on the right. Dark background, restrained green accent, no x402 support claim."
   },

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#00ff9b" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#00ff9b" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#ffffff" stroke-opacity="0.035"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="#0b0710"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <circle cx="800" cy="520" r="470" fill="url(#glow)"/>
+  <rect x="1594" width="6" height="900" fill="#00ff9b" opacity="0.8"/>
+
+  <g transform="translate(82 60)">
+    <rect width="72" height="72" rx="14" fill="#0f0814"/>
+    <rect x="13" y="27" width="46" height="18" rx="9" fill="none" stroke="#00ff9b" stroke-width="3"/>
+    <circle cx="49" cy="36" r="7" fill="#00ff9b"/>
+    <text x="96" y="49" fill="#00ff9b" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="750" letter-spacing="8">CLICKS</text>
+    <text x="285" y="49" fill="#00ff9b" fill-opacity="0.48" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="450" letter-spacing="5">PROTOCOL</text>
+  </g>
+
+  <text x="800" y="230" text-anchor="middle" fill="#f7f5f8" font-family="Inter, Arial, sans-serif" font-size="88" font-weight="760" letter-spacing="-4">Payment is not settlement.</text>
+  <text x="800" y="292" text-anchor="middle" fill="#aaa5af" font-family="Inter, Arial, sans-serif" font-size="27">Moving USDC is the start of the workflow, not the end.</text>
+
+  <g transform="translate(115 388)">
+    <rect width="360" height="260" rx="22" fill="#120c17" stroke="#726b77" stroke-opacity="0.55"/>
+    <text x="36" y="58" fill="#98919e" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="3">PAYMENT RAIL</text>
+    <text x="36" y="130" fill="#f7f5f8" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="700">USDC moved</text>
+    <text x="36" y="177" fill="#9f98a5" font-family="Inter, Arial, sans-serif" font-size="23">Authorization</text>
+    <text x="36" y="211" fill="#9f98a5" font-family="Inter, Arial, sans-serif" font-size="23">Transfer</text>
+    <circle cx="316" cy="47" r="10" fill="#00ff9b"/>
+  </g>
+
+  <path d="M500 518H645" stroke="#00ff9b" stroke-width="3"/>
+  <path d="M625 500L645 518L625 536" fill="none" stroke="#00ff9b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g transform="translate(675 388)">
+    <rect width="810" height="260" rx="22" fill="#101517" stroke="#00ff9b" stroke-opacity="0.72" stroke-width="2"/>
+    <text x="38" y="58" fill="#00ff9b" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="750" letter-spacing="3">SETTLEMENT LAYER</text>
+    <line x1="38" y1="88" x2="772" y2="88" stroke="#00ff9b" stroke-opacity="0.18"/>
+
+    <g transform="translate(38 124)">
+      <circle cx="15" cy="15" r="15" fill="#00ff9b" fill-opacity="0.13" stroke="#00ff9b"/>
+      <path d="M8 15l5 5 10-11" fill="none" stroke="#00ff9b" stroke-width="2.5"/>
+      <text x="48" y="24" fill="#f7f5f8" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="650">Which policy applied?</text>
+    </g>
+    <g transform="translate(405 124)">
+      <circle cx="15" cy="15" r="15" fill="#00ff9b" fill-opacity="0.13" stroke="#00ff9b"/>
+      <path d="M8 15l5 5 10-11" fill="none" stroke="#00ff9b" stroke-width="2.5"/>
+      <text x="48" y="24" fill="#f7f5f8" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="650">Where did revenue go?</text>
+    </g>
+    <g transform="translate(38 190)">
+      <circle cx="15" cy="15" r="15" fill="#00ff9b" fill-opacity="0.13" stroke="#00ff9b"/>
+      <path d="M8 15l5 5 10-11" fill="none" stroke="#00ff9b" stroke-width="2.5"/>
+      <text x="48" y="24" fill="#f7f5f8" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="650">Can another system verify it?</text>
+    </g>
+  </g>
+
+  <text x="800" y="755" text-anchor="middle" fill="#00ff9b" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="700" letter-spacing="3">POST-PAYMENT INFRASTRUCTURE FOR AI AGENTS ON BASE</text>
+  <text x="800" y="806" text-anchor="middle" fill="#8f8995" font-family="Inter, Arial, sans-serif" font-size="21">Policy. Routing. Verifiable context.</text>
+</svg>
