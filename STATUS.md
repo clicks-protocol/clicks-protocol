@@ -1,6 +1,6 @@
 # Clicks Protocol Status
 
-> Stand: 2026-07-21 (Berlin, PR #32 gemerged, Main sauber auf Settlement-first, Moltbook refilled, Glama weiter stale)
+> Stand: 2026-07-21 (Berlin, X MCP dauerhaft einsatzbereit, PR #32 gemerged, Moltbook refilled plus comment monitor, Glama weiter stale)
 > Priorität: P0
 > Update-Rule: **Jede Session endet mit Aktualisierung dieser Datei, bevor Emma/Claude die Arbeit niederlegt.** Staleness > 48 h = Drift-Risiko.
 > ⚠️ **Diese Datei war zwischen 13.05. und 13.07. veraltet. Heute auf Stand gezogen.**
@@ -22,7 +22,11 @@
 
 **Security note:** Beim PR-Audit wurde ein Moltbook API-Key in einem Branch-Commit entdeckt. Der Commit wurde vor Merge aus der Branch-History entfernt und `main` enthaelt den Key nicht. Der Key war aber kurz auf GitHub sichtbar und muss rotiert werden.
 
-**Moltbook:** Neuer Key lokal gesetzt in Workspace-`.env` und Projekt-`.env`. LaunchAgent `com.clicks.moltbook-crosspost` ist aktiv und laeuft stuendlich Minute 07. Queue lokal mit 14 Settlement-first Textposts neu befuellt, `nextIndex=0`, naechster Ziel-Submolt `agentcommerce`. `bots/*-source.json` und `bots/*-state.json` bleiben absichtlich gitignored.
+**Moltbook:** Neuer Key lokal gesetzt in Workspace-`.env` und Projekt-`.env`. LaunchAgent `com.clicks.moltbook-crosspost` ist aktiv und laeuft stuendlich Minute 07. Queue lokal mit 14 Settlement-first Textposts neu befuellt, `nextIndex=0`, naechster Ziel-Submolt `agentcommerce`. `bots/*-source.json` und `bots/*-state.json` bleiben absichtlich gitignored. Kommentar-Monitor ist jetzt aktiv: `com.clicks.moltbook-comment-monitor` laeuft Minute 17 und 47, prueft getrackte Post-IDs und sendet nur bei neuen Kommentaren in den Telegram-Clicks-Topic.
+
+**X MCP:** OAuth 2.0 fuer die App `clicks` ist als `@ClicksProtocol` autorisiert. `xurl` 1.2.3 ist dauerhaft ueber Homebrew installiert, OAuth 2.0/OAuth 1.0a/Bearer sind vorhanden, der MCP-Handshake und die Tool-Discovery gegen `https://api.x.com/mcp` sind verifiziert. Token-Refresh laeuft ueber den lokalen `xurl mcp` Bridge.
+
+**X Mention Monitor:** XAA-Subscription `post.mention.create` ist angelegt. Der XAA-Persistent-Stream ist aktuell durch einen Auth-Widerspruch bei X blockiert: Private Subscription verlangt User-OAuth, Stream verlangt App-only und sieht die User-OAuth-Subscription nicht. Live-Delivery laeuft deshalb ueber den offiziellen Filtered Stream mit Regel `@ClicksProtocol`. LaunchAgent `com.clicks.x-activity-monitor` haelt die Verbindung permanent offen, dedupliziert Events und sendet Telegram-Alerts mit faktenfesten Reply-Vorschlaegen. Der Dienst besitzt keine Posting-Logik und antwortet nie automatisch.
 
 **Live auf Base Mainnet:**
 - V4 Contracts: siehe CLAUDE.md (Safe Multisig `0xaD8228fE...`)
@@ -129,6 +133,7 @@
 
 **Weiter offen:**
 - Glama Rescan/Claim bleibt offen. Code, npm, MCP Registry, Landing und GitHub `main` sind jetzt korrekt; Glama API zeigt aber weiter alten Yield-Text, `tools=0`, `updatedAt=null`.
+- Moltbook ersten neuen Post nach 01:07 Berlin zuruecklesen. Danach muss `bots/moltbook-posts.json` lokal die Post-ID enthalten, damit der Kommentar-Monitor live greift.
 - ClawHub `1.2.6` nochmal pruefen, bis `card.missing` verschwindet und Verify wieder `decision=pass` liefert. Falls Card laenger haengt: ClawHub Support/Issue.
 - X-Pipeline ist nach 18:35 Berlin leer, die offenen Posts sind verarbeitet.
 - X-Link-Preview fuer `clicksprotocol.xyz` zeigt in der X-Entity weiter alten OG-Title `Clicks Protocol — Autonomous Yield for AI Agents`. Live-Site ist bereits Settlement-Router, aber X Card Cache muss separat refreshed/umgangen werden.

@@ -1239,3 +1239,71 @@
 **Weiter offen:**
 - Nach dem 01:07-Berlin-Tick Logs pruefen und ersten Moltbook-Post zuruecklesen.
 - Wenn Spam-Flag kommt: Frequenz senken oder Engagement-First-Posts ohne Produktbezug bauen.
+
+---
+
+## 2026-07-21 - Moltbook Kommentar-Monitor gebaut
+
+**Trigger:** David fragte, ob Kommentare auf Moltbook-Postings gesehen wurden, warum nicht reagiert wurde und warum es keine Benachrichtigung gab.
+
+**Befund:**
+- Nein, es gab bisher keinen Kommentar-Monitor. Die Moltbook-Automation war nur ein One-Way-Crossposter.
+- `bots/moltbook-crosspost.py` schrieb nur `moltbook-state.json`, aber keine Post-ID-Registry.
+- Im Code gab es keinen Kommentar-API-Call, keine Inbox-Pruefung und keinen Telegram-Alert.
+- Alte per Websuche gefundene Clicks-Moltbook-Post-IDs liessen sich ueber `/api/v1/posts/{id}` lesen. Sie waren alte Yield-first Posts, teilweise `is_spam=true`, und die geprueften IDs hatten `comment_count=0`.
+
+**Geliefert:**
+- `bots/moltbook-crosspost.py` erweitert: erfolgreiche Posts werden jetzt in lokales `bots/moltbook-posts.json` geschrieben.
+- `bots/moltbook-monitor.py` neu gebaut: liest getrackte Post-IDs, prueft `/api/v1/posts/{id}` und `/api/v1/posts/{id}/comments`, speichert gesehene Kommentar-IDs lokal in `bots/moltbook-monitor-state.json`.
+- `bots/moltbook-comment-alert.sh` neu gebaut: ruft den Monitor im Quiet-Modus auf und sendet nur bei `NEW_COMMENTS` eine Telegram-Nachricht in den Clicks-Topic.
+- LaunchAgent `com.clicks.moltbook-comment-monitor` lokal installiert und geladen. Schedule: Minute 17 und 47.
+- `bots/moltbook-posts.json` in `.gitignore` aufgenommen, weil es Runtime-State mit Post-URLs ist.
+
+**Verifikation:**
+- `python3 -m py_compile bots/moltbook-crosspost.py bots/moltbook-monitor.py` gruen.
+- `python3 bots/moltbook-monitor.py --quiet` bei noch keiner neuen getrackten Post-ID: exit 0, keine Ausgabe.
+- Alert-Runner Trockenlauf: exit 0, keine leere Telegram-Nachricht.
+- `plutil -lint` fuer LaunchAgent: OK.
+- `launchctl print gui/501/com.clicks.moltbook-comment-monitor`: geladen, Trigger Minute 17 und 47.
+- Commit auf `main`: `eec4a23 chore(bots): monitor moltbook comments`.
+
+**Offen:**
+- Nach dem ersten neuen Moltbook-Post ab 01:07 Berlin pruefen, ob `bots/moltbook-posts.json` die Post-ID enthaelt.
+- Falls David konkrete Kommentare in der UI sieht, aber die API keine liefert: Post-URL manuell pruefen und API-Fallback bauen.
+
+## 2026-07-21: X MCP dauerhaft installiert
+
+**Geliefert:**
+- OAuth 2.0 der X-App `clicks` als `@ClicksProtocol` verifiziert.
+- Homebrew-Tap `xdevplatform/tap` gegen `https://github.com/xdevplatform/homebrew-tap` geprueft und vertraut.
+- Dauerhafte `xurl`-Installation von 1.0.3 auf 1.2.3 aktualisiert.
+
+**Verifikation:**
+- `/opt/homebrew/bin/xurl` zeigt auf `/opt/homebrew/Caskroom/xurl/1.2.3/xurl`.
+- `xurl version` liefert `xurl 1.2.3`.
+- `xurl auth status --app clicks`: OAuth 2.0 `ClicksProtocol`, OAuth 1.0a und Bearer vorhanden.
+- `xurl --app clicks whoami`: verifizierter Account `@ClicksProtocol`, User-ID `2033251448105115649`.
+- X-MCP-Handshake und Tool-Discovery gegen `https://api.x.com/mcp` waren bereits mit 1.2.3 erfolgreich verifiziert.
+
+## 2026-07-21: X Echtzeit-Monitoring und Reply-Vorschlaege
+
+**Geliefert:**
+- XAA-Subscription `post.mention.create` fuer `@ClicksProtocol` erstellt, Subscription-ID `2079565599873671168`.
+- Live-Befund dokumentiert: XAA-Subscription fuer private Mentions verlangt OAuth 2.0 User Context, `/2/activity/stream` akzeptiert nur App-only und sieht die Subscription nicht.
+- Offiziellen Filtered Stream als Echtzeit-Delivery-Fallback eingerichtet. Regel-ID `2079566488516661248`, Query `@ClicksProtocol`.
+- `bots/x-activity-monitor.py` gebaut: persistenter Stream, Reconnect mit Backoff, Event-Deduplizierung, Post-Aufloesung und Telegram-Alert in Topic 49.
+- Reply-Vorschlaege sind deterministisch und faktenfest fuer Fragen, Bugs, x402, Integrationen und allgemeine Mentions. Freie LLM-Generierung wurde nach einem Halluzinations-Test bewusst entfernt.
+- LaunchAgent `com.clicks.x-activity-monitor` installiert, geladen und auf `KeepAlive` gesetzt.
+- Sicherheitsgrenze: Der Monitor hat keine X-Posting- oder Reply-Funktion. Externe Antworten bleiben freigabepflichtig.
+
+**Verifikation:**
+- XAA-Subscription per GET zurueckgelesen.
+- Filtered-Stream-Regel per GET zurueckgelesen.
+- Echte Filtered-Stream-Verbindung erfolgreich offen gehalten.
+- `python3 -m py_compile bots/x-activity-monitor.py` gruen.
+- Parser-Test fuer reales Filtered-Stream-Payloadformat gruen.
+- Fuenf Reply-Vorschlagsklassen getestet, jeweils unter 240 Zeichen.
+- `plutil -lint` fuer LaunchAgent: OK.
+- `launchctl print gui/501/com.clicks.x-activity-monitor`: `state=running`.
+- Prozessbaum verifiziert: Python-Monitor plus `xurl` Filtered Stream aktiv.
+- Error-Log leer.
