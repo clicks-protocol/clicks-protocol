@@ -17,11 +17,11 @@ export interface SettlementRetryPolicy {
 
 const ALLOWED_TRANSITIONS: Readonly<Record<SettlementState, readonly SettlementState[]>> = {
   planned: ['submitted', 'failed_before_transfer'],
-  submitted: ['chain_confirmed', 'unknown_settled', 'reconciliation_required'],
-  chain_confirmed: ['settled', 'unknown_settled', 'reconciliation_required', 'disputed'],
+  submitted: ['chain_confirmed', 'unknown_settled', 'reconciliation_required', 'reconciled', 'failed_before_transfer'],
+  chain_confirmed: ['settled', 'unknown_settled', 'reconciliation_required', 'reconciled', 'disputed'],
   settled: ['disputed'],
-  unknown_settled: ['reconciliation_required', 'reconciled', 'disputed'],
-  reconciliation_required: ['reconciled', 'disputed'],
+  unknown_settled: ['reconciliation_required', 'reconciled', 'failed_before_transfer', 'disputed'],
+  reconciliation_required: ['reconciled', 'failed_before_transfer', 'disputed'],
   reconciled: ['settled', 'failed_before_transfer', 'disputed'],
   failed_before_transfer: ['submitted'],
   disputed: [],

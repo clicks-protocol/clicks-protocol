@@ -100,6 +100,8 @@ export interface SettlementExecutionV2 {
     txHash?: string;
     blockNumber?: number;
     nonce?: number;
+    sender?: string;
+    recipient?: string;
     failedWitness?: SettlementWitness['name'];
     witnessStates: SettlementWitness[];
     retryPolicy: SettlementRetryPolicy;
@@ -144,4 +146,6 @@ export interface SettlementReceiptV2 {
 export declare function hashSettlementPolicy(definition: Record<string, unknown>): string;
 export declare function createSettlementReceipt(input: SettlementReceiptInput, createdAt?: string): SettlementReceiptV1;
 export declare function createSettlementReceiptV2(input: SettlementReceiptV2Input, createdAt?: string): SettlementReceiptV2;
+export declare function verifySettlementReceiptV2(receipt: SettlementReceiptV2): boolean;
+export declare function rehashSettlementReceiptV2(receipt: Omit<SettlementReceiptV2, 'receiptId'> | SettlementReceiptV2): SettlementReceiptV2;
 //# sourceMappingURL=receipts.d.ts.map

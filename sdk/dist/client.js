@@ -74,7 +74,7 @@ class ClicksClient {
      * ```ts
      * const clicks = new ClicksClient(signer);
      * await clicks.quickStart('100', agentAddress);
-     * // Agent registered, USDC approved, 80 USDC liquid + 20 USDC earning yield
+     * // Agent registered, USDC approved, 80 USDC liquid + 20 USDC routed to treasury capital
      * ```
      *
      * @remarks

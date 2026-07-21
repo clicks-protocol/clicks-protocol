@@ -20,8 +20,17 @@ import {
 import type { JobSession, JobRoomEntry } from "@virtuals-protocol/acp-node-v2";
 import { baseSepolia, base } from "@account-kit/infra";
 import { ClicksClient } from "@clicks-protocol/sdk";
+import {
+  SettlementReceiptLedger,
+  createAcpSettlementReceipt,
+  rehashSettlementReceiptV2,
+  type QuickStartResult,
+  type SettlementReceiptV2,
+} from "@clicks-protocol/sdk";
 import { ethers } from "ethers";
 import type { Address } from "viem";
+import fs from "node:fs";
+import path from "node:path";
 
 // ─── Configuration ────────────────────────────────────────────────────────
 
@@ -54,6 +63,23 @@ const REFERRAL_ABI = [
   "function registerReferralWithSig(address newAgent, address referrer, uint256 deadline, bytes signature) external",
   "function authorized(address) external view returns (bool)",
 ] as const;
+
+const RECEIPT_LEDGER_PATH = process.env.CLICKS_RECEIPT_LEDGER_PATH
+  || path.resolve(process.cwd(), "data", "acp-receipt-ledger.json");
+
+function loadReceiptLedger(): SettlementReceiptLedger {
+  if (!fs.existsSync(RECEIPT_LEDGER_PATH)) return new SettlementReceiptLedger();
+  const entries = JSON.parse(fs.readFileSync(RECEIPT_LEDGER_PATH, "utf8"));
+  return new SettlementReceiptLedger(entries);
+}
+
+function persistReceipt(ledger: SettlementReceiptLedger, receipt: SettlementReceiptV2): void {
+  ledger.append(receipt);
+  fs.mkdirSync(path.dirname(RECEIPT_LEDGER_PATH), { recursive: true });
+  const tempPath = `${RECEIPT_LEDGER_PATH}.${process.pid}.tmp`;
+  fs.writeFileSync(tempPath, JSON.stringify(ledger.export(), null, 2) + "\n", { mode: 0o600 });
+  fs.renameSync(tempPath, RECEIPT_LEDGER_PATH);
+}
 
 // ─── Validation ───────────────────────────────────────────────────────────
 
@@ -97,7 +123,8 @@ interface ReferralAttemptResult {
 
 async function executeJob(
   requirements: JobRequirements,
-  clientAgentAddress: string
+  clientAgentAddress: string,
+  jobId: string,
 ): Promise<string> {
   const { amount, referrerAddress, referralDeadline, referralSignature } = requirements;
 
@@ -113,9 +140,116 @@ async function executeJob(
   const provider = new ethers.JsonRpcProvider(CONFIG.clicksRpcUrl);
   const signer = new ethers.Wallet(CONFIG.clicksPrivateKey, provider);
   const clicks = new ClicksClient(signer);
+  const ledger = loadReceiptLedger();
+  const [agentInfo, split, blockNumber, signerAddress, availableBalance] = await Promise.all([
+    clicks.getAgentInfo(clientAgentAddress),
+    clicks.simulateSplit(amount, clientAgentAddress),
+    provider.getBlockNumber(),
+    signer.getAddress(),
+    clicks.getUSDCBalance(clientAgentAddress),
+  ]);
+  const observedAt = new Date().toISOString();
+  const requestHash = ethers.keccak256(ethers.toUtf8Bytes(JSON.stringify({ jobId, requirements })));
+  const plannedReceipt = createAcpSettlementReceipt({
+    externalPaymentId: jobId,
+    agent: clientAgentAddress,
+    asset: clicks.addresses.usdc,
+    grossAmount: ethers.parseUnits(amount, 6).toString(),
+    idempotencyKey: `acp:${jobId}`,
+    businessEventId: `acp-job:${jobId}`,
+    authorizationReference: `acp-funded-job:${jobId}`,
+    requestHash,
+    sender: signerAddress,
+    recipient: clicks.addresses.splitter,
+    policy: {
+      id: `operator-split:${signerAddress}`,
+      version: String(agentInfo.yieldPct),
+      definition: {
+        liquidBps: 10_000 - Number(agentInfo.yieldPct) * 100,
+        treasuryBps: Number(agentInfo.yieldPct) * 100,
+      },
+      liquidBps: 10_000 - Number(agentInfo.yieldPct) * 100,
+      treasuryBps: Number(agentInfo.yieldPct) * 100,
+    },
+    precondition: {
+      chainId: clicks.chainId,
+      observedAt,
+      blockNumber,
+      agentRegistered: agentInfo.isRegistered,
+      operator: agentInfo.operator,
+      availableBalance: availableBalance.toString(),
+    },
+    falsifiability: {
+      claim: `ACP job ${jobId} routed ${amount} USDC under the recorded split policy.`,
+      verificationMethod: "Compare ACP job authorization, policy hash and Base transaction evidence.",
+      expectedEvidence: ["ACP job ID", "request hash", "policy hash", "Base transaction receipt"],
+      invalidIf: ["job authorization differs", "amount differs", "transaction reverted", "recipient differs"],
+    },
+  }, observedAt);
 
-  // Execute treasury activation through the current SDK path
-  const result = await clicks.quickStart(amount, clientAgentAddress);
+  // Persist intent before any transaction. Repeated delivery of the same ACP
+  // job is rejected by the ledger before quickStart can move funds twice.
+  persistReceipt(ledger, plannedReceipt);
+
+  const submittedReceipt = rehashSettlementReceiptV2({
+    ...plannedReceipt,
+    execution: {
+      ...plannedReceipt.execution,
+      state: "submitted",
+    },
+  });
+  persistReceipt(ledger, submittedReceipt);
+
+  // Execute treasury activation through the current SDK path. Any ambiguous
+  // error is recorded as unknown_settled and is never retried automatically.
+  let result: QuickStartResult;
+  try {
+    result = await clicks.quickStart(amount, clientAgentAddress);
+  } catch (error) {
+    const unknownReceipt = rehashSettlementReceiptV2({
+      ...submittedReceipt,
+      execution: {
+        ...submittedReceipt.execution,
+        state: "unknown_settled",
+        failedWitness: "chain_inclusion",
+        witnessStates: [{
+          name: "chain_inclusion",
+          state: "unknown",
+          checkedAt: new Date().toISOString(),
+          detail: error instanceof Error ? error.message : String(error),
+        }],
+        retryPolicy: { allowRetry: false, maxAttempts: 0, attempts: 0 },
+      },
+    });
+    persistReceipt(ledger, unknownReceipt);
+    throw error;
+  }
+  const finalTxHash = result.txHashes.at(-1);
+  const chainConfirmedReceipt = rehashSettlementReceiptV2({
+    ...submittedReceipt,
+    execution: {
+      ...submittedReceipt.execution,
+      state: "chain_confirmed",
+      liquidAmount: split.liquid.toString(),
+      treasuryAmount: split.toYield.toString(),
+      txHash: finalTxHash,
+      witnessStates: finalTxHash ? [{
+        name: "chain_inclusion",
+        state: "confirmed",
+        checkedAt: new Date().toISOString(),
+        reference: finalTxHash,
+      }] : [],
+    },
+  });
+  persistReceipt(ledger, chainConfirmedReceipt);
+  const settledReceipt = rehashSettlementReceiptV2({
+    ...chainConfirmedReceipt,
+    execution: {
+      ...chainConfirmedReceipt.execution,
+      state: "settled",
+    },
+  });
+  persistReceipt(ledger, settledReceipt);
 
   // Optional separate referral attribution
   const referralResult = await tryRegisterReferral(
@@ -284,7 +418,7 @@ async function main() {
               throw new Error("Missing requirements or client address");
             }
 
-            const deliverable = await executeJob(reqs, clientAddr);
+            const deliverable = await executeJob(reqs, clientAddr, String(session.jobId));
             await session.submit(deliverable);
             console.log(`  Deliverable submitted.`);
             break;

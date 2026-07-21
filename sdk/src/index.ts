@@ -28,6 +28,8 @@ export {
   createSettlementReceipt,
   createSettlementReceiptV2,
   hashSettlementPolicy,
+  rehashSettlementReceiptV2,
+  verifySettlementReceiptV2,
   type SettlementDeliveryEvidence,
   type SettlementExecution,
   type SettlementExecutionV2,
@@ -53,6 +55,28 @@ export {
   type SettlementRetryPolicy,
   type SettlementState,
 } from './settlement-state';
+
+export {
+  applyReconciliationResult,
+  reconcileSettlement,
+  type ChainTransactionEvidence,
+  type ExternalSettlementEvidence,
+  type ReconciliationReader,
+  type ReconciliationResult,
+} from './reconciliation';
+
+export {
+  SettlementReceiptLedger,
+  type SettlementLedgerEntry,
+} from './ledger';
+
+export {
+  createAcpSettlementReceipt,
+  createDirectSettlementReceipt,
+  createIngressSettlementReceipt,
+  createX402SettlementReceipt,
+  type SettlementIngressEvent,
+} from './settlement-adapters';
 
 // Addresses
 export {

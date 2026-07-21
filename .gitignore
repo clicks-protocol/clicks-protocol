@@ -68,6 +68,7 @@ bots/logs/x-activity-monitor.log
 bots/logs/x-activity-monitor.err
 bots/x-outreach-drafts.md
 research/moltbook-signals.jsonl
+acp-service/data/
 
 # Generated scanner reports
 marketing/reports/tier-distribution/

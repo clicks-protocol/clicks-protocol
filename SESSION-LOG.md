@@ -1412,3 +1412,15 @@
 - Fail-closed Retry-Guard implementiert: Nur `failed_before_transfer` darf innerhalb einer expliziten Retry Policy erneut eingereicht werden. `unknown_settled` wird immer blockiert.
 - SDK-README um V2-Beispiel und klare Repository-Stage-Grenzen ergaenzt.
 - Verifikation: sieben neue Node-SDK-Tests gruen; `npm test` im Root mit 232 bestehenden Hardhat-Tests gruen; `git diff --check` gruen.
+
+## 2026-07-21: Settlement Safety Stack komplettiert
+
+- Read-only Reconciliation Engine gebaut. Sie prueft Chain- und optionale externe Witness-Evidence, loest keine Zahlung aus und behandelt einen einfachen RPC-Miss weiterhin als unbekannt. Nur explizit bewiesene Nicht-Ausfuehrung kann `failed_before_transfer` ergeben.
+- Append-only Receipt Ledger gebaut. Jede Version ist per Hash mit der vorherigen verkettet. Import und Neustart pruefen die gesamte Kette. Geaenderter Betrag, Event, Agent, Asset oder Request unter demselben Idempotency-Key wird blockiert.
+- Fuenf MCP Read-Tools ergaenzt: Receipt-Verifikation, Settlement-Status, read-only Reconciliation, Policy-Replay und Receipt-Trail. MCP-Tool-Discovery liefert jetzt 16 Tools. Ein echtes stdio-Tool-Invocation mit SDK-generiertem Receipt V2 war gueltig.
+- ACP-Code an Receipt V2 und das lokale Ledger angebunden. Ein Job wird vor einer moeglichen Ausfuehrung geplant und dedupliziert. Mehrdeutige Fehler enden in `unknown_settled` ohne Retry. Der laufende Service wurde nicht neu gestartet.
+- Metadaten-Adapter fuer direkte, ACP- und x402-Ingress-Events sowie ein Cloudflare-Worker-Beispiel gebaut. Das x402-Beispiel akzeptiert nur bereits upstream verifizierte Events und fuehrt weder Payment-Verifikation noch Routing oder Contract-Calls aus.
+- Privacy-Modell dokumentiert: oeffentliche, gehashte und private Felder, kontrollierte Evidence-Offenlegung und klare Grenze, dass selektive Offenlegung noch nicht implementiert ist.
+- Alte MCP-Formulierung `start earning yield` entfernt und auf Settlement-first gezogen.
+- Verifikation: 22 SDK-Tests gruen, 232 Hardhat-Tests gruen, MCP-Build und ACP-ESM-Bundle-Check gruen, `git diff --check` sauber. Kein Deploy, npm-Publish, Service-Restart, GitHub-Push oder Onchain-Write.
+- Security-Nebenbefund: `npm audit` im ACP-Service meldet 31 bekannte Abhaengigkeitsprobleme, davon 9 high und keine critical. Die High-Funde liegen ueberwiegend in Virtuals/Account-Kit-Transitivitaet ohne verfuegbaren Fix. Kein riskanter Auto-Fix ausgefuehrt.

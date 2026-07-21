@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.hashSettlementPolicy = hashSettlementPolicy;
 exports.createSettlementReceipt = createSettlementReceipt;
 exports.createSettlementReceiptV2 = createSettlementReceiptV2;
+exports.verifySettlementReceiptV2 = verifySettlementReceiptV2;
+exports.rehashSettlementReceiptV2 = rehashSettlementReceiptV2;
 const ethers_1 = require("ethers");
 function canonicalize(value) {
     if (Array.isArray(value)) {
@@ -91,6 +93,17 @@ function createSettlementReceiptV2(input, createdAt = new Date().toISOString()) 
         execution: input.execution,
         falsifiability: input.falsifiability,
     };
+    return {
+        ...payload,
+        receiptId: (0, ethers_1.keccak256)((0, ethers_1.toUtf8Bytes)(canonicalize(payload))),
+    };
+}
+function verifySettlementReceiptV2(receipt) {
+    const { receiptId, ...payload } = receipt;
+    return receiptId === (0, ethers_1.keccak256)((0, ethers_1.toUtf8Bytes)(canonicalize(payload)));
+}
+function rehashSettlementReceiptV2(receipt) {
+    const { receiptId: _previousReceiptId, ...payload } = receipt;
     return {
         ...payload,
         receiptId: (0, ethers_1.keccak256)((0, ethers_1.toUtf8Bytes)(canonicalize(payload))),

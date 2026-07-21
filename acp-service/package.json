@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@account-kit/infra": "^4.84.1",
-    "@clicks-protocol/sdk": "^0.2.0",
+    "@clicks-protocol/sdk": "file:../sdk",
     "@virtuals-protocol/acp-node-v2": "^0.1.2",
     "ethers": "^6.16.0",
     "viem": "^2.48.0"

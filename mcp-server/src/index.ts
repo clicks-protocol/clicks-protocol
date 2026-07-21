@@ -17,7 +17,7 @@ import path from 'node:path';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { Contract, JsonRpcProvider, Wallet, parseUnits, formatUnits, getAddress, isAddress } from 'ethers';
+import { Contract, JsonRpcProvider, Wallet, parseUnits, formatUnits, getAddress, isAddress, keccak256, toUtf8Bytes } from 'ethers';
 
 // ─── Input Validation ────────────────────────────────────────────────────
 
@@ -127,6 +127,45 @@ function getSigner(): Wallet {
 
 function formatUSDC(amount: bigint): string {
   return formatUnits(amount, 6);
+}
+
+function canonicalize(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalize).join(',')}]`;
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>)
+      .filter(([, item]) => item !== undefined)
+      .sort(([a], [b]) => a.localeCompare(b));
+    return `{${entries.map(([key, item]) => `${JSON.stringify(key)}:${canonicalize(item)}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+type ReceiptV2Record = Record<string, any> & {
+  schema: 'clicks.settlement.receipt.v2';
+  receiptId: string;
+  idempotencyKey: string;
+  businessEventId: string;
+  execution: Record<string, any> & { state: string };
+  policy: Record<string, any> & { versionHash: string };
+};
+
+function parseReceiptV2(receiptJson: string): ReceiptV2Record {
+  const receipt = JSON.parse(receiptJson) as ReceiptV2Record;
+  if (receipt.schema !== 'clicks.settlement.receipt.v2' || !receipt.receiptId || !receipt.execution?.state) {
+    throw new Error('Expected a Clicks Settlement Receipt V2 JSON object');
+  }
+  return receipt;
+}
+
+function verifyReceiptV2(receipt: ReceiptV2Record): { valid: boolean; calculatedReceiptId: string } {
+  const { receiptId: _receiptId, ...payload } = receipt;
+  const calculatedReceiptId = keccak256(toUtf8Bytes(canonicalize(payload)));
+  return { valid: receipt.receiptId === calculatedReceiptId, calculatedReceiptId };
+}
+
+function equalOptionalAddress(left?: string, right?: string): boolean {
+  if (!left || !right) return true;
+  return left.toLowerCase() === right.toLowerCase();
 }
 
 // ─── Server ───────────────────────────────────────────────────────────────
@@ -287,6 +326,148 @@ server.tool(
   }),
 );
 
+server.tool(
+  'clicks_verify_receipt',
+  'Verify the deterministic hash of a Clicks Settlement Receipt V2. This is read-only and does not prove delivery by itself.',
+  { receipt_json: z.string().describe('Complete Clicks Settlement Receipt V2 as JSON') },
+  async ({ receipt_json }) => tracked('clicks_verify_receipt', 'read', async () => {
+    const receipt = parseReceiptV2(receipt_json);
+    const verification = verifyReceiptV2(receipt);
+    return { content: [{ type: 'text' as const, text: JSON.stringify({
+      receipt_id: receipt.receiptId,
+      schema: receipt.schema,
+      valid: verification.valid,
+      calculated_receipt_id: verification.calculatedReceiptId,
+      limitation: 'Hash validity proves integrity of the receipt object, not independent settlement or delivery.',
+    }, null, 2) }] };
+  }),
+);
+
+server.tool(
+  'clicks_get_settlement_status',
+  'Read the state, witnesses, retry policy and reconciliation history recorded in a Receipt V2.',
+  { receipt_json: z.string().describe('Complete Clicks Settlement Receipt V2 as JSON') },
+  async ({ receipt_json }) => tracked('clicks_get_settlement_status', 'read', async () => {
+    const receipt = parseReceiptV2(receipt_json);
+    const verification = verifyReceiptV2(receipt);
+    return { content: [{ type: 'text' as const, text: JSON.stringify({
+      valid_receipt_hash: verification.valid,
+      receipt_id: receipt.receiptId,
+      idempotency_key: receipt.idempotencyKey,
+      business_event_id: receipt.businessEventId,
+      state: receipt.execution.state,
+      retry_allowed: receipt.execution.state === 'failed_before_transfer'
+        && receipt.execution.retryPolicy?.allowRetry === true
+        && receipt.execution.retryPolicy.attempts < receipt.execution.retryPolicy.maxAttempts,
+      failed_witness: receipt.execution.failedWitness ?? null,
+      witnesses: receipt.execution.witnessStates ?? [],
+      reconciliation_history: receipt.execution.reconciliationHistory ?? [],
+    }, null, 2) }] };
+  }),
+);
+
+server.tool(
+  'clicks_reconcile_settlement',
+  'Read Base transaction evidence for a Receipt V2 and propose a fail-closed next state. Never submits or retries a transaction.',
+  { receipt_json: z.string().describe('Complete Clicks Settlement Receipt V2 as JSON') },
+  async ({ receipt_json }) => tracked('clicks_reconcile_settlement', 'read', async () => {
+    const receipt = parseReceiptV2(receipt_json);
+    const verification = verifyReceiptV2(receipt);
+    if (!verification.valid) throw new Error('Receipt hash is invalid');
+
+    const txHash = receipt.execution.txHash as string | undefined;
+    if (!txHash) {
+      return { content: [{ type: 'text' as const, text: JSON.stringify({
+        result: 'unknown',
+        proposed_state: 'reconciliation_required',
+        retry_allowed: false,
+        evidence: ['receipt contains no transaction hash'],
+      }, null, 2) }] };
+    }
+
+    const provider = getProvider();
+    const [chainReceipt, transaction] = await Promise.all([
+      provider.getTransactionReceipt(txHash),
+      provider.getTransaction(txHash),
+    ]);
+
+    if (!chainReceipt || !transaction) {
+      return { content: [{ type: 'text' as const, text: JSON.stringify({
+        result: 'unknown',
+        proposed_state: 'reconciliation_required',
+        retry_allowed: false,
+        evidence: ['transaction not returned by the configured RPC; absence is not proof of non-submission'],
+      }, null, 2) }] };
+    }
+
+    const conflict = transaction.hash.toLowerCase() !== txHash.toLowerCase()
+      || (receipt.execution.nonce !== undefined && transaction.nonce !== receipt.execution.nonce)
+      || !equalOptionalAddress(receipt.execution.sender, transaction.from)
+      || !equalOptionalAddress(receipt.execution.recipient, transaction.to ?? undefined);
+    const reverted = chainReceipt.status === 0;
+    const result = conflict || reverted ? 'conflicting_evidence' : 'confirmed';
+
+    return { content: [{ type: 'text' as const, text: JSON.stringify({
+      result,
+      proposed_state: conflict || reverted ? 'disputed' : 'reconciled',
+      retry_allowed: false,
+      evidence: {
+        tx_hash: transaction.hash,
+        block_number: chainReceipt.blockNumber,
+        status: reverted ? 'reverted' : 'confirmed',
+        from: transaction.from,
+        to: transaction.to,
+        nonce: transaction.nonce,
+      },
+      limitation: 'Merchant settlement and delivery evidence require independent external witnesses.',
+    }, null, 2) }] };
+  }),
+);
+
+server.tool(
+  'clicks_replay_policy',
+  'Recompute a policy definition hash and compare it with the exact policy version bound to a Receipt V2.',
+  {
+    receipt_json: z.string().describe('Complete Clicks Settlement Receipt V2 as JSON'),
+    policy_definition_json: z.string().describe('Exact policy definition as JSON'),
+  },
+  async ({ receipt_json, policy_definition_json }) => tracked('clicks_replay_policy', 'read', async () => {
+    const receipt = parseReceiptV2(receipt_json);
+    const definition = JSON.parse(policy_definition_json);
+    const calculatedPolicyHash = keccak256(toUtf8Bytes(canonicalize(definition)));
+    return { content: [{ type: 'text' as const, text: JSON.stringify({
+      matches: calculatedPolicyHash === receipt.policy.versionHash,
+      recorded_policy_hash: receipt.policy.versionHash,
+      calculated_policy_hash: calculatedPolicyHash,
+      policy_id: receipt.policy.id,
+      policy_version: receipt.policy.version,
+    }, null, 2) }] };
+  }),
+);
+
+server.tool(
+  'clicks_get_receipt_trail',
+  'Read matching entries from a local append-only Clicks receipt ledger configured by CLICKS_RECEIPT_LEDGER_PATH.',
+  { identifier: z.string().min(1).describe('Receipt ID, idempotency key, business event ID or settlement reference') },
+  async ({ identifier }) => tracked('clicks_get_receipt_trail', 'read', async () => {
+    const ledgerPath = process.env.CLICKS_RECEIPT_LEDGER_PATH;
+    if (!ledgerPath) throw new Error('CLICKS_RECEIPT_LEDGER_PATH is not configured');
+    const entries = JSON.parse(fs.readFileSync(ledgerPath, 'utf8')) as Array<Record<string, any>>;
+    const matches = entries.filter((entry) => {
+      const receipt = entry.receipt ?? {};
+      return receipt.receiptId === identifier
+        || receipt.idempotencyKey === identifier
+        || receipt.businessEventId === identifier
+        || receipt.settlementReference === identifier;
+    });
+    return { content: [{ type: 'text' as const, text: JSON.stringify({
+      identifier,
+      entries: matches,
+      count: matches.length,
+    }, null, 2) }] };
+  }),
+);
+
 // ─── Write Tools ──────────────────────────────────────────────────────────
 
 server.tool(
@@ -407,7 +588,7 @@ server.tool(
           txHash: tx.hash,
           amount_usdc: amount,
           agent: agent_address,
-          message: `Payment of ${amount} USDC split successfully. ~80% to wallet, ~20% earning yield.`,
+          message: `Payment of ${amount} USDC routed successfully under the configured split policy.`,
         }, null, 2),
       }],
     };
@@ -463,7 +644,7 @@ server.tool(
           txHash: tx.hash,
           agent: agent_address,
           operator: await signer.getAddress(),
-          message: `Agent registered. Now use clicks_receive_payment or clicks_quick_start to start earning yield.`,
+          message: `Agent registered. Use clicks_receive_payment or clicks_quick_start to route revenue under the configured settlement policy.`,
         }, null, 2),
       }],
     };
@@ -537,7 +718,7 @@ await clicks.quickStart('1000', agentAddress);
 \`\`\`json
 { "mcpServers": { "clicks-protocol": { "url": "https://mcp.clicksprotocol.xyz/mcp" } } }
 \`\`\`
-Tools: clicks_quick_start, clicks_register_referral, clicks_receive_payment, clicks_withdraw_yield, clicks_get_yield_info, clicks_get_agent_info, clicks_simulate_split, clicks_register_agent, clicks_set_yield_pct, clicks_get_referral_stats, clicks_explain.
+Tools include settlement routing plus read-only receipt verification, status, reconciliation, policy replay and receipt-trail inspection.
 `;
 
     const integrationDeveloper = `

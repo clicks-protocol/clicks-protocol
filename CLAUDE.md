@@ -70,9 +70,10 @@ Nicht deployen bis Gate erfüllt.
 ## x402 Revenue Settlement
 
 - x402 handles authorization/payment. Clicks handles post-payment settlement.
-- Current status: research and public claim cleanup done. Adapter is planned, not released.
+- Current status: metadata adapter and Cloudflare Worker example exist in the repository, but are not released or connected to a live x402 payment flow.
 - Do not claim `supports x402`, automatic x402 interception, or built-in x402 verification before the adapter exists.
-- Build direction: x402 revenue event intake, settlement receipt ledger, SDK/MCP adapter, Cloudflare Worker example.
+- Repository-stage safety layer: Receipt V2, fail-closed state machine, read-only reconciliation, append-only receipt ledger, five MCP read tools and ingress metadata adapters for direct, ACP and x402 flows.
+- The x402 example accepts only an already verified upstream payment event and creates a planned settlement receipt. It does not verify payment, route funds, call contracts or retry settlement.
 - Glama still stale after main merge: old Yield description, `tools=0`, `updatedAt=null`. Needs UI `Repository -> Sync Server` or support.
 - Security note: a Moltbook API key was briefly exposed in the PR branch and removed before merge. Rotate the Moltbook key.
 

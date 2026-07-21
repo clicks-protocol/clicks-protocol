@@ -113,6 +113,8 @@ export interface SettlementExecutionV2 {
   txHash?: string;
   blockNumber?: number;
   nonce?: number;
+  sender?: string;
+  recipient?: string;
   failedWitness?: SettlementWitness['name'];
   witnessStates: SettlementWitness[];
   retryPolicy: SettlementRetryPolicy;
@@ -262,6 +264,21 @@ export function createSettlementReceiptV2(
     falsifiability: input.falsifiability,
   };
 
+  return {
+    ...payload,
+    receiptId: keccak256(toUtf8Bytes(canonicalize(payload))),
+  };
+}
+
+export function verifySettlementReceiptV2(receipt: SettlementReceiptV2): boolean {
+  const { receiptId, ...payload } = receipt;
+  return receiptId === keccak256(toUtf8Bytes(canonicalize(payload)));
+}
+
+export function rehashSettlementReceiptV2(
+  receipt: Omit<SettlementReceiptV2, 'receiptId'> | SettlementReceiptV2,
+): SettlementReceiptV2 {
+  const { receiptId: _previousReceiptId, ...payload } = receipt as SettlementReceiptV2;
   return {
     ...payload,
     receiptId: keccak256(toUtf8Bytes(canonicalize(payload))),

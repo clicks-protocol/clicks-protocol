@@ -205,6 +205,14 @@ assertSettlementRetryAllowed(receipt.execution.state, receipt.execution.retryPol
 
 The only retryable state is `failed_before_transfer`, and only while its explicit retry policy still permits another attempt. Receipt V2 and the state helpers do not submit transactions or perform reconciliation themselves.
 
+### Read-only reconciliation and append-only ledger
+
+`reconcileSettlement()` consumes independent readers and proposes a state transition. It never sends a transaction. An RPC miss remains `reconciliation_required`; only a reader that explicitly proves non-submission may produce `failed_before_transfer`.
+
+`SettlementReceiptLedger` stores immutable receipt versions in a hash chain. Reusing an idempotency key for a changed amount, agent, asset, business event or request hash is rejected. Status revisions for the same economic event remain linked through the shared idempotency key.
+
+Ingress helpers are available for `direct`, `acp` and `x402` metadata. They create planned receipts only. The x402 helper does not implement or claim x402 transport support.
+
 #### `quickStart(amount, agentAddress, referrer?)`
 Treasury setup only. The optional `referrer` parameter is reserved for compatibility and does not register attribution on-chain by itself.
 
