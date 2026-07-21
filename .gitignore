@@ -54,6 +54,7 @@ x-pipeline/replied-mentions.json
 x-pipeline/seen-mentions.json
 x-pipeline/visuals/
 x-pipeline/reports/analytics/
+x-pipeline/logs/
 
 # Bot runtime state
 bots/*-state.json
