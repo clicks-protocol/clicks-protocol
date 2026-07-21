@@ -225,6 +225,9 @@ function referralDeliverableLine(result: ReferralAttemptResult): string {
 // ─── Main ─────────────────────────────────────────────────────────────────
 
 async function main() {
+  // AcpAgent.start() hydrates existing jobs before it returns. Never execute a
+  // previously funded job merely because the local service was restarted.
+  let startupHydrating = true;
   validate();
 
   const chain = CONFIG.useMainnet ? base : baseSepolia;
@@ -263,6 +266,13 @@ async function main() {
             break;
 
           case "job.funded":
+            if (startupHydrating) {
+              console.warn(
+                `  Existing funded job ${session.jobId} detected during startup. ` +
+                "Automatic execution is suppressed until it receives a new live event."
+              );
+              break;
+            }
             // ACP escrow now holds the agent's USDC transfer_amount.
             // Time to execute the yield activation.
             console.log(`  Job funded. Executing yield activation...`);
@@ -320,6 +330,16 @@ async function main() {
   await agent.start(() => {
     console.log("Service running. Listening for jobs...");
   });
+  startupHydrating = false;
+  const activeSessions = agent.sessions.filter(
+    (session) => !["completed", "rejected", "expired"].includes(session.status)
+  );
+  console.log(
+    `Startup safety check: ${activeSessions.length} active job(s): ` +
+    (activeSessions.length
+      ? activeSessions.map((session) => `${session.jobId}:${session.status}`).join(", ")
+      : "none")
+  );
 
   process.on("SIGINT", async () => {
     console.log("\nShutting down...");

@@ -1,6 +1,6 @@
 # Clicks Protocol Status
 
-> Stand: 2026-07-21 (Berlin, X Settlement-first Profil inklusive neuem Markenbanner live, neuer Redaktionsrhythmus live, X MCP einsatzbereit, Glama weiter stale)
+> Stand: 2026-07-21 (Berlin, X Settlement-first Profil live, ACP-Service kontrolliert repariert, Glama-Rescan angefragt)
 > Priorität: P0
 > Update-Rule: **Jede Session endet mit Aktualisierung dieser Datei, bevor Emma/Claude die Arbeit niederlegt.** Staleness > 48 h = Drift-Risiko.
 > ⚠️ **Diese Datei war zwischen 13.05. und 13.07. veraltet. Heute auf Stand gezogen.**
@@ -20,7 +20,7 @@
 
 **GitHub main:** PR #32 `chore: align Clicks settlement router state` ist gemerged. Merge-Commit `ac1d837d103d22d0d10d035f0c4c49d4e6274df9`. Der bereinigte Settlement-first Stand ist damit remote auf `main`.
 
-**Security note:** Beim PR-Audit wurde ein Moltbook API-Key in einem Branch-Commit entdeckt. Der Commit wurde vor Merge aus der Branch-History entfernt und `main` enthaelt den Key nicht. Der Key war aber kurz auf GitHub sichtbar und muss rotiert werden.
+**Security note:** Beim PR-Audit wurde ein Moltbook API-Key in einem Branch-Commit entdeckt. Der Commit wurde vor Merge aus der Branch-History entfernt und `main` enthaelt den Key nicht. Die Rotation ist vorbereitet. Email und X sind verifiziert, aber die abschliessende Erstellung des Moltbook-Owner-Kontos `ClicksProtocol` wartet wegen des Account-Hardblocks auf Davids Freigabe.
 
 **Moltbook:** Neuer Key lokal gesetzt in Workspace-`.env` und Projekt-`.env`. LaunchAgent `com.clicks.moltbook-crosspost` ist aktiv und laeuft stuendlich Minute 07. Queue lokal mit 14 Settlement-first Textposts neu befuellt, `nextIndex=0`, naechster Ziel-Submolt `agentcommerce`. `bots/*-source.json` und `bots/*-state.json` bleiben absichtlich gitignored. Kommentar-Monitor ist jetzt aktiv: `com.clicks.moltbook-comment-monitor` laeuft Minute 17 und 47, prueft getrackte Post-IDs und sendet nur bei neuen Kommentaren in den Telegram-Clicks-Topic.
 
@@ -42,7 +42,9 @@
 
 **Receipt V1, Repository-Stage:** `sdk/src/receipts.ts` definiert einen deterministischen Settlement-Nachweis mit Precondition Snapshot, Policy-Version-Hash und Falsifiability-Feldern. SDK-Build und deterministischer Hash-Test sind gruen. Noch nicht als npm-Version veroeffentlicht und kein On-Chain-Receipt-Vertrag.
 
-**ACP Service:** Der konfigurierte LaunchAgent ist aktuell nicht betriebsbereit. `run.sh` findet unter launchd `npx` nicht und endet mit Exit 127. Ein Neustart wuerde einen produktiven Fund-Transfer-Service aktivieren und bleibt deshalb bis zu einer separaten Freigabe unangetastet.
+**ACP Service:** `com.clicks.acp-service` laeuft wieder kontrolliert als genau eine Instanz. `run.sh` nutzt den absoluten Node-22-Pfad und erweitert `PATH`, damit `npx` und dessen Node-Interpreter unter launchd verfuegbar sind. Der Start unterdrueckt die Ausfuehrung bereits vorhandener funded Jobs waehrend der Hydrierung. Verifizierter Startcheck: `0 active job(s): none`. Es wurde kein Auftrag simuliert und keine Onchain-Transaktion ausgeloest.
+
+**Glama:** Das oeffentliche Profil ist weiterhin inhaltlich stale. Die API liefert alten Yield-Text, `tools=0` und `updatedAt=null`. Ein Rescan-Supportticket mit Server-ID, Repository und Kontaktadresse wurde am 21.07. ueber das offizielle `Report Issue`-Formular abgesendet.
 - Erste Schema-V1 Attestation: Tx `0x5aec2067...`, Block 44836647
 
 **Prototype (nicht deployed):**

@@ -1198,6 +1198,17 @@
 - GitHub `main/glama.json` ist korrekt Settlement-first.
 - Naechster Schritt: Glama UI `Repository -> Sync Server` oder Support/Rescan.
 
+## 2026-07-21: ACP-Recovery, Glama-Rescan und Moltbook-Rotation vorbereitet
+
+- David gab die Punkte Moltbook-Key-Rotation, ACP-Service-Reparatur ohne Transaktion und Glama-Rescan beziehungsweise Support frei.
+- ACP-Ursache vollstaendig behoben: launchd fand zuerst `npx` nicht und danach den Node-Interpreter aus dessen Shebang nicht. `run.sh` nutzt jetzt den absoluten Node-22-npx-Pfad und exportiert den passenden Node-Pfad.
+- Startup-Guard in `service.ts` ergaenzt. Bereits vorhandene funded Jobs werden waehrend der SDK-Hydrierung nicht ausgefuehrt.
+- TypeScript-Pruefung gruen. LaunchAgent danach kontrolliert neu gestartet und verifiziert: genau eine Instanz, Zustand `running`, `0 active job(s): none`.
+- Kein ACP-Testauftrag, keine Wallet-Signatur und keine Onchain-Transaktion ausgefuehrt.
+- Glama API vor dem Support-Request erneut mit HTTP 200 gelesen. Sie liefert weiter alten Yield-Text, `tools=0` und `updatedAt=null`.
+- Offizielles Glama-Formular `Report Issue` mit Server-ID `nzxrrz4y5c`, Repository, aktuellem MCP-Paketstand und Kontaktadresse abgesendet.
+- Moltbook-Agent und alter Key sind noch gueltig. Owner-Email und X-Account wurden verifiziert. Der letzte Schritt wuerde ein Owner-Konto `ClicksProtocol` erstellen und wartet deshalb auf Davids separate Account-Freigabe. Der Key wurde noch nicht rotiert.
+
 **Weiter offen:**
 - Moltbook-Key rotieren.
 - Glama UI/Support anstossen.
