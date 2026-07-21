@@ -58,6 +58,9 @@ x-pipeline/visuals/
 bots/*-state.json
 bots/*-source.json
 bots/moltbook-posts.json
+bots/x-activity-state.json
+bots/logs/x-activity-monitor.log
+bots/logs/x-activity-monitor.err
 bots/x-outreach-drafts.md
 
 # Generated scanner reports
