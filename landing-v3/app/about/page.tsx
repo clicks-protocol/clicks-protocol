@@ -26,7 +26,7 @@ export default function AboutPage() {
       <section className="mb-10">
         <h2 className="text-2xl font-bold mb-4 text-foreground">Mission</h2>
         <p className="text-muted-foreground leading-relaxed">
-          Clicks Protocol turns idle agent USDC into yield. One call, no config, no human required.
+          Clicks Protocol applies operator-approved settlement policy to USDC received by AI agents on Base.
         </p>
       </section>
 
@@ -59,7 +59,7 @@ await clicks.quickStart('100', agentAddress);
 // 80 USDC → liquid, 20 USDC → treasury yield route`}
         />
         <p className="text-muted-foreground leading-relaxed mb-4">
-          That&apos;s the entire integration. One SDK call. The protocol handles registration, USDC approval, payment splitting, yield routing, and rebalancing. No dashboard, no configuration, no manual steps.
+          The SDK can coordinate registration, USDC approval and settlement routing. These remain separate on-chain transactions that the operator signs. Yield routing is optional.
         </p>
         <p className="text-muted-foreground leading-relaxed mb-4">
           There is no lockup. Agents can withdraw principal plus accumulated yield at any time. The yield split is configurable between 5% and 50%, so operators can tune the balance between liquidity and earnings based on their agent&apos;s transaction patterns. The protocol charges a 2% fee on yield only, never on principal. If an agent deposits 1,000 USDC and earns 80 USDC in yield over a year, the protocol takes 1.60 USDC. The agent keeps everything else.

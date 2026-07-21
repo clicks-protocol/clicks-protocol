@@ -7,10 +7,13 @@
  * @packageDocumentation
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.REFERRAL_ABI = exports.FEE_ABI = exports.YIELD_ROUTER_ABI = exports.SPLITTER_ABI = exports.REGISTRY_ABI = exports.ERC20_ABI = exports.ADDRESSES_BY_CHAIN = exports.BASE_SEPOLIA = exports.BASE_MAINNET = exports.ClicksClient = void 0;
+exports.REFERRAL_ABI = exports.FEE_ABI = exports.YIELD_ROUTER_ABI = exports.SPLITTER_ABI = exports.REGISTRY_ABI = exports.ERC20_ABI = exports.ADDRESSES_BY_CHAIN = exports.BASE_SEPOLIA = exports.BASE_MAINNET = exports.hashSettlementPolicy = exports.createSettlementReceipt = exports.ClicksClient = void 0;
 // Main client
 var client_1 = require("./client");
 Object.defineProperty(exports, "ClicksClient", { enumerable: true, get: function () { return client_1.ClicksClient; } });
+var receipts_1 = require("./receipts");
+Object.defineProperty(exports, "createSettlementReceipt", { enumerable: true, get: function () { return receipts_1.createSettlementReceipt; } });
+Object.defineProperty(exports, "hashSettlementPolicy", { enumerable: true, get: function () { return receipts_1.hashSettlementPolicy; } });
 // Addresses
 var addresses_1 = require("./addresses");
 Object.defineProperty(exports, "BASE_MAINNET", { enumerable: true, get: function () { return addresses_1.BASE_MAINNET; } });

@@ -60,7 +60,7 @@ Nicht deployen bis Gate erfüllt.
 - Landing: https://clicksprotocol.xyz (Settlement-first Homepage, ERC-8004 Badge, x402 claims cleaned, Production-Deploy `8d04aefe-1bfe-4413-aa18-0d60d1628452`)
 - GitHub main: PR #32 `chore: align Clicks settlement router state` merged, merge commit `ac1d837d103d22d0d10d035f0c4c49d4e6274df9`
 - MCP Registry: `io.github.clicksprotocol/mcp-server` Version `1.0.3`, active/latest, npm package `@clicks-protocol/mcp-server@0.3.2`
-- ClawHub: `protogenosone/clicks-protocol` Version `1.2.6` ist latest und zeigt jetzt korrekt `Clicks Protocol`. Security `clean`, aber Verify fuer `1.2.6` faellt noch wegen `card.missing`. Letzte voll gruene Version bleibt `1.2.4` mit Card verfuegbar und Verify `decision=pass`.
+- ClawHub: `protogenosone/clicks-protocol` Version `1.2.6` ist latest und zeigt korrekt `Clicks Protocol`. Skill Card ist vorhanden, Verify `decision=pass`, Security `clean`. Der oeffentliche Skilltext braucht noch einen Settlement-first Cleanup.
 - Dev.to: https://dev.to/clicksprotocol/x402-solved-payments-who-solves-treasury-531h
 - Farcaster Mini App: https://clicksprotocol.xyz/miniapp/
 - GitHub: https://github.com/clicks-protocol/clicks-protocol

@@ -41,7 +41,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/clicks-protocol/eliza-plugin"
+    "url": "git+https://github.com/clicks-protocol/eliza-plugin.git"
   },
   "homepage": "https://clicksprotocol.xyz"
 }

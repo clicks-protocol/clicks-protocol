@@ -22,7 +22,7 @@ export default function GettingStartedPage() {
     <div className="prose-docs">
       <h1 className="text-3xl sm:text-4xl font-bold mb-6 gradient-text">Getting Started</h1>
       <p className="text-muted-foreground text-lg mb-8">
-        Start routing agent treasury in under a minute. One SDK call, no config, no human required.
+        Configure settlement routing for an agent on Base. State-changing transactions require an operator signer and explicit approval.
       </p>
 
       {/* Prerequisites */}

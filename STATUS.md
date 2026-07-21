@@ -1,6 +1,6 @@
 # Clicks Protocol Status
 
-> Stand: 2026-07-21 (Berlin, X Settlement-first Profil und neuer Redaktionsrhythmus live, X MCP einsatzbereit, Glama weiter stale)
+> Stand: 2026-07-21 (Berlin, X Settlement-first Profil inklusive neuem Markenbanner live, neuer Redaktionsrhythmus live, X MCP einsatzbereit, Glama weiter stale)
 > Priorität: P0
 > Update-Rule: **Jede Session endet mit Aktualisierung dieser Datei, bevor Emma/Claude die Arbeit niederlegt.** Staleness > 48 h = Drift-Risiko.
 > ⚠️ **Diese Datei war zwischen 13.05. und 13.07. veraltet. Heute auf Stand gezogen.**
@@ -26,15 +26,23 @@
 
 **X MCP:** OAuth 2.0 fuer die App `clicks` ist als `@ClicksProtocol` autorisiert. `xurl` 1.2.3 ist dauerhaft ueber Homebrew installiert, OAuth 2.0/OAuth 1.0a/Bearer sind vorhanden, der MCP-Handshake und die Tool-Discovery gegen `https://api.x.com/mcp` sind verifiziert. Token-Refresh laeuft ueber den lokalen `xurl mcp` Bridge.
 
-**X Profil und Publishing:** Bio ist jetzt Settlement-first: `Settlement infrastructure for AI agents. Route USDC revenue, enforce split policy and verify receipts on Base. Open source SDK + MCP.` Die alte taegliche 06:15/13:15/20:15-Automation wurde beendet. Die drei LaunchAgents laufen nur noch Montag, Mittwoch und Freitag um 17:30 Berlin und veroeffentlichen ausschliesslich vorher in `x-pipeline/queue.json` freigegebene Inhalte. Queue ist aktuell leer. Slots: Monday Original, Wednesday Settlement Report/Thread, Friday Demo/Visual.
+**X Profil und Publishing:** Bio ist jetzt Settlement-first: `Settlement infrastructure for AI agents. Route USDC revenue, enforce split policy and verify receipts on Base. Open source SDK + MCP.` Der kontrollierte 1500x500-Markenbanner `assets/banners/x-profile-2026/settlement-banner-1500x500.png` ist live auf `@ClicksProtocol`; X bestaetigte den Upload mit HTTP 201 und lieferte danach eine neue `profile_banner_url` mit Zeitstempel `1784648532`. Die alte taegliche 06:15/13:15/20:15-Automation wurde beendet. Die drei LaunchAgents laufen nur noch Montag, Mittwoch und Freitag um 17:30 Berlin und veroeffentlichen ausschliesslich vorher in `x-pipeline/queue.json` freigegebene Inhalte. Queue ist aktuell leer. Slots: Monday Original, Wednesday Settlement Report/Thread, Friday Demo/Visual.
 
-**X Analytics:** OAuth-2-API-Zugriff auf eigene `public_metrics`, `non_public_metrics` und `organic_metrics` ist live verifiziert, inklusive Impressions, Engagements, Profilklicks und Linkklicks pro Post. Das Premium+-Web-Dashboard zeigt detaillierte Account-Metriken laut UI erst ab 50 Followern; aktuell 16 Follower, davon 6 mit Checkmark.
+**X Analytics:** OAuth-2-API-Zugriff auf eigene `public_metrics`, `non_public_metrics` und `organic_metrics` ist live verifiziert, inklusive Impressions, Engagements, Profilklicks und Linkklicks pro Post. `x-pipeline/analytics-report.mjs` schreibt taeglich um 18:45 einen lokalen 90-Tage-Snapshot. Freitags um 19:00 sendet `analytics-alert.sh` den Wochenstand in Telegram. Ausgangspunkt am 21.07.: 16 Follower, davon 6 verifiziert oder Premium, 3.099 Impressionen aus 106 Posts in 90 Tagen, 273 Engagements, 62 Profilklicks und 7 Linkklicks.
+
+**X Content Freigabe:** Drei Settlement-first Entwuerfe liegen in `x-pipeline/pending-approval-2026-07-21.json`. Sie sind nicht in der aktiven Queue und koennen daher nicht automatisch veroeffentlicht werden.
 
 **X Mention Monitor:** End-to-End verifiziert mit echter Mention `2079572038650397050` von `@CRYPTO_DAVIDSKI`: Erkennung, Telegram-Alert, Reply-Vorschlag und Deduplizierung erfolgreich. XAA-Subscription `post.mention.create` ist angelegt. Der XAA-Persistent-Stream bleibt durch einen Auth-Widerspruch bei X unbrauchbar: Private Subscription verlangt User-OAuth, Stream verlangt App-only und sieht die User-OAuth-Subscription nicht. Delivery nutzt deshalb den offiziellen Filtered Stream mit Regel `@ClicksProtocol`. Der zuvor serverseitig belegte Stream-Slot wurde durch kontrolliertes Stoppen aller Reconnects und eine 45-Sekunden-Abkuehlphase freigegeben. Seit 16:31 CEST haelt der LaunchAgent genau eine aktive `xurl 1.2.3` Stream-Verbindung. Das unabhaengige 60-Sekunden-Polling bleibt als Ausfallsicherung aktiv. Der Dienst besitzt keine Posting-Logik und antwortet nie automatisch.
+
+**X API Reply-Grenze:** Proaktive Replies oder Quotes auf fremde Posts ohne Mention werden von X aktuell mit HTTP 403 abgelehnt: `You can only reply to or quote posts where you are mentioned or are the author.` Mention-Replies funktionieren und sind End-to-End verifiziert. Proaktive Growth-Replies brauchen eine als `@ClicksProtocol` eingeloggte X-Weboberflaeche.
 
 **Live auf Base Mainnet:**
 - V4 Contracts: siehe CLAUDE.md (Safe Multisig `0xaD8228fE...`)
 - ERC-8004 Identity: **agentId 45074**, owner Operator-Wallet `0xf873BB73...`
+
+**Receipt V1, Repository-Stage:** `sdk/src/receipts.ts` definiert einen deterministischen Settlement-Nachweis mit Precondition Snapshot, Policy-Version-Hash und Falsifiability-Feldern. SDK-Build und deterministischer Hash-Test sind gruen. Noch nicht als npm-Version veroeffentlicht und kein On-Chain-Receipt-Vertrag.
+
+**ACP Service:** Der konfigurierte LaunchAgent ist aktuell nicht betriebsbereit. `run.sh` findet unter launchd `npx` nicht und endet mit Exit 127. Ein Neustart wuerde einen produktiven Fund-Transfer-Service aktivieren und bleibt deshalb bis zu einer separaten Freigabe unangetastet.
 - Erste Schema-V1 Attestation: Tx `0x5aec2067...`, Block 44836647
 
 **Prototype (nicht deployed):**

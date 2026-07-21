@@ -13,6 +13,10 @@
 set -uo pipefail
 cd "$(dirname "$0")"
 
+# launchd does not inherit the interactive shell's Homebrew paths. Keep this
+# script self-contained so scheduled posts can find node and xurl after upgrades.
+export PATH="/opt/homebrew/opt/node@22/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
 QUEUE="queue.json"
 LOCK_DIR=".xurl-post.lock"
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then

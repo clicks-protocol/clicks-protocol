@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1500px; height: 500px; overflow: hidden; }
+    body {
+      background:
+        radial-gradient(ellipse at 28% 48%, rgba(0,255,155,.09), transparent 33%),
+        radial-gradient(ellipse at 83% 22%, rgba(63,26,92,.24), transparent 32%),
+        #0b0710;
+      color: #f8f8f8;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .grid {
+      position: absolute; inset: 0;
+      opacity: .055;
+      background-image:
+        linear-gradient(rgba(255,255,255,.45) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.45) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: linear-gradient(90deg, #000, transparent 76%);
+    }
+    .art { position: absolute; left: 30px; top: 35px; width: 650px; height: 430px; }
+    .content { position: absolute; left: 695px; top: 38px; width: 740px; }
+    .wordmark { display: flex; align-items: center; height: 80px; margin-bottom: 29px; color: #00ff9b; white-space: nowrap; }
+    .wordmark img { width: 80px; height: 80px; display: block; margin-right: 24px; }
+    .wordmark .clicks { font-size: 39px; font-weight: 760; letter-spacing: .19em; }
+    .wordmark .protocol { font-size: 39px; font-weight: 450; letter-spacing: .12em; opacity: .5; margin-left: 22px; }
+    .eyebrow {
+      color: #00ff9b; font-size: 15px; font-weight: 750;
+      letter-spacing: .22em; text-transform: uppercase; margin-bottom: 13px;
+    }
+    h1 { margin: 0; font-size: 61px; line-height: .98; letter-spacing: -.045em; font-weight: 760; }
+    h1 span { color: #00ff9b; }
+    .sub { margin-top: 20px; color: #aaa5af; font-size: 23px; line-height: 1.32; letter-spacing: -.012em; }
+    .proof { margin-top: 23px; display: flex; align-items: center; gap: 15px; color: #d8d4db; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+    .proof i { display: block; width: 5px; height: 5px; border-radius: 50%; background: #00ff9b; box-shadow: 0 0 12px #00ff9b; }
+    .edge { position: absolute; right: 0; top: 0; height: 100%; width: 5px; background: #00ff9b; opacity: .78; }
+  </style>
+</head>
+<body>
+  <div class="grid"></div>
+  <svg class="art" viewBox="0 0 650 430" fill="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="flow" x1="30" y1="215" x2="620" y2="215" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#00FF9B" stop-opacity="0"/>
+        <stop offset=".42" stop-color="#00FF9B"/>
+        <stop offset="1" stop-color="#00FF9B" stop-opacity=".22"/>
+      </linearGradient>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <path d="M15 215H230" stroke="url(#flow)" stroke-width="2"/>
+    <path d="M340 215H414C446 215 454 127 491 127H625" stroke="#00FF9B" stroke-opacity=".36" stroke-width="1.5"/>
+    <path d="M340 215H625" stroke="#00FF9B" stroke-opacity=".58" stroke-width="1.5"/>
+    <path d="M340 215H414C446 215 454 303 491 303H625" stroke="#00FF9B" stroke-opacity=".28" stroke-width="1.5"/>
+    <circle cx="230" cy="215" r="5" fill="#00FF9B" filter="url(#glow)"/>
+    <circle cx="414" cy="215" r="4" fill="#00FF9B"/>
+    <circle cx="491" cy="127" r="4" fill="#00FF9B"/>
+    <circle cx="491" cy="303" r="4" fill="#00FF9B"/>
+    <rect x="230" y="160" width="110" height="110" rx="55" stroke="#00FF9B" stroke-width="3"/>
+    <circle cx="309" cy="215" r="31" fill="#00FF9B"/>
+    <path d="M338 187l10-10M342 215h14M338 243l10 10" stroke="#00FF9B" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+    <g opacity=".8">
+      <rect x="536" y="98" width="72" height="56" rx="8" stroke="#00FF9B" stroke-width="1.7"/>
+      <path d="M550 116h42M550 128h28" stroke="#00FF9B" stroke-width="1.7" stroke-linecap="round"/>
+      <circle cx="594" cy="140" r="5" fill="#00FF9B"/>
+      <rect x="536" y="187" width="72" height="56" rx="8" stroke="#00FF9B" stroke-width="1.7"/>
+      <path d="M550 205h42M550 217h28" stroke="#00FF9B" stroke-width="1.7" stroke-linecap="round"/>
+      <circle cx="594" cy="229" r="5" fill="#00FF9B"/>
+      <rect x="536" y="276" width="72" height="56" rx="8" stroke="#00FF9B" stroke-width="1.7"/>
+      <path d="M550 294h42M550 306h28" stroke="#00FF9B" stroke-width="1.7" stroke-linecap="round"/>
+      <circle cx="594" cy="318" r="5" fill="#00FF9B"/>
+    </g>
+    <text x="45" y="195" fill="#8F8995" font-family="Inter, sans-serif" font-size="13" letter-spacing="2">REVENUE</text>
+    <text x="245" y="302" fill="#8F8995" font-family="Inter, sans-serif" font-size="13" letter-spacing="2">POLICY ROUTER</text>
+  </svg>
+
+  <main class="content">
+    <div class="wordmark">
+      <img src="../../../logo-redesign/final/icon-dark-bg.svg" alt="" />
+      <span class="clicks">CLICKS</span><span class="protocol">PROTOCOL</span>
+    </div>
+    <div class="eyebrow">Infrastructure for autonomous commerce</div>
+    <h1>Agent Commerce<br><span>Settlement</span></h1>
+    <div class="sub">Route revenue. Enforce policy. Verify receipts.</div>
+    <div class="proof"><span>Built on Base</span><i></i><span>Open source</span><i></i><span>ERC-8004</span></div>
+  </main>
+  <div class="edge"></div>
+</body>
+</html>

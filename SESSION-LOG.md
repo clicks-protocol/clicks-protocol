@@ -1350,3 +1350,27 @@
 - Alle drei Plists mit `plutil -lint` geprueft und per `launchctl print` zurueckgelesen: Weekdays 2/4/6, 17:30, nicht laufend bis zum naechsten Slot.
 - X Analytics API mit OAuth 2.0 verifiziert. Eigene Posts liefern `public_metrics`, `non_public_metrics` und `organic_metrics`, darunter Impressions, Engagements, Profilklicks und Linkklicks.
 - Premium+ ist fuer `@ClicksProtocol` aktiv und der Account ist blue-verified. Das Web-Analytics-Dashboard bleibt bis 50 Followern auf eingeschraenkter Account-Ebene; Screenshot zeigt 16 Follower und 6 Checkmark-Follower.
+
+## 2026-07-21: X Markenbanner live
+
+- David gab den kontrollierten 1500x500-Entwurf aus `assets/banners/x-profile-2026/settlement-banner-1500x500.png` ausdruecklich fuer das X-Profil frei.
+- Zwei Versuche ueber `xurl -F` wurden von X mit HTTP 400 abgelehnt, weil `xurl` das benoetigte Multipart-Feld `banner` nicht korrekt uebergab. Ein Form-Body-Versuch scheiterte mit HTTP 401 wegen abweichender OAuth-Signatur.
+- Finaler Upload ueber einen korrekt signierten OAuth-1.0a-Multipart-Request erfolgreich: HTTP 201, leerer Erfolgsbody.
+- Rueckpruefung ueber X API v2: `@ClicksProtocol` liefert eine neue `profile_banner_url` mit Upload-Zeitstempel `1784648532`.
+- Eingesetzt wurde der kontrollierte Markenentwurf mit echtem Clicks-Logo, Settlement-first Text, Routing-Grafik und X-Safe-Zone. Keine der verworfenen KI-Varianten wurde veroeffentlicht.
+
+## 2026-07-21: To-do-Ausfuehrung, Analytics und Receipt V1
+
+- X Analytics automatisiert: taeglicher lokaler Snapshot um 18:45, Telegram-Wochenbericht Freitag 19:00.
+- Verifizierten-Follower-Parser korrigiert. X liefert bei nicht verifizierten Accounts Stringwerte `none` beziehungsweise `None`, die nicht als wahr behandelt werden duerfen.
+- Ausgangspunkt live gemessen: 16 Follower, davon 6 verifiziert oder Premium; 3.099 Impressionen, 273 Engagements, 62 Profilklicks und 7 Linkklicks in 90 Tagen.
+- Drei humanizer-gepruefte X-Entwuerfe separat als `pending-approval` abgelegt. Aktive Queue bleibt leer.
+- Moltbook-Kommentar-Alert um Homebrew-Node-PATH ergaenzt und mit Exit 0 geprueft. Sieben neue Moltbook-Post-IDs sind im lokalen Monitor erfasst.
+- ClawHub 1.2.6 live geprueft: Card vorhanden, Verify pass, Security clean. Lokalen Settlement-first Cleanup als Version 1.2.7 vorbereitet, nicht publiziert.
+- Glama live per API geprueft: HTTP 200, aber weiter alter Yield-Text, null Tools und `updatedAt=null`.
+- Package-Repository-URLs fuer SDK, MCP, Eliza und Agent Treasury korrigiert. Vier `npm pack --dry-run` Durchlaeufe gruen.
+- Receipt V1 im SDK implementiert: Precondition Snapshot, Policy-Version-Hash, Falsifiability und deterministische Receipt-ID. SDK-Build und deterministischer Laufzeittest gruen.
+- Landing-Quelltext lokal von unbelegten Claims bereinigt: keine live behaupteten Reputation Fees, kein Audit-Claim, kein `no human required`. Next.js Production-Build gruen. Kein Deploy ausgefuehrt.
+- Alle vier Package-Builds gruen. Referral-Testauswahl 49 passing. `git diff --check` gruen.
+- Nebenbefund: `com.clicks.acp-service` loopt mit Exit 127, weil launchd `npx` nicht findet. Kein Restart oder produktiver Service-Fix ohne separate Freigabe.
+- Lokaler Sicherungscommit mit Subject `feat: add settlement analytics and receipt model`. Kein Push ausgefuehrt.

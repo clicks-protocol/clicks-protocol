@@ -67,7 +67,7 @@ export function Developers() {
               </div>
               <CardTitle className="mb-4">Verified on Basescan</CardTitle>
               <CardDescription className="mb-8">
-                Open source, audited smart contracts. Review and verify.
+                Open source, verified smart contracts with public tests. Review the code and on-chain deployments.
               </CardDescription>
               <TextLink
                 href="https://basescan.org/address/0x23bb0Ea69b2BD2e527D5DbA6093155A6E1D0C0a3"

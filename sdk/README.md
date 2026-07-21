@@ -1,20 +1,21 @@
 # @clicks-protocol/sdk
 
-![npm version](https://img.shields.io/npm/v/@clicks-protocol/sdk) ![license](https://img.shields.io/badge/license-UNLICENSED-blue) ![Base](https://img.shields.io/badge/chain-Base-0052FF) ![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6)
+![npm version](https://img.shields.io/npm/v/@clicks-protocol/sdk) ![license](https://img.shields.io/badge/license-MIT-blue) ![Base](https://img.shields.io/badge/chain-Base-0052FF) ![TypeScript](https://img.shields.io/badge/language-TypeScript-3178C6)
 
-**Your AI agent's idle USDC earns 0% yield. Add treasury setup first, then optional referral attribution.**
+Clicks Protocol is a post-payment settlement router for AI agents on Base.
 
-Clicks Protocol is agent treasury infrastructure on Base. Default split: 80% liquid, 20% routed to yield. Referral attribution is available as an explicit second step.
+The current contracts apply a configurable split to received USDC. Working capital stays liquid. The treasury portion can use optional yield routing. Referral attribution is a separate, explicit action.
 
 ## Overview
 
-Clicks Protocol automatically splits AI agent payments into:
+Clicks Protocol currently routes submitted USDC into:
 
-**Works With:** AI agents using Claude, Cursor, Codex, LangChain, OpenAI, x402, and any MCP-compatible client.
-- **Liquid portion** → agent wallet immediately
-- **Yield portion** → best DeFi yield (Aave V3 or Morpho on Base)
+- a liquid portion sent to the agent wallet
+- an optional yield portion routed through Aave V3 or Morpho on Base
 
 The protocol takes a 2% fee on yield earned (not on principal).
+
+Payment ingress remains separate. A dedicated x402 adapter is planned but not released.
 
 ## Installation
 
@@ -42,7 +43,7 @@ await regTx.wait();
 const approveTx = await clicks.approveUSDC('max');
 await approveTx.wait();
 
-// 3. Receive a payment (auto-splits 80/20 by default)
+// 3. Submit received USDC for settlement (80/20 by default)
 const payTx = await clicks.receivePayment('100', '0xYourAgentAddress');
 await payTx.wait();
 // → 80 USDC sent to agent wallet
@@ -117,6 +118,49 @@ Important:
 - This wrapper is not atomic.
 - Treasury setup can succeed even if referral attribution fails afterward.
 - The return object reflects that split honestly.
+
+## Settlement receipts
+
+The SDK includes a repository-stage receipt model for binding a settlement result to its input state and exact policy version. It does not replace an on-chain transaction receipt.
+
+```typescript
+import { createSettlementReceipt } from '@clicks-protocol/sdk';
+
+const receipt = createSettlementReceipt({
+  agent: agentAddress,
+  asset: usdcAddress,
+  grossAmount: '1000000',
+  ingress: { source: 'direct', externalPaymentId: 'payment-123' },
+  policy: {
+    id: 'default',
+    version: '1',
+    liquidBps: 8000,
+    treasuryBps: 2000,
+    definition: { liquidBps: 8000, treasuryBps: 2000 },
+  },
+  precondition: {
+    chainId: 8453,
+    observedAt: new Date().toISOString(),
+    agentRegistered: true,
+    operator: operatorAddress,
+    availableBalance: '1000000',
+  },
+  execution: {
+    status: 'confirmed',
+    liquidAmount: '800000',
+    treasuryAmount: '200000',
+    txHash,
+  },
+  falsifiability: {
+    claim: 'Policy default v1 settled 1 USDC',
+    verificationMethod: 'Read transaction logs and recompute the policy hash',
+    expectedEvidence: ['matching transaction and split amounts'],
+    invalidIf: ['transaction failed', 'amounts do not match policy'],
+  },
+});
+```
+
+`receiptId` and `policy.versionHash` are deterministic keccak256 hashes over canonical data. The model records a precondition snapshot and explicit invalidation conditions so another system can challenge the claim.
 
 #### `quickStart(amount, agentAddress, referrer?)`
 Treasury setup only. The optional `referrer` parameter is reserved for compatibility and does not register attribution on-chain by itself.
@@ -245,4 +289,4 @@ graph TD
 
 ## License
 
-UNLICENSED — proprietary, not for distribution.
+MIT

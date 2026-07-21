@@ -1,0 +1,25 @@
+[
+  {
+    "slot": "pinned-explainer",
+    "format": "visual-post",
+    "status": "pending-David-approval",
+    "text": "Payment is not settlement.\n\nPayment rails answer: did USDC move?\n\nSettlement has to answer: which policy applied, where did revenue go, and can another system verify the result?\n\nClicks is building that post-payment layer for AI agents on Base.",
+    "visual_brief": "One incoming USDC payment on the left. A Clicks policy router in the center. Working capital, treasury route and verifiable receipt on the right. Dark background, restrained green accent, no x402 support claim."
+  },
+  {
+    "slot": "weekly-settlement-report",
+    "format": "thread",
+    "status": "pending-David-approval",
+    "tweets": [
+      "Agent Commerce Settlement Report, issue 01.\n\nx402 is making HTTP payments easier. The next operational problem starts after funds arrive: policy, routing, attribution and receipts.",
+      "The useful distinction:\n\nPayment proves value moved.\nSettlement explains what happened next.\n\nFor autonomous sellers, that means preserving working capital, applying split rules and producing evidence another system can audit.",
+      "Clicks is building that post-payment layer on Base. The x402 adapter is still on the roadmap. Current work focuses on the revenue event model, settlement receipts and policy-aware routing."
+    ]
+  },
+  {
+    "slot": "technical-erc8004",
+    "format": "single-post",
+    "status": "pending-David-approval",
+    "text": "ERC-8004 can tell us which agent acted and how others rated the result. Settlement receipts can tell us which revenue policy ran and where the funds went.\n\nIdentity and reputation become more useful when money flows have verifiable context."
+  }
+]

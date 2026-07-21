@@ -24,6 +24,19 @@ export type {
   FeeInfo,
 } from './types';
 
+export {
+  createSettlementReceipt,
+  hashSettlementPolicy,
+  type SettlementExecution,
+  type SettlementFalsifiability,
+  type SettlementIngress,
+  type SettlementPolicySnapshot,
+  type SettlementPreconditionSnapshot,
+  type SettlementReceiptInput,
+  type SettlementReceiptStatus,
+  type SettlementReceiptV1,
+} from './receipts';
+
 // Addresses
 export {
   BASE_MAINNET,

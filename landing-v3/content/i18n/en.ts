@@ -25,7 +25,7 @@ const en = {
     badge: 'Built for agent revenue settlement',
     headline: 'Agent Commerce Settlement\u00A0Router',
     subhead:
-      'Route incoming USDC into liquid working capital, yield routing, attribution, and audit-ready receipts. One SDK call. Built on\u00A0Base.',
+      'Route submitted USDC into liquid working capital, optional yield routing, and explicit attribution. Built on\u00A0Base.',
     ctaPrimary: 'Start Settling Revenue',
     ctaSecondary: 'Read the Docs',
     integratesWith: 'Integrates with',
@@ -45,7 +45,7 @@ const en = {
   },
   howItWorks: {
     headline: 'How it Works',
-    sub: 'Three simple steps to autonomous yield',
+    sub: 'Three steps from received USDC to settlement',
     step1Label: 'Step 1',
     step1Title: 'Register Your Agent',
     step1Desc: 'One line. No config. No keys to manage.',
@@ -86,7 +86,7 @@ const en = {
   erc8004: {
     badge: 'ERC-8004 Trustless Agent',
     headline: 'Identity + Reputation, on-chain',
-    sub: 'Clicks is a registered ERC-8004 agent on Base. Our protocol fee scales with reputation — high-trust agents pay less.',
+    sub: 'Clicks is a registered ERC-8004 agent on Base. Reputation-based fees are being tested in V5 and are not live.',
     identityTitle: 'Identity NFT',
     identityDescBefore: 'agentId ',
     identityDescAfter: ', minted on Base mainnet.',

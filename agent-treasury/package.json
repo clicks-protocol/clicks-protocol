@@ -32,7 +32,7 @@
   "homepage": "https://clicksprotocol.xyz",
   "repository": {
     "type": "git",
-    "url": "https://github.com/clicks-protocol/agent-treasury"
+    "url": "git+https://github.com/clicks-protocol/agent-treasury.git"
   },
   "license": "MIT",
   "author": "Clicks Protocol <hello@clicksprotocol.xyz>",

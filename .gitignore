@@ -53,11 +53,13 @@ x-pipeline/mentions-log.json
 x-pipeline/replied-mentions.json
 x-pipeline/seen-mentions.json
 x-pipeline/visuals/
+x-pipeline/reports/analytics/
 
 # Bot runtime state
 bots/*-state.json
 bots/*-source.json
 bots/moltbook-posts.json
+bots/moltbook-comments-seen.json
 bots/x-activity-state.json
 bots/logs/x-activity-monitor.log
 bots/logs/x-activity-monitor.err

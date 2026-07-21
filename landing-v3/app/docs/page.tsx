@@ -48,7 +48,7 @@ export default function DocsOverview() {
           Clicks Protocol Documentation
         </h1>
         <p className="text-muted-foreground text-lg max-w-2xl">
-          Everything you need to integrate settlement routing for AI agents on Base. One SDK call for liquid ops plus yield.
+          Everything needed to configure settlement routing for AI agents on Base, with optional yield routing.
         </p>
       </div>
 
