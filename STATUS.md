@@ -1,6 +1,6 @@
 # Clicks Protocol Status
 
-> Stand: 2026-07-21 (Berlin, X MCP dauerhaft einsatzbereit, PR #32 gemerged, Moltbook refilled plus comment monitor, Glama weiter stale)
+> Stand: 2026-07-21 (Berlin, X Settlement-first Profil und neuer Redaktionsrhythmus live, X MCP einsatzbereit, Glama weiter stale)
 > Priorität: P0
 > Update-Rule: **Jede Session endet mit Aktualisierung dieser Datei, bevor Emma/Claude die Arbeit niederlegt.** Staleness > 48 h = Drift-Risiko.
 > ⚠️ **Diese Datei war zwischen 13.05. und 13.07. veraltet. Heute auf Stand gezogen.**
@@ -25,6 +25,10 @@
 **Moltbook:** Neuer Key lokal gesetzt in Workspace-`.env` und Projekt-`.env`. LaunchAgent `com.clicks.moltbook-crosspost` ist aktiv und laeuft stuendlich Minute 07. Queue lokal mit 14 Settlement-first Textposts neu befuellt, `nextIndex=0`, naechster Ziel-Submolt `agentcommerce`. `bots/*-source.json` und `bots/*-state.json` bleiben absichtlich gitignored. Kommentar-Monitor ist jetzt aktiv: `com.clicks.moltbook-comment-monitor` laeuft Minute 17 und 47, prueft getrackte Post-IDs und sendet nur bei neuen Kommentaren in den Telegram-Clicks-Topic.
 
 **X MCP:** OAuth 2.0 fuer die App `clicks` ist als `@ClicksProtocol` autorisiert. `xurl` 1.2.3 ist dauerhaft ueber Homebrew installiert, OAuth 2.0/OAuth 1.0a/Bearer sind vorhanden, der MCP-Handshake und die Tool-Discovery gegen `https://api.x.com/mcp` sind verifiziert. Token-Refresh laeuft ueber den lokalen `xurl mcp` Bridge.
+
+**X Profil und Publishing:** Bio ist jetzt Settlement-first: `Settlement infrastructure for AI agents. Route USDC revenue, enforce split policy and verify receipts on Base. Open source SDK + MCP.` Die alte taegliche 06:15/13:15/20:15-Automation wurde beendet. Die drei LaunchAgents laufen nur noch Montag, Mittwoch und Freitag um 17:30 Berlin und veroeffentlichen ausschliesslich vorher in `x-pipeline/queue.json` freigegebene Inhalte. Queue ist aktuell leer. Slots: Monday Original, Wednesday Settlement Report/Thread, Friday Demo/Visual.
+
+**X Analytics:** OAuth-2-API-Zugriff auf eigene `public_metrics`, `non_public_metrics` und `organic_metrics` ist live verifiziert, inklusive Impressions, Engagements, Profilklicks und Linkklicks pro Post. Das Premium+-Web-Dashboard zeigt detaillierte Account-Metriken laut UI erst ab 50 Followern; aktuell 16 Follower, davon 6 mit Checkmark.
 
 **X Mention Monitor:** End-to-End verifiziert mit echter Mention `2079572038650397050` von `@CRYPTO_DAVIDSKI`: Erkennung, Telegram-Alert, Reply-Vorschlag und Deduplizierung erfolgreich. XAA-Subscription `post.mention.create` ist angelegt. Der XAA-Persistent-Stream bleibt durch einen Auth-Widerspruch bei X unbrauchbar: Private Subscription verlangt User-OAuth, Stream verlangt App-only und sieht die User-OAuth-Subscription nicht. Delivery nutzt deshalb den offiziellen Filtered Stream mit Regel `@ClicksProtocol`. Der zuvor serverseitig belegte Stream-Slot wurde durch kontrolliertes Stoppen aller Reconnects und eine 45-Sekunden-Abkuehlphase freigegeben. Seit 16:31 CEST haelt der LaunchAgent genau eine aktive `xurl 1.2.3` Stream-Verbindung. Das unabhaengige 60-Sekunden-Polling bleibt als Ausfallsicherung aktiv. Der Dienst besitzt keine Posting-Logik und antwortet nie automatisch.
 

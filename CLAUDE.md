@@ -52,7 +52,7 @@ Nicht deployen bis Gate erfüllt.
 - `com.clicks.acp-service` — ACP Service Provider für Virtuals (blockiert durch Alchemy Paymaster Bug)
 - `com.clicks.tier-scanner` — Tier-Distribution-Scanner, Do 09:00 wöchentlich
 - `com.clicks.yield-reporter` — geparked
-- `com.clicks.x-post-{asia,eu,us}` — X-Posting täglich 06:15/13:15/20:15 (seit 20.04 launchd statt OpenClaw-Cron)
+- `com.clicks.x-post-{asia,eu,us}` — freigegebene X-Queue nur Mo/Mi/Fr 17:30 Berlin: Original, Settlement Report/Thread, Demo/Visual. Alte taegliche 06:15/13:15/20:15-Automation seit 21.07. beendet
 - `com.clicks.x-activity-monitor` — Mention-Monitor fuer `@ClicksProtocol`; End-to-End mit echter Mention `2079572038650397050` verifiziert. Filtered Stream seit 21.07. 16:31 CEST wieder aktiv, 60-Sekunden-Polling bleibt als Ausfallsicherung; Telegram-Alert plus faktenfester Reply-Vorschlag, keine automatische X-Antwort
 
 ## Public Presence

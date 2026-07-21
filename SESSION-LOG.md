@@ -1339,3 +1339,14 @@
 - Manuellen Test sauber beendet, acht Sekunden gewartet und den LaunchAgent erneut geladen.
 - Prozessbaum danach verifiziert: genau ein `xurl 1.2.3` Kindprozess am Filtered Stream, LaunchAgent `state=running`, Polling weiter `last_poll_status=ok`.
 - `TooManyConnections` ist damit behoben. Ursache war ein serverseitig noch belegter Slot, der durch fortlaufende Reconnects nicht sauber auslief.
+
+## 2026-07-21: X Profil, Redaktionsrhythmus und Analytics
+
+- `@ClicksProtocol` Bio von Yield-first auf Settlement-first geaendert und live ueber X zurueckgelesen.
+- Endgueltige Bio: `Settlement infrastructure for AI agents. Route USDC revenue, enforce split policy and verify receipts on Base. Open source SDK + MCP.`
+- Beim ersten Profil-Write wurde wegen einer nicht exportierten Shell-Variable die Bio kurz leer gesetzt. Ursache korrigiert, Update danach mit korrekt signiertem OAuth-1.0a-Form-Request ausgefuehrt und live verifiziert.
+- Alte X-Launchd-Frequenz 3-mal taeglich beendet. Bestehende drei LaunchAgents neu geladen mit Mo/Mi/Fr jeweils 17:30 Berlin.
+- Inhaltliche Slots: Monday Original, Wednesday Settlement Report/Thread, Friday Demo/Visual. `queue.json` ist leer; es wird nur vorher freigegebener Content veroeffentlicht.
+- Alle drei Plists mit `plutil -lint` geprueft und per `launchctl print` zurueckgelesen: Weekdays 2/4/6, 17:30, nicht laufend bis zum naechsten Slot.
+- X Analytics API mit OAuth 2.0 verifiziert. Eigene Posts liefern `public_metrics`, `non_public_metrics` und `organic_metrics`, darunter Impressions, Engagements, Profilklicks und Linkklicks.
+- Premium+ ist fuer `@ClicksProtocol` aktiv und der Account ist blue-verified. Das Web-Analytics-Dashboard bleibt bis 50 Followern auf eingeschraenkter Account-Ebene; Screenshot zeigt 16 Follower und 6 Checkmark-Follower.
