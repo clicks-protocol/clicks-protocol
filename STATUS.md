@@ -42,6 +42,8 @@
 
 **Receipt V1, Repository-Stage:** `sdk/src/receipts.ts` definiert einen deterministischen Settlement-Nachweis mit Precondition Snapshot, Policy-Version-Hash und Falsifiability-Feldern. SDK-Build und deterministischer Hash-Test sind gruen. Noch nicht als npm-Version veroeffentlicht und kein On-Chain-Receipt-Vertrag.
 
+**Receipt V2 und State-Machine, Repository-Stage:** V1 bleibt kompatibel. V2 ergaenzt Idempotency-Key, Business-Event, Authorization Reference, Request-/Quote-Hash, Settlement Reference, Witness States, Delivery Evidence, Retry Policy und Reconciliation History. Die neue State-Machine erlaubt nur definierte Uebergaenge. Retry ist fail-closed und ausschliesslich bei `failed_before_transfer` innerhalb der expliziten Attempt-Grenze moeglich; `unknown_settled` kann niemals automatisch retried werden. Sieben neue SDK-Tests und der gesamte bestehende Hardhat-Bestand mit 232 Tests sind gruen. Noch nicht auf npm veroeffentlicht, keine Reconciliation Engine und kein Contract-Deploy.
+
 **ACP Service:** `com.clicks.acp-service` laeuft wieder kontrolliert als genau eine Instanz. `run.sh` nutzt den absoluten Node-22-Pfad und erweitert `PATH`, damit `npx` und dessen Node-Interpreter unter launchd verfuegbar sind. Der Start unterdrueckt die Ausfuehrung bereits vorhandener funded Jobs waehrend der Hydrierung. Verifizierter Startcheck: `0 active job(s): none`. Es wurde kein Auftrag simuliert und keine Onchain-Transaktion ausgeloest.
 
 **Glama:** Das oeffentliche Profil ist weiterhin inhaltlich stale. Die API liefert alten Yield-Text, `tools=0` und `updatedAt=null`. Ein Rescan-Supportticket mit Server-ID, Repository und Kontaktadresse wurde am 21.07. ueber das offizielle `Report Issue`-Formular abgesendet.

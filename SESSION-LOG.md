@@ -1403,3 +1403,12 @@
 - Prozess und Guardrails in `research/MOLTBOOK-RESEARCH-LOOP.md` dokumentiert: Signal ist kein Roadmap-Item; Promotion erst bei drei unabhaengigen Autoren, einem realen wirtschaftlichen Flow oder einem bestaetigten Pilot.
 - Backfill der aktuell getrackten Posts ausgefuehrt: 23 Evidence Records. Wiederholte Themen: Receipt Trail 17 Signale/15 Autoren, Policy-Provenienz 11/9, Attribution 5/4, Delivery Proof 5/5, Unknown Settlement 3/3, Idempotency 3/3, Privacy 1/1.
 - `python3 -m py_compile bots/moltbook-monitor.py bots/moltbook-research-report.py` gruen. Report erfolgreich aus dem Backfill erzeugt.
+
+## 2026-07-21: Receipt V2 und Settlement-State-Machine
+
+- Phase 1 der aus Moltbook-Evidence abgeleiteten Entwicklungsarbeit begonnen und als reine SDK-Erweiterung umgesetzt. Keine Contract-Aenderung, kein Deploy und kein automatischer Retry.
+- Bestehendes Receipt V1 unveraendert kompatibel gelassen. Neue API `createSettlementReceiptV2` mit Idempotency-Key, Business-Event-ID, Authorization Reference, Request-/Quote-Hash, Settlement Reference, Witness States, Retry Policy, Delivery Evidence und Reconciliation History ergaenzt.
+- Neue Settlement-State-Machine mit `planned`, `submitted`, `chain_confirmed`, `settled`, `unknown_settled`, `reconciliation_required`, `reconciled`, `failed_before_transfer` und `disputed` gebaut.
+- Fail-closed Retry-Guard implementiert: Nur `failed_before_transfer` darf innerhalb einer expliziten Retry Policy erneut eingereicht werden. `unknown_settled` wird immer blockiert.
+- SDK-README um V2-Beispiel und klare Repository-Stage-Grenzen ergaenzt.
+- Verifikation: sieben neue Node-SDK-Tests gruen; `npm test` im Root mit 232 bestehenden Hardhat-Tests gruen; `git diff --check` gruen.

@@ -162,6 +162,49 @@ const receipt = createSettlementReceipt({
 
 `receiptId` and `policy.versionHash` are deterministic keccak256 hashes over canonical data. The model records a precondition snapshot and explicit invalidation conditions so another system can challenge the claim.
 
+### Receipt V2 and fail-closed settlement states
+
+Receipt V2 adds economic idempotency, authorization provenance, witness states, delivery evidence and reconciliation history. V1 remains available for compatibility.
+
+```typescript
+import {
+  assertSettlementRetryAllowed,
+  createSettlementReceiptV2,
+} from '@clicks-protocol/sdk';
+
+const receipt = createSettlementReceiptV2({
+  agent: agentAddress,
+  asset: usdcAddress,
+  grossAmount: '1000000',
+  idempotencyKey: 'order-42',
+  businessEventId: 'invoice-42',
+  authorizationReference: 'approval-42',
+  requestHash,
+  quoteHash,
+  ingress: { source: 'direct', externalPaymentId: 'payment-42' },
+  policy,
+  precondition,
+  execution: {
+    state: 'unknown_settled',
+    liquidAmount: '800000',
+    treasuryAmount: '200000',
+    witnessStates: [{
+      name: 'chain_inclusion',
+      state: 'unknown',
+      checkedAt: new Date().toISOString(),
+    }],
+    retryPolicy: { allowRetry: true, maxAttempts: 2, attempts: 0 },
+    reconciliationHistory: [],
+  },
+  falsifiability,
+});
+
+// Throws. An unknown settlement can never be retried automatically.
+assertSettlementRetryAllowed(receipt.execution.state, receipt.execution.retryPolicy);
+```
+
+The only retryable state is `failed_before_transfer`, and only while its explicit retry policy still permits another attempt. Receipt V2 and the state helpers do not submit transactions or perform reconciliation themselves.
+
 #### `quickStart(amount, agentAddress, referrer?)`
 Treasury setup only. The optional `referrer` parameter is reserved for compatibility and does not register attribution on-chain by itself.
 

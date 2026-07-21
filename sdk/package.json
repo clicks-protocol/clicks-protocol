@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "test": "npm run build && node --test test/*.test.js",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
   },

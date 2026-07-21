@@ -26,16 +26,33 @@ export type {
 
 export {
   createSettlementReceipt,
+  createSettlementReceiptV2,
   hashSettlementPolicy,
+  type SettlementDeliveryEvidence,
   type SettlementExecution,
+  type SettlementExecutionV2,
   type SettlementFalsifiability,
   type SettlementIngress,
   type SettlementPolicySnapshot,
   type SettlementPreconditionSnapshot,
+  type SettlementReceiptV2Input,
   type SettlementReceiptInput,
   type SettlementReceiptStatus,
   type SettlementReceiptV1,
+  type SettlementReceiptV2,
+  type SettlementReconciliationEvent,
+  type SettlementWitness,
+  type SettlementWitnessState,
 } from './receipts';
+
+export {
+  assertSettlementRetryAllowed,
+  assertSettlementTransition,
+  canRetrySettlement,
+  canTransitionSettlement,
+  type SettlementRetryPolicy,
+  type SettlementState,
+} from './settlement-state';
 
 // Addresses
 export {
