@@ -209,7 +209,7 @@ export default function RootLayout({
                   name: 'How do I integrate Clicks Protocol?',
                   acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'Install the SDK with npm install @clicks-protocol/sdk, then call clicks.quickStart(amount, agentAddress). For MCP-compatible agents, use npx @clicks-protocol/mcp-server with 11 built-in tools, including clicks_register_referral and clicks_explain.',
+                    text: 'Install the SDK with npm install @clicks-protocol/sdk, then call clicks.quickStart(amount, agentAddress). For MCP-compatible agents, use npx @clicks-protocol/mcp-server with 16 built-in tools, including receipt verification, read-only reconciliation, referral attribution and protocol explanation.',
                   },
                 },
                 {

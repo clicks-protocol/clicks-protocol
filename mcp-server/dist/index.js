@@ -142,7 +142,7 @@ function equalOptionalAddress(left, right) {
 // ─── Server ───────────────────────────────────────────────────────────────
 const server = new McpServer({
     name: 'clicks-protocol',
-    version: '0.3.2',
+    version: '0.4.0',
 });
 /** Wrap an async tool handler with usage logging */
 function tracked(toolName, direction, fn) {

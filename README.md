@@ -166,7 +166,7 @@ npm install @clicks-protocol/mcp-server
 CLICKS_PRIVATE_KEY=0x... clicks-mcp
 ```
 
-11 tools available: `clicks_quick_start`, `clicks_register_referral`, `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_get_referral_stats`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`, `clicks_explain`
+16 tools available: `clicks_quick_start`, `clicks_register_referral`, `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_get_referral_stats`, `clicks_verify_receipt`, `clicks_get_settlement_status`, `clicks_reconcile_settlement`, `clicks_replay_policy`, `clicks_get_receipt_trail`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`, `clicks_explain`
 
 Works with Claude, Cursor, LangChain, and any MCP-compatible client.
 
@@ -263,7 +263,7 @@ clicks-protocol/
 │   ├── ClicksRegistry      Agent ↔ Operator mapping
 │   └── ClicksReferral      Multi-level referral system
 ├── sdk/                 TypeScript SDK
-├── mcp-server/          MCP Server (11 tools)
+├── mcp-server/          MCP Server (16 tools)
 ├── site/                Landing page + llms.txt + agent.json
 └── test/                227 tests (Hardhat)
 ```

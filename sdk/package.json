@@ -1,6 +1,6 @@
 {
   "name": "@clicks-protocol/sdk",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "TypeScript SDK for Clicks Protocol, the agent commerce settlement router on Base",
   "private": false,
   "main": "dist/index.js",
@@ -23,10 +23,10 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "ethers": "^6.0.0"
+    "ethers": "^6.17.0"
   },
   "devDependencies": {
-    "ethers": "^6.13.0",
+    "ethers": "^6.17.0",
     "typescript": "^5.5.0"
   },
   "engines": {

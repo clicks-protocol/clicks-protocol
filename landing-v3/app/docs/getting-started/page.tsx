@@ -116,7 +116,7 @@ await clicks.receivePayment('500', agentAddress);`} />
       <section className="mb-10">
         <h2 className="text-2xl font-bold mb-4 text-foreground">MCP Server Setup</h2>
         <p className="text-muted-foreground leading-relaxed mb-4">
-          AI agents can discover and use Clicks via Model Context Protocol (MCP). The server provides 11 tools for autonomous operation.
+          AI agents can discover and use Clicks via Model Context Protocol (MCP). The server provides 16 tools for settlement operations and read-only verification.
         </p>
         <CodeBlock code="npx @clicks-protocol/mcp-server" language="bash" />
         <p className="text-muted-foreground text-sm mt-2 mb-4">
@@ -126,7 +126,7 @@ await clicks.receivePayment('500', agentAddress);`} />
 CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
         
         <div className="glassmorphism rounded-lg p-4 mt-4">
-          <h3 className="font-semibold text-lg mb-3 text-foreground">Available Tools (11)</h3>
+          <h3 className="font-semibold text-lg mb-3 text-foreground">Available Tools (16)</h3>
           <ul className="space-y-2 text-muted-foreground text-sm">
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_quick_start</code> — One-call setup + first payment</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_register_referral</code> — Explicit referral attribution with agent signature</li>
@@ -138,6 +138,11 @@ CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_simulate_split</code> — Preview payment split</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_get_yield_info</code> — Current APY + active protocol</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_get_referral_stats</code> — Referral network stats</li>
+            <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_verify_receipt</code> — Verify a Receipt V2 hash and schema</li>
+            <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_get_settlement_status</code> — Read the recorded settlement state</li>
+            <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_reconcile_settlement</code> — Compare evidence without retrying payment</li>
+            <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_replay_policy</code> — Verify policy provenance and replay inputs</li>
+            <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_get_receipt_trail</code> — Read the append-only receipt history</li>
             <li><code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks_explain</code> — Agent-to-agent protocol explanation</li>
           </ul>
         </div>
@@ -230,7 +235,7 @@ await clicks.withdrawYield(agentAddress);`} />
           <li>• Default split: 80% liquid, 20% routed through treasury yield</li>
           <li>• Check balance: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks.getAgentInfo(agentAddress)</code></li>
           <li>• Withdraw anytime: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">clicks.withdrawYield(agentAddress)</code></li>
-          <li>• MCP server: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">npx @clicks-protocol/mcp-server</code> (11 tools)</li>
+          <li>• MCP server: <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-xs">npx @clicks-protocol/mcp-server</code> (16 tools)</li>
         </ul>
       </div>
     </div>

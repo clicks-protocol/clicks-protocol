@@ -258,7 +258,7 @@ const agent = await clicks.getAgentInfo(agentAddress);
         <CodeBlock code={`npm install -g @clicks-protocol/mcp-server
 CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
 
-        <h3 className="text-lg font-semibold mt-6 mb-4 text-foreground">Available Tools (11)</h3>
+        <h3 className="text-lg font-semibold mt-6 mb-4 text-foreground">Available Tools (16)</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -280,6 +280,11 @@ CLICKS_PRIVATE_KEY=0x... clicks-mcp`} language="bash" />
                   { tool: 'clicks_simulate_split', type: '📖 read', desc: 'Preview payment split' },
                   { tool: 'clicks_get_yield_info', type: '📖 read', desc: 'Current APY + active protocol' },
                   { tool: 'clicks_get_referral_stats', type: '📖 read', desc: 'Referral network stats' },
+                  { tool: 'clicks_verify_receipt', type: '📖 read', desc: 'Verify a Receipt V2 hash and schema' },
+                  { tool: 'clicks_get_settlement_status', type: '📖 read', desc: 'Read the recorded settlement state' },
+                  { tool: 'clicks_reconcile_settlement', type: '📖 read', desc: 'Compare receipt evidence without retrying payment' },
+                  { tool: 'clicks_replay_policy', type: '📖 read', desc: 'Verify policy provenance and replay inputs' },
+                  { tool: 'clicks_get_receipt_trail', type: '📖 read', desc: 'Read the append-only receipt history' },
                   { tool: 'clicks_explain', type: '📖 read', desc: 'Agent-to-agent protocol explanation' },
                 ].map((row) => (
                 <tr key={row.tool} className="border-b border-white/5">

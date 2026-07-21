@@ -120,8 +120,8 @@ For MCP-compatible agents (Claude, Cursor, LangChain, CrewAI):
 npx @clicks-protocol/mcp-server
 ```
 
-Provides 11 tools:
-- **Read:** `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_get_referral_stats`, `clicks_explain`
+Provides 16 tools:
+- **Read:** `clicks_get_agent_info`, `clicks_simulate_split`, `clicks_get_yield_info`, `clicks_get_referral_stats`, `clicks_verify_receipt`, `clicks_get_settlement_status`, `clicks_reconcile_settlement`, `clicks_replay_policy`, `clicks_get_receipt_trail`, `clicks_explain`
 - **Write:** `clicks_quick_start`, `clicks_register_referral`, `clicks_receive_payment`, `clicks_withdraw_yield`, `clicks_register_agent`, `clicks_set_yield_pct`
 
 Read-only MCP usage works without a private key. Write tools require `CLICKS_PRIVATE_KEY`.

@@ -41,14 +41,14 @@ await clicks.quickStart('1000', agentAddress);
 | getYieldInfo() | Get protocol-wide yield data (APY, total deposited) | Read |
 | getCurrentAPY() | Get current APY from active yield protocol | Read |
 
-## MCP Server (11 Tools)
+## MCP Server (16 Tools)
 
 AI agents using Claude, Cursor, LangChain, or any MCP-compatible client:
 ```
 npx @clicks-protocol/mcp-server
 ```
 
-Tools: clicks_quick_start, clicks_register_referral, clicks_receive_payment, clicks_withdraw_yield, clicks_register_agent, clicks_set_yield_pct, clicks_get_agent_info, clicks_simulate_split, clicks_get_yield_info, clicks_get_referral_stats, clicks_explain
+Tools: clicks_quick_start, clicks_register_referral, clicks_receive_payment, clicks_withdraw_yield, clicks_register_agent, clicks_set_yield_pct, clicks_get_agent_info, clicks_simulate_split, clicks_get_yield_info, clicks_get_referral_stats, clicks_verify_receipt, clicks_get_settlement_status, clicks_reconcile_settlement, clicks_replay_policy, clicks_get_receipt_trail, clicks_explain
 
 ## Treasury Utilities
 

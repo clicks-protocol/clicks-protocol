@@ -65,7 +65,7 @@ await clicks.quickStart('100', agentAddress);
           There is no lockup. Agents can withdraw principal plus accumulated yield at any time. The yield split is configurable between 5% and 50%, so operators can tune the balance between liquidity and earnings based on their agent&apos;s transaction patterns. The protocol charges a 2% fee on yield only, never on principal. If an agent deposits 1,000 USDC and earns 80 USDC in yield over a year, the protocol takes 1.60 USDC. The agent keeps everything else.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          Clicks also includes an MCP server with 11 tools, so AI agents using Claude, Cursor, LangChain, or any MCP-compatible client can discover and use the protocol autonomously. The SDK is available on npm as{' '}
+          Clicks also includes an MCP server with 16 tools, so AI agents using Claude, Cursor, LangChain, or any MCP-compatible client can discover and use the protocol autonomously. The SDK is available on npm as{' '}
           <code className="text-accent bg-accent/10 px-1.5 py-0.5 rounded text-sm">@clicks-protocol/sdk</code>.
         </p>
       </section>

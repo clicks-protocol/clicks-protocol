@@ -8,15 +8,34 @@
     "start:mainnet": "ACP_CHAIN=mainnet tsx service.ts"
   },
   "dependencies": {
-    "@account-kit/infra": "^4.84.1",
+    "@account-kit/infra": "4.88.4",
     "@clicks-protocol/sdk": "file:../sdk",
-    "@virtuals-protocol/acp-node-v2": "^0.1.2",
-    "ethers": "^6.16.0",
-    "viem": "^2.48.0"
+    "@virtuals-protocol/acp-node-v2": "0.1.8",
+    "ethers": "6.17.0",
+    "viem": "2.55.5"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.0.0",
     "typescript": "^5.5.0"
+  },
+  "overrides": {
+    "axios": "1.18.1",
+    "form-data": "4.0.6",
+    "fast-uri": "3.1.3",
+    "js-cookie": "3.0.8",
+    "@ethersproject/providers": {
+      "ws": "8.21.1"
+    },
+    "engine.io-client": "6.6.6",
+    "isomorphic-ws": {
+      "ws": "7.5.11"
+    },
+    "isows": {
+      "ws": "8.21.1"
+    },
+    "@solana/rpc-subscriptions-channel-websocket": {
+      "ws": "8.21.1"
+    }
   }
 }
