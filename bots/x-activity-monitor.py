@@ -20,6 +20,7 @@ OPENCLAW = "/opt/homebrew/bin/openclaw"
 X_APP = "clicks"
 TELEGRAM_CHAT = "-1003840791947"
 TELEGRAM_TOPIC = "49"
+CLICKS_USER_ID = "2033251448105115649"
 
 
 def load_state() -> dict[str, Any]:
@@ -164,15 +165,15 @@ def send_telegram(message: str) -> None:
         raise RuntimeError(result.stderr.strip() or result.stdout.strip())
 
 
-def process_event(event: dict[str, Any], dry_run: bool = False, no_ai: bool = False) -> None:
+def process_event(event: dict[str, Any], dry_run: bool = False, no_ai: bool = False) -> bool:
     item = extract_event(event)
     if item["event_type"] != "post.mention.create":
-        return
+        return False
     event_id = item["post_id"] or json.dumps(event, sort_keys=True)
     state = load_state()
     seen = list(state.get("seen", []))
     if event_id in seen:
-        return
+        return False
     item = enrich_post(item)
     suggestion = generate_suggestion(item, no_ai=no_ai)
     message = format_alert(item, suggestion)
@@ -184,30 +185,90 @@ def process_event(event: dict[str, Any], dry_run: bool = False, no_ai: bool = Fa
     state["seen"] = seen[-500:]
     state["last_event_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     save_state(state)
+    return True
+
+
+def poll_mentions() -> int:
+    endpoint = (
+        f"/2/users/{CLICKS_USER_ID}/mentions?max_results=10"
+        "&tweet.fields=created_at,author_id&expansions=author_id&user.fields=username,name"
+    )
+    response = run_json([XURL, "--app", X_APP, "--auth", "oauth2", endpoint], timeout=30)
+    posts = response.get("data", [])
+    state = load_state()
+    state["last_poll_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    state["last_poll_status"] = "ok"
+    if not isinstance(posts, list) or not posts:
+        save_state(state)
+        return 0
+    since_id = str(state.get("poll_since_id", ""))
+    newest_id = max((str(post.get("id", "")) for post in posts), key=int)
+    if not since_id:
+        state["poll_since_id"] = newest_id
+        save_state(state)
+        return 0
+    users = response.get("includes", {}).get("users", [])
+    processed = 0
+    for post in sorted(posts, key=lambda value: int(str(value.get("id", "0")))):
+        post_id = str(post.get("id", ""))
+        if not post_id or int(post_id) <= int(since_id):
+            continue
+        event = {
+            "data": post,
+            "includes": {"users": users},
+            "matching_rules": [{"tag": "clicks-mention-monitor"}],
+        }
+        processed += int(process_event(event))
+    state = load_state()
+    state["poll_since_id"] = newest_id
+    state["last_poll_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+    state["last_poll_status"] = "ok"
+    save_state(state)
+    return processed
 
 
 def iter_stream_lines(process: subprocess.Popen[str]):
     assert process.stdout is not None
-    buffer: list[str] = []
+    sse_buffer: list[str] = []
+    json_buffer: list[str] = []
     for raw in process.stdout:
         line = raw.strip()
         if not line:
-            if buffer:
-                yield "\n".join(buffer)
-                buffer = []
+            if sse_buffer:
+                payload = "\n".join(sse_buffer)
+                try:
+                    json.loads(payload)
+                    yield payload
+                except json.JSONDecodeError:
+                    pass
+                sse_buffer = []
             continue
         if line.startswith(":"):
             continue
         if line.startswith("data:"):
-            buffer.append(line[5:].strip())
-        elif line.startswith("{"):
-            yield line
-    if buffer:
-        yield "\n".join(buffer)
+            sse_buffer.append(line[5:].strip())
+            continue
+        if json_buffer or line.startswith(("{", "[")):
+            json_buffer.append(line)
+            payload = "\n".join(json_buffer)
+            try:
+                json.loads(payload)
+            except json.JSONDecodeError:
+                continue
+            yield payload
+            json_buffer = []
+    if sse_buffer:
+        payload = "\n".join(sse_buffer)
+        try:
+            json.loads(payload)
+            yield payload
+        except json.JSONDecodeError:
+            pass
 
 
 def monitor() -> None:
     delay = 2
+    last_poll = 0.0
     while True:
         process = subprocess.Popen(
             [
@@ -228,8 +289,8 @@ def monitor() -> None:
         try:
             for raw in iter_stream_lines(process):
                 try:
-                    process_event(json.loads(raw))
-                    delay = 2
+                    if process_event(json.loads(raw)):
+                        delay = 2
                 except Exception as exc:
                     print(f"event processing failed: {exc}", file=sys.stderr, flush=True)
         finally:
@@ -241,8 +302,22 @@ def monitor() -> None:
                 _, stderr = process.communicate()
             if stderr.strip():
                 print(stderr.strip(), file=sys.stderr, flush=True)
+                state = load_state()
+                state["last_stream_exit_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+                state["last_stream_error"] = stderr.strip()[-500:]
+                save_state(state)
+        if time.monotonic() - last_poll >= 60:
+            try:
+                poll_mentions()
+            except Exception as exc:
+                print(f"mention polling failed: {exc}", file=sys.stderr, flush=True)
+                state = load_state()
+                state["last_poll_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+                state["last_poll_status"] = f"error: {exc}"[-500:]
+                save_state(state)
+            last_poll = time.monotonic()
         time.sleep(delay)
-        delay = min(delay * 2, 60)
+        delay = min(delay * 2, 300)
 
 
 def main() -> None:
