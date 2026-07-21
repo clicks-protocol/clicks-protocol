@@ -1424,3 +1424,13 @@
 - Alte MCP-Formulierung `start earning yield` entfernt und auf Settlement-first gezogen.
 - Verifikation: 22 SDK-Tests gruen, 232 Hardhat-Tests gruen, MCP-Build und ACP-ESM-Bundle-Check gruen, `git diff --check` sauber. Kein Deploy, npm-Publish, Service-Restart, GitHub-Push oder Onchain-Write.
 - Security-Nebenbefund: `npm audit` im ACP-Service meldet 31 bekannte Abhaengigkeitsprobleme, davon 9 high und keine critical. Die High-Funde liegen ueberwiegend in Virtuals/Account-Kit-Transitivitaet ohne verfuegbaren Fix. Kein riskanter Auto-Fix ausgefuehrt.
+
+## 2026-07-21: Security Cleanup und partieller Release
+
+- Reachability und Abhaengigkeitspfade aller ACP-Findings geprueft. Virtuals ACP Node auf `0.1.8`, Account Kit auf `4.88.4`, ethers auf `6.17.0` und viem auf `2.55.5` aktualisiert.
+- Verwundbare transitive Versionen von axios, form-data, fast-uri, js-cookie, ws und engine.io-client gezielt auf reparierte Versionen gepinnt. Kein pauschaler `npm audit fix`.
+- Ergebnis: ACP 0 high/0 critical, SDK 0 Findings, MCP 0 Findings. Builds, 22 SDK-Tests, 232 Hardhat-Tests, Package-Dry-Runs und Landing-Build gruen.
+- Vier lokale Feature- und Release-Commits auf GitHub `main` gepusht und Remote-SHA verifiziert. MCP-Tool-Dokumentation auf 16 Tools aktualisiert.
+- npm-Authentifizierung danach korrekt vor jedem Publish geprueft. `npm whoami` lieferte HTTP 401. Kein Package wurde veroeffentlicht.
+- Um keine nicht existente npm-Version zu bewerben, Registry-Manifest wieder auf die tatsaechlich live veroeffentlichten Versionen Registry `1.0.3` und MCP `0.3.2` gesetzt und ebenfalls gepusht.
+- Gemäss vereinbarter Reihenfolge wurden MCP Registry und ACP-Neustart nicht ausgefuehrt. Kein Auftrag, keine Transaktion und kein Deploy.
