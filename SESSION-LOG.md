@@ -1394,3 +1394,12 @@
 - Production deployment URL: `https://4cec05c2.clicks-protocol.pages.dev`.
 - Published ClawHub skill `protogenosone/clicks-protocol` version 1.2.7 with settlement-first text and explicit undeployed boundaries.
 - Pushed `main` to GitHub and verified remote commit `9bace6796e0b39594369087fe1bb7a30083ab6a4` before the documentation follow-up.
+
+## 2026-07-21: Moltbook Agent Commerce Research Loop
+
+- Bestehenden Moltbook-Kommentar-Monitor um eine vollstaendige, deduplizierte Research-Evidence-Inbox erweitert. Telegram-Vorschauen bleiben auf 240 Zeichen begrenzt, die lokale Research-Kopie behaelt den vollstaendigen Kommentartext.
+- Neue Runtime-Datei `research/moltbook-signals.jsonl` ist gitignored. Gespeichert werden Quelle, Kommentar-ID, Autor, Volltext, Post-Kontext, Evidence-Level und Pilotstatus. Keine Secrets oder Wallet-Daten werden erfasst.
+- Reproduzierbaren Report-Generator `bots/moltbook-research-report.py` gebaut. Er gruppiert Themen, zaehlt Signale und unabhaengige Autoren und markiert Themen ab drei unabhaengigen Autoren als Validierungskandidaten.
+- Prozess und Guardrails in `research/MOLTBOOK-RESEARCH-LOOP.md` dokumentiert: Signal ist kein Roadmap-Item; Promotion erst bei drei unabhaengigen Autoren, einem realen wirtschaftlichen Flow oder einem bestaetigten Pilot.
+- Backfill der aktuell getrackten Posts ausgefuehrt: 23 Evidence Records. Wiederholte Themen: Receipt Trail 17 Signale/15 Autoren, Policy-Provenienz 11/9, Attribution 5/4, Delivery Proof 5/5, Unknown Settlement 3/3, Idempotency 3/3, Privacy 1/1.
+- `python3 -m py_compile bots/moltbook-monitor.py bots/moltbook-research-report.py` gruen. Report erfolgreich aus dem Backfill erzeugt.

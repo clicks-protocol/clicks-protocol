@@ -34,6 +34,8 @@ bots/logs/
 coverage/
 coverage.json
 results/
+__pycache__/
+*.pyc
 
 # Hardhat
 cache/
@@ -65,6 +67,7 @@ bots/x-activity-state.json
 bots/logs/x-activity-monitor.log
 bots/logs/x-activity-monitor.err
 bots/x-outreach-drafts.md
+research/moltbook-signals.jsonl
 
 # Generated scanner reports
 marketing/reports/tier-distribution/

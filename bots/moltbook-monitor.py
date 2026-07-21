@@ -10,6 +10,7 @@ import json
 import os
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
@@ -18,6 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 ENV = ROOT / ".env"
 POSTS = ROOT / "bots" / "moltbook-posts.json"
 STATE = ROOT / "bots" / "moltbook-monitor-state.json"
+RESEARCH_INBOX = ROOT / "research" / "moltbook-signals.jsonl"
 API_BASE = "https://www.moltbook.com/api/v1"
 
 
@@ -78,13 +80,40 @@ def normalize_comment(raw):
     return {
         "id": str(raw.get("id") or raw.get("comment_id") or raw.get("uuid") or ""),
         "author": author_name or "unknown",
-        "text": text[:240],
+        "text": text,
         "createdAt": raw.get("created_at") or raw.get("createdAt") or raw.get("timestamp"),
     }
 
 
+def append_research_signals(signals):
+    """Append complete, deduplicated comments to the local research inbox."""
+    if not signals:
+        return
+
+    RESEARCH_INBOX.parent.mkdir(parents=True, exist_ok=True)
+    existing_ids = set()
+    if RESEARCH_INBOX.exists():
+        for line in RESEARCH_INBOX.read_text().splitlines():
+            try:
+                entry = json.loads(line)
+                if entry.get("commentId"):
+                    existing_ids.add(entry["commentId"])
+            except json.JSONDecodeError:
+                continue
+
+    captured_at = datetime.now(timezone.utc).isoformat()
+    with RESEARCH_INBOX.open("a") as handle:
+        for signal in signals:
+            if signal["commentId"] in existing_ids:
+                continue
+            signal["capturedAt"] = captured_at
+            handle.write(json.dumps(signal, ensure_ascii=False) + "\n")
+            existing_ids.add(signal["commentId"])
+
+
 def main():
     quiet = "--quiet" in sys.argv
+    backfill = "--backfill-research" in sys.argv
     posts = extract_posts()
     if not posts:
         if not quiet:
@@ -98,6 +127,7 @@ def main():
     state = load_json(STATE, {"posts": {}})
     by_post = state.setdefault("posts", {})
     alerts = []
+    research_signals = []
 
     for post in posts:
         post_id = post["id"]
@@ -124,9 +154,28 @@ def main():
         previous["url"] = post["url"]
         previous["submolt"] = post["submolt"]
 
+        research_comments = normalized if backfill else new_comments
+        for comment in research_comments:
+            research_signals.append({
+                "source": "moltbook_comment",
+                "commentId": comment["id"],
+                "author": comment["author"],
+                "text": comment["text"],
+                "createdAt": comment["createdAt"],
+                "postId": post_id,
+                "postTitle": post["title"],
+                "postUrl": post["url"],
+                "submolt": post["submolt"],
+                "status": "new",
+                "evidenceLevel": "single_signal",
+                "pilotCandidate": False,
+                "tags": [],
+            })
+
         if new_comments:
             alerts.append({"post": post, "comments": new_comments, "count": count})
 
+    append_research_signals(research_signals)
     save_json(STATE, state)
 
     if not alerts:
@@ -140,7 +189,8 @@ def main():
         print(f"- {post['submolt']}: {post['title']}")
         print(f"  {post['url']}")
         for comment in alert["comments"]:
-            print(f"  {comment['author']}: {comment['text']}")
+            preview = comment["text"][:240]
+            print(f"  {comment['author']}: {preview}")
     return 0
 
 
