@@ -1330,3 +1330,12 @@
 - End-to-End verifiziert: Mention erkannt, Autor/Text aufgeloest, Telegram-Alert mit Reply-Vorschlag erfolgreich gesendet, danach erst als gesehen gespeichert.
 - State-Beweis: `poll_since_id=2079572038650397050`, `last_poll_status=ok`, `last_event_at=2026-07-21T14:23:47Z`, `seen_count=1`.
 - Filtered Stream bleibt wegen X `TooManyConnections` noch im Reconnect. Zuverlaessige Delivery ist aktuell per Polling mit maximal 60 Sekunden Verzoegerung bestaetigt.
+
+### Stream-Slot-Recovery 16:31
+
+- Lokal verifiziert: nur ein Python-Monitor und kein konkurrierender `xurl` Stream-Prozess aktiv.
+- LaunchAgent kontrolliert gestoppt, damit waehrend der Abkuehlphase keine Reconnects entstehen.
+- Nach 45 Sekunden ohne Verbindung nahm X einen manuellen Filtered Stream wieder an und hielt ihn mindestens 20 Sekunden stabil offen.
+- Manuellen Test sauber beendet, acht Sekunden gewartet und den LaunchAgent erneut geladen.
+- Prozessbaum danach verifiziert: genau ein `xurl 1.2.3` Kindprozess am Filtered Stream, LaunchAgent `state=running`, Polling weiter `last_poll_status=ok`.
+- `TooManyConnections` ist damit behoben. Ursache war ein serverseitig noch belegter Slot, der durch fortlaufende Reconnects nicht sauber auslief.
